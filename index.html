@@ -218,6 +218,26 @@ tr.click:hover td{background:#FBF7EE}
 pre.txt{white-space:pre-wrap;background:var(--creme);border-radius:10px;padding:12px;font-family:var(--corpo);font-size:14px;margin:0;max-height:300px;overflow:auto}
 .vazio{padding:28px;text-align:center;color:var(--mudo);border:1px dashed var(--linha2);border-radius:14px}
 iframe#dnpFrame{width:100%;height:min(1400px,calc(100vh - 140px));min-height:640px;border:1px solid var(--linha);border-radius:14px;background:var(--creme)}
+/* pedidos */
+.peds{display:grid;gap:12px}
+.ped{background:var(--papel);border:1px solid var(--linha);border-radius:14px;padding:16px;display:grid;gap:12px;min-width:0}
+.ped.at{border-color:var(--erro);box-shadow:inset 4px 0 0 var(--erro)}
+.ped.al{box-shadow:inset 4px 0 0 var(--alerta)}
+.ped.pr{box-shadow:inset 4px 0 0 var(--ok)}
+.ped.can{opacity:.55}
+.ped-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.ped-top>div{min-width:0}
+.ped h3{font-size:24px}
+.sit{font-size:13px;font-weight:600;border-radius:999px;padding:5px 12px;background:var(--creme);color:var(--mudo);white-space:nowrap}
+.sit.at{background:var(--errobg);color:var(--erro)} .sit.al{background:var(--alertabg);color:var(--alerta)} .sit.pr,.sit.ok{background:var(--okbg);color:var(--ok)}
+.etapas{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+@media (max-width:600px){.etapas{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.etapa{border:1px solid var(--linha2);background:#fff;border-radius:10px;padding:8px 6px;font-size:13.5px;cursor:pointer;min-height:48px;display:grid;align-content:center;gap:2px;text-align:center}
+.etapa.feita{background:var(--azul);border-color:var(--azul);color:var(--creme)}
+.etapa small{font-size:11.5px;opacity:.8}
+.ped-acoes{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ped-acoes .btn{min-height:42px;padding:8px 16px;font-size:14.5px}
+.ped-acoes input{padding:9px 10px;border:1px solid var(--linha2);border-radius:8px;background:#fff;min-width:0;width:180px}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--azul);color:var(--creme);padding:12px 20px;border-radius:999px;font-size:15px;z-index:40;box-shadow:0 8px 24px -10px rgba(0,0,0,.5);max-width:calc(100% - 32px)}
 .nota{font-size:13px;color:var(--mudo);max-width:80ch;margin:0}
 .exemplo{display:inline-block;font-size:12px;letter-spacing:.12em;text-transform:uppercase;background:var(--alertabg);color:var(--alerta);border-radius:999px;padding:3px 10px;font-weight:600}
@@ -233,6 +253,7 @@ iframe#dnpFrame{width:100%;height:min(1400px,calc(100vh - 140px));min-height:640
       <button role="tab" data-v="dnp" aria-selected="false">Medir DNP</button>
       <button role="tab" data-v="opcoes" aria-selected="false">Lentes</button>
       <button role="tab" data-v="oculos" aria-selected="false">Seu óculos</button>
+      <button role="tab" data-v="pedidos" aria-selected="false" id="navPedidos" hidden>Pedidos</button>
       <button role="tab" data-v="precos" aria-selected="false" id="navPrecos" hidden>Preços</button>
     </nav>
   </div>
@@ -382,6 +403,7 @@ iframe#dnpFrame{width:100%;height:min(1400px,calc(100vh - 140px));min-height:640
             <option value="outro">Outro número</option></select></label>
           <label class="campo" id="pOutroBox" hidden><span>Número com DDD</span><input id="pOutro" type="tel" inputmode="tel" placeholder="(21) 99999-9999"></label>
         </div>
+        <label class="campo"><span id="pTelLab">Seu WhatsApp</span><input id="pTel" type="tel" inputmode="tel" autocomplete="tel" placeholder="(21) 99999-9999"><small id="pTelDica">Para avisarmos quando o óculos estiver pronto.</small></label>
         <div id="pMedBox" hidden style="display:grid;gap:8px">
           <span style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--mudo);font-weight:600">Medidas da armação (mm)</span>
           <div class="campos" style="margin-top:0;grid-template-columns:repeat(auto-fit,minmax(120px,1fr))">
@@ -402,12 +424,24 @@ iframe#dnpFrame{width:100%;height:min(1400px,calc(100vh - 140px));min-height:640
         <p class="nota" id="pNumTxt"></p>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;border-top:1px dashed var(--linha2);padding-top:12px">
           <span class="nota" id="lojaTxt">Área da loja</span>
-          <input id="lojaPin" type="password" inputmode="numeric" maxlength="6" placeholder="Senha" aria-label="Senha da área da loja" style="width:110px;padding:8px 10px;border:1px solid var(--linha2);border-radius:8px;background:#fff">
+          <input id="lojaPin" type="password" autocomplete="off" placeholder="Chave da loja" aria-label="Chave da área da loja" style="width:160px;padding:8px 10px;border:1px solid var(--linha2);border-radius:8px;background:#fff">
           <button class="btn sec" type="button" id="lojaBtn" style="min-height:40px;padding:8px 14px;font-size:14px">Entrar</button>
         </div>
       </div>
     </div>
   </div>
+</section>
+
+<!-- PEDIDOS -->
+<section class="view" id="v-pedidos" hidden>
+  <div class="head"><div><p class="eyebrow">Área da loja</p><h1>Pedidos</h1>
+    <p class="sub">Acompanhe cada óculos do pedido ao laboratório até a entrega. Prazo: 7 dias úteis para lente pronta e 14 para surfaçada, contados do pedido. Toque numa etapa para marcar a data.</p></div>
+    <button class="btn sec" type="button" id="pedAtualizar">Atualizar</button></div>
+  <div class="ferr">
+    <div class="chips" id="pedFiltro"></div>
+    <input class="busca" id="pedBusca" type="search" placeholder="Buscar cliente, armação ou nº" autocomplete="off" aria-label="Buscar pedido">
+  </div>
+  <div id="pedLista" class="peds"><div class="vazio">Carregando pedidos…</div></div>
 </section>
 
 <!-- PREÇOS -->
@@ -940,24 +974,70 @@ const PED=LS.get('voxlentes.pedido',{dest:'552140404840',outro:''});
 $('#pDest').value=PED.dest;$('#pOutro').value=PED.outro;
 // Cliente: pedido vai para o WhatsApp da VOX. Área da loja (senha): escolhe o destino (Haytek etc.) e vê a tabela de lentes.
 const VOX_WPP='552126041377';
-let LOJA=LS.get('voxlentes.loja',false);
-function aplicaModo(){
-  $('#navPrecos').hidden=!LOJA;$('#pDestBox').hidden=!LOJA;$('#pMedBox').hidden=!LOJA;$('#lojaPin').hidden=LOJA;
-  $('#lojaTxt').textContent=LOJA?'Área da loja aberta neste aparelho.':'Área da loja';
-  $('#lojaBtn').textContent=LOJA?'Sair da área da loja':'Entrar';
-  $('#pIntro').textContent=LOJA?'Monta a mensagem com tudo que o laboratório precisa e abre o WhatsApp com o texto pronto. No celular abre direto o aplicativo; é só conferir e tocar em enviar.':'Monta a mensagem com o óculos, a lente e a receita, e abre o WhatsApp da VOX com o texto pronto. No celular abre direto o aplicativo; é só conferir e tocar em enviar.';
-  if(!LOJA&&!$('#v-precos').hidden)ir('vitrine');
+// Pedidos ficam na planilha "VOX Lentes · Pedidos" (Apps Script na conta do Ramon). A chave da loja é conferida lá.
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbyRC6TsVTF15Nd2wK35CHe-gjvWJapVMOaLE-MD9dhFTXkfPmP2vv3OX8HIk1wrhEdx/exec';
+let CHAVE=LS.get('voxlentes.chave','');
+let LOJA=!!CHAVE;
+async function api(acao,extra){
+  const r=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({acao,chave:CHAVE,...(extra||{})})});
+  return r.json();
 }
-$('#lojaBtn').addEventListener('click',()=>{
-  if(LOJA){LOJA=false}else{if($('#lojaPin').value!=='2604'){toast('Senha incorreta');return}LOJA=true;$('#lojaPin').value=''}
-  LS.set('voxlentes.loja',LOJA);aplicaModo();renderOC();toast(LOJA?'Área da loja aberta':'Área da loja fechada');
+function aplicaModo(){
+  $('#navPrecos').hidden=!LOJA;$('#navPedidos').hidden=!LOJA;$('#pDestBox').hidden=!LOJA;$('#pMedBox').hidden=!LOJA;$('#lojaPin').hidden=LOJA;
+  $('#lojaTxt').textContent=LOJA?'Área da loja aberta neste aparelho.':'É da equipe VOX? Abra a área da loja:';
+  $('#lojaBtn').textContent=LOJA?'Sair da área da loja':'Entrar';
+  $('#pTelLab').textContent=LOJA?'WhatsApp do cliente':'Seu WhatsApp';
+  $('#pTelDica').textContent=LOJA?'Para avisar o cliente quando o óculos estiver pronto (aba Pedidos).':'Para avisarmos quando o óculos estiver pronto.';
+  $('#pIntro').textContent=LOJA?'Monta a mensagem para o laboratório (sem preços) e abre o WhatsApp com o texto pronto. O pedido também fica registrado na aba Pedidos.':'Monta a mensagem com o óculos, a lente e a receita, e abre o WhatsApp da VOX com o texto pronto. No celular abre direto o aplicativo; é só conferir e tocar em enviar.';
+  if(!LOJA&&(!$('#v-precos').hidden||!$('#v-pedidos').hidden))ir('vitrine');
+}
+$('#lojaBtn').addEventListener('click',async()=>{
+  if(LOJA){LOJA=false;CHAVE='';LS.set('voxlentes.chave','');aplicaModo();renderOC();toast('Área da loja fechada');return}
+  const k=$('#lojaPin').value.trim();if(!k){toast('Digite a chave da loja');return}
+  const ant=CHAVE;CHAVE=k;
+  try{const j=await api('teste');if(!j.ok)throw 0}catch(e){CHAVE=ant;toast('Chave incorreta ou sem internet');return}
+  LOJA=true;LS.set('voxlentes.chave',CHAVE);$('#lojaPin').value='';aplicaModo();renderOC();toast('Área da loja aberta');
 });
+// número do pedido: o mesmo na mensagem e na planilha; troca depois de registrado
+let PID_ATUAL='';
+function PID(){if(!PID_ATUAL){const d=new Date(),z=n=>String(n).padStart(2,'0');PID_ATUAL=`VOX-${z(d.getDate())}${z(d.getMonth()+1)}${String(d.getFullYear()).slice(2)}-${z(d.getHours())}${z(d.getMinutes())}${String.fromCharCode(65+Math.floor(Math.random()*26))}`}return PID_ATUAL}
+function addUteis(d,n){d=new Date(d);while(n>0){d.setDate(d.getDate()+1);const w=d.getDay();if(w!==0&&w!==6)n--}return d}
+function uteisEntre(a,b){a=new Date(a);a.setHours(0,0,0,0);b=new Date(b);b.setHours(0,0,0,0);let n=0;while(a<b){a.setDate(a.getDate()+1);const w=a.getDay();if(w!==0&&w!==6)n++}return n}
+let PED_ATUAL=null; // dados do pedido montado na tela, para registrar
+function telCliente(){let d=$('#pTel').value.replace(/\D/g,'');if(d.length===10||d.length===11)d='55'+d;return d.length>=12?d:''}
+function montaRegistro(P,temLente,R,txt,HAY){
+  const agora=new Date();const pronta=temLente&&P&&P.o.kind==='stk';const prazo=!temLente?0:pronta?7:14;
+  const rx=e=>`${sg(e.s)} ${e.c?sg(e.c)+' x '+(e.ax??'—')+'°':''}${e.add?' ad '+sg(e.add):''}`;
+  const med=[R.od.dnp!=null?`DNP ${f1(R.od.dnp)}/${f1(R.oe.dnp)}`:'',R.od.alt!=null?`alt ${R.od.alt}/${R.oe.alt}`:'',['pmA','pmB','pmDBL','pmED'].map(id=>$('#'+id).value).some(Boolean)?`armação ${['pmA','pmB','pmDBL','pmED'].map(id=>$('#'+id).value||'—').join(' / ')}`:''].filter(Boolean).join(' · ');
+  const tot=(FR?FR.p:0)+(temLente&&P?venda(P.o,P.XX,OC.cor).preco:0);
+  PED_ATUAL={id:PID(),criado:agora.toISOString(),origem:LOJA?'loja':'cliente',status:HAY?'Enviado ao laboratório':'Novo pedido',
+    cliente:R.cli,telefone:telCliente(),armacao:FR?'VOX '+FR.n:'',aro:FR?ARO[aroDe(FR)]:'',
+    lente:temLente&&P?`${nomeOpt(P.o)}${P.o.solar?'':' '+P.o.idx}`:'Sem troca de lente',producao:!temLente?'sem lente':pronta?'pronta':'surfaçada',
+    tratamento:temLente&&P?[P.o.solar?'':VARN[P.o.v],P.o.solar?P.o.arTxt:OC.cor?'coloração '+corTxt(OC.cor):P.o.kind==='stk'?P.o.arTxt:ARN[P.o.col]].filter(Boolean).join(' · '):'',
+    receita:OC.modo==='grau'?`OD ${rx(R.od)} | OE ${rx(R.oe)}`:OC.modo==='plana'?'plana':'',medidas:med,destino:numDestino(),valor:tot,
+    prazo_dias:prazo,previsao:addUteis(agora,prazo).toISOString().slice(0,10),enviado_lab:HAY?agora.toISOString():'',obs:$('#pObs').value.trim(),texto:txt};
+}
+function filaPedidos(){return LS.get('voxlentes.fila',[])}
+async function enviaFila(){
+  if(!SCRIPT_URL.startsWith('https'))return;
+  const f=filaPedidos();if(!f.length)return;const resto=[];
+  for(const p of f){try{const r=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({acao:'criar',pedido:p})});const j=await r.json();if(!j.ok)resto.push(p)}catch(e){resto.push(p)}}
+  LS.set('voxlentes.fila',resto);
+}
+function registraPedido(){
+  if(!PED_ATUAL)return;
+  const f=filaPedidos();if(!f.some(p=>p.id===PED_ATUAL.id))f.push(PED_ATUAL);LS.set('voxlentes.fila',f);
+  enviaFila();
+  setTimeout(()=>{PID_ATUAL='';renderOC()},4000);
+}
+$('#pEnviar').addEventListener('click',()=>{registraPedido();toast(LOJA?'Pedido registrado na aba Pedidos':'Pedido enviado para o WhatsApp da VOX')});
+$('#pTel').addEventListener('input',()=>renderOC());
+window.addEventListener('online',enviaFila);
 function numDestino(){
   if(!LOJA)return VOX_WPP;
   if($('#pDest').value!=='outro')return $('#pDest').value;
   let d=$('#pOutro').value.replace(/\D/g,'');if(d.length===10||d.length===11)d='55'+d;return d.length>=12?d:'';
 }
-function nPedido(){const d=new Date(),z=n=>String(n).padStart(2,'0');return`VOX-${z(d.getDate())}${z(d.getMonth()+1)}${String(d.getFullYear()).slice(2)}-${z(d.getHours())}${z(d.getMinutes())}`}
 function renderPedido(P,temLente,det){
   const R=leRx();const falta=[];
   if(!FR)falta.push('Escolha a armação na vitrine.');
@@ -979,7 +1059,7 @@ function renderPedido(P,temLente,det){
   $('#pFalta').innerHTML=falta.map(f=>`<li class="al">${f}</li>`).join('');
   if(HAY){renderPedidoHaytek(P,temLente,R,med);return}
   const L=[];
-  L.push(`*PEDIDO VOX* · nº ${nPedido()}`,`Data: ${new Date().toLocaleDateString('pt-BR')}`,`Cliente: ${R.cli||'—'}`,'');
+  L.push(`*PEDIDO VOX* · nº ${PID()}`,`Data: ${new Date().toLocaleDateString('pt-BR')}`,`Cliente: ${R.cli||'—'}`,'');
   if(temLente&&P){
     const o=P.o;
     L.push('*LENTE*',`${nomeOpt(o)}${o.solar?'':' '+IDXN[o.idx]}`);
@@ -1010,7 +1090,7 @@ function renderPedido(P,temLente,det){
   if(!LOJA){const tot=(FR?FR.p:0)+(temLente&&P?venda(P.o,P.XX,OC.cor).preco:0);L.push(`*Total: ${brl(tot)}*`,'')}
   const obs=$('#pObs').value.trim();if(obs)L.push(`Obs.: ${obs}`);
   const txt=L.join('\n').trim();
-  $('#pTxt').textContent=txt;
+  $('#pTxt').textContent=txt;montaRegistro(P,temLente,R,txt,false);
   const n=numDestino();
   $('#pEnviar').href=n?`https://wa.me/${n}?text=${encodeURIComponent(txt)}`:`https://wa.me/?text=${encodeURIComponent(txt)}`;
   $('#pNumTxt').textContent=n?`Destino: +${n.slice(0,2)} (${n.slice(2,4)}) ${n.slice(4,-4)}-${n.slice(-4)}. O pedido só é feito quando você tocar em enviar no WhatsApp.`:'Digite o número com DDD, ou o WhatsApp vai pedir para escolher o contato.';
@@ -1020,7 +1100,7 @@ function renderPedidoHaytek(P,temLente,R,med){
   const h=new Date().getHours();const sauda=h<12?'Bom dia':h<18?'Boa tarde':'Boa noite';
   const mm=v=>v==null?'—':f1(v)+' mm';
   const L=[`Olá, ${sauda.toLowerCase()}! Tudo bem?`,'',`Aqui é da *VOX*, código de cliente *RJ3450*.`,'Gostaria de fazer um pedido de lentes, por favor. Seguem os dados:',''];
-  L.push(`*Cliente:* ${R.cli||'—'}`,`*Nosso controle:* ${nPedido()}`,'');
+  L.push(`*Cliente:* ${R.cli||'—'}`,`*Nosso controle:* ${PID()}`,'');
   if(temLente&&P){
     const o=P.o;
     L.push('*Lente*',`${nomeOpt(o)}${o.solar?'':' '+IDXN[o.idx]}`);
@@ -1051,7 +1131,7 @@ function renderPedidoHaytek(P,temLente,R,med){
   const obs=$('#pObs').value.trim();if(obs)L.push(`*Observações:* ${obs}`,'');
   L.push('Poderiam, por favor, confirmar o recebimento e o prazo de entrega?','Qualquer dúvida, fico à disposição.','','Muito obrigado!','Equipe VOX');
   const txt=L.join('\n');
-  $('#pTxt').textContent=txt;
+  $('#pTxt').textContent=txt;montaRegistro(P,temLente,R,txt,true);
   const n=numDestino();
   $('#pEnviar').href=`https://wa.me/${n}?text=${encodeURIComponent(txt)}`;
   $('#pNumTxt').textContent=`Destino: Haytek +${n.slice(0,2)} (${n.slice(2,4)}) ${n.slice(4,-4)}-${n.slice(-4)}. O pedido só é feito quando você tocar em enviar no WhatsApp.`;
@@ -1098,11 +1178,81 @@ function renderPrecos(){
 $('#filtroLinha').addEventListener('click',e=>{const b=e.target.closest('[data-fl]');if(b){filtroL=b.dataset.fl;renderPrecos()}});
 
 /* ================= NAVEGAÇÃO, DNP, EXEMPLO ================= */
-const VIEWS=['vitrine','receita','dnp','opcoes','oculos','precos'];
+/* ================= PEDIDOS (acompanhamento) ================= */
+let PEDS=[],fPed='aberto';
+const ETAPAS=[['enviado_lab','Laboratório'],['em_producao','Em produção'],['enviado_montagem','Montagem'],['pronto','Pronto'],['entregue','Entregue']];
+const dtc=s=>{if(!s)return'';const d=new Date(s);return isNaN(d)?String(s):d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})};
+function situacao(p){
+  if(p.cancelado)return{c:'can',t:'Cancelado'};
+  if(p.entregue)return{c:'ok',t:'Entregue em '+dtc(p.entregue)};
+  if(p.pronto)return{c:'pr',t:'Pronto desde '+dtc(p.pronto)+(p.avisado?' · cliente avisado':'')};
+  if(!p.previsao)return{c:'',t:'Sem previsão'};
+  const hoje=new Date(),pv=String(p.previsao),prev=new Date(pv.length>10?pv:pv+'T12:00:00');
+  const d0=new Date(hoje);d0.setHours(0,0,0,0);const p0=new Date(prev);p0.setHours(0,0,0,0);
+  if(p0<d0){const n=uteisEntre(p0,d0);return{c:'at',t:`Atrasado · ${n} dia${n>1?'s':''} útil${n>1?'eis':''}`}}
+  const n=uteisEntre(d0,p0);
+  if(n===0)return{c:'al',t:'Previsto para hoje'};
+  return{c:n<=2?'al':'',t:`Previsto ${dtc(p.previsao)} · faltam ${n} dia${n>1?'s':''} úte${n>1?'is':'l'}`};
+}
+function msgPronto(p){
+  const nome=(p.cliente||'').trim().split(/\s+/)[0]||'';
+  return[`Olá${nome?', '+nome:''}! 😊`,'',`Que alegria: o seu óculos ${p.armacao||'VOX'} está pronto! ✨`,'',
+    'Ficou lindo e já está separado, esperando por você. Vamos combinar a melhor forma de você recebê-lo?','',
+    'Qualquer dúvida, é só chamar por aqui.','Obrigado por escolher a VOX. Busque o alto! 🙏','','Equipe VOX'].join('\n');
+}
+async function carregaPedidos(){
+  $('#pedLista').innerHTML='<div class="vazio">Carregando pedidos…</div>';
+  await enviaFila();
+  try{const j=await api('listar');if(!j.ok)throw j.erro;PEDS=j.pedidos.reverse();renderPedidos()}
+  catch(e){$('#pedLista').innerHTML=`<div class="vazio">${e==='chave'?'A chave da loja não confere. Saia e entre de novo na área da loja.':'Não consegui carregar os pedidos. Verifique a internet e toque em Atualizar.'}</div>`}
+}
+function renderPedidos(){
+  const S=PEDS.map(p=>({p,s:situacao(p)}));
+  const F={aberto:['Em aberto',x=>!x.p.entregue&&!x.p.cancelado],atraso:['Atrasados',x=>x.s.c==='at'],pronto:['Prontos para entregar',x=>x.p.pronto&&!x.p.entregue&&!x.p.cancelado],entregue:['Entregues',x=>!!x.p.entregue],todos:['Todos',()=>true]};
+  $('#pedFiltro').innerHTML=Object.entries(F).map(([k,[n,f]])=>`<button class="chip" type="button" data-fp="${k}" aria-pressed="${k===fPed}">${n} (${S.filter(f).length})</button>`).join('');
+  const q=$('#pedBusca').value.trim().toLowerCase();
+  const L=S.filter(F[fPed][1]).filter(x=>!q||[x.p.id,x.p.cliente,x.p.armacao,x.p.lente].join(' ').toLowerCase().includes(q));
+  $('#pedLista').innerHTML=L.map(({p,s})=>{
+    const tel=String(p.telefone||'').replace(/\D/g,'');
+    return`<article class="ped ${s.c}" data-id="${esc(p.id)}">
+      <div class="ped-top"><div><p class="eyebrow">${esc(p.id)} · ${dtc(p.criado)}${p.origem==='cliente'?' · pedido do cliente':''}</p><h3>${esc(p.cliente||'Cliente sem nome')}</h3>
+        <p class="nota">${esc([p.armacao,p.lente,p.producao].filter(Boolean).join(' · '))}</p></div><span class="sit ${s.c}">${s.t}</span></div>
+      <div class="etapas">${ETAPAS.map(([k,n])=>`<button class="etapa ${p[k]?'feita':''}" type="button" data-etapa="${k}" aria-pressed="${!!p[k]}">${n}${p[k]?`<small>${dtc(p[k])}</small>`:''}</button>`).join('')}</div>
+      <div class="ped-acoes">
+        ${tel.length>=12?`<a class="btn ${p.pronto&&!p.avisado?'ouro':'sec'}" data-avisar href="https://wa.me/${tel}?text=${encodeURIComponent(msgPronto(p))}" target="_blank" rel="noopener">${p.avisado?'Avisar de novo':'Avisar cliente: está pronto'}</a>`
+          :`<input type="tel" inputmode="tel" placeholder="WhatsApp do cliente" data-tel aria-label="WhatsApp do cliente"><button class="btn sec" type="button" data-salvatel>Salvar telefone</button>`}
+        <button class="btn sec" type="button" data-ver>Ver pedido</button>
+        ${!p.entregue&&!p.cancelado?'<button class="btn sec" type="button" data-cancelar>Cancelar</button>':''}
+      </div>
+      <pre class="txt" hidden>${esc(p.texto||'')}</pre></article>`}).join('')||'<div class="vazio">Nenhum pedido aqui.</div>';
+}
+async function salvaPed(p,campos){
+  Object.assign(p,campos);renderPedidos();
+  try{const j=await api('atualizar',{id:p.id,campos});if(!j.ok)throw 0}catch(e){toast('Não consegui salvar. Verifique a internet.')}
+}
+$('#pedFiltro').addEventListener('click',e=>{const b=e.target.closest('[data-fp]');if(b){fPed=b.dataset.fp;renderPedidos()}});
+$('#pedBusca').addEventListener('input',renderPedidos);
+$('#pedAtualizar').addEventListener('click',carregaPedidos);
+$('#pedLista').addEventListener('click',e=>{
+  const card=e.target.closest('.ped');if(!card)return;const p=PEDS.find(x=>x.id===card.dataset.id);if(!p)return;
+  const et=e.target.closest('[data-etapa]');
+  if(et){const k=et.dataset.etapa;const i=ETAPAS.findIndex(x=>x[0]===k);const campos={};const agora=new Date().toISOString();
+    if(p[k]){campos[k]='';for(let j=i+1;j<ETAPAS.length;j++)if(p[ETAPAS[j][0]])campos[ETAPAS[j][0]]=''}
+    else{for(let j=0;j<=i;j++)if(!p[ETAPAS[j][0]])campos[ETAPAS[j][0]]=agora}
+    const fim={...p,...campos};const ult=[...ETAPAS].reverse().find(([x])=>fim[x]);
+    campos.status=ult?{enviado_lab:'Enviado ao laboratório',em_producao:'Em produção',enviado_montagem:'Enviado para a montagem',pronto:'Pronto',entregue:'Entregue'}[ult[0]]:'Novo pedido';
+    salvaPed(p,campos);if(k==='pronto'&&!p.avisado&&campos.pronto)toast('Pronto! Agora é só avisar o cliente.');return}
+  if(e.target.closest('[data-avisar]')){salvaPed(p,{avisado:new Date().toISOString()});return}
+  if(e.target.closest('[data-salvatel]')){let d=card.querySelector('[data-tel]').value.replace(/\D/g,'');if(d.length===10||d.length===11)d='55'+d;if(d.length<12){toast('Digite o número com DDD');return}salvaPed(p,{telefone:d});return}
+  if(e.target.closest('[data-ver]')){const pre=card.querySelector('pre');pre.hidden=!pre.hidden;return}
+  if(e.target.closest('[data-cancelar]')){const b=e.target.closest('[data-cancelar]');if(b.dataset.ok){salvaPed(p,{cancelado:new Date().toISOString(),status:'Cancelado'})}else{b.dataset.ok=1;b.textContent='Toque de novo para cancelar';setTimeout(()=>{if(b.isConnected){delete b.dataset.ok;b.textContent='Cancelar'}},4000)}}
+});
+
+const VIEWS=['vitrine','receita','dnp','opcoes','oculos','pedidos','precos'];
 function ir(v){if(!VIEWS.includes(v))v='vitrine';
   $$('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.v===v));
   VIEWS.forEach(k=>$('#v-'+k).hidden=k!==v);
-  if(v==='dnp')carregaDNP();if(v==='precos')renderPrecos();if(v==='opcoes')renderOpcoes();if(v==='oculos'){$('#ocCli').value=$('#cli').value;renderOC()}
+  if(v==='dnp')carregaDNP();if(v==='precos')renderPrecos();if(v==='pedidos')carregaPedidos();if(v==='opcoes')renderOpcoes();if(v==='oculos'){$('#ocCli').value=$('#cli').value;renderOC()}
   window.scrollTo({top:0});
 }
 $$('nav button').forEach(b=>b.addEventListener('click',()=>ir(b.dataset.v)));
@@ -1122,7 +1272,7 @@ $('#limpar').addEventListener('click',()=>{$$('#rx input').forEach(i=>i.value=''
 const EX={odesf:-2.5,odcil:-1,odeixo:180,oddnp:31.5,odalt:19,oeesf:-2.25,oecil:-0.75,oeeixo:170,oednp:31,oealt:19};
 for(const[id,v]of Object.entries(EX))$('#'+id).value=fmtField(id.slice(2),v);
 $('#idade').value='34';exemplo(true);
-atualiza();carregaCatalogo();aplicaModo();
+atualiza();carregaCatalogo();aplicaModo();enviaFila();
 ir((location.hash||'').slice(1)||'vitrine');
 </script>
 
