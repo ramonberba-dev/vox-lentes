@@ -382,6 +382,16 @@ iframe#dnpFrame{width:100%;height:min(1400px,calc(100vh - 140px));min-height:640
             <option value="outro">Outro número</option></select></label>
           <label class="campo" id="pOutroBox" hidden><span>Número com DDD</span><input id="pOutro" type="tel" inputmode="tel" placeholder="(21) 99999-9999"></label>
         </div>
+        <div id="pMedBox" hidden style="display:grid;gap:8px">
+          <span style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--mudo);font-weight:600">Medidas da armação (mm)</span>
+          <div class="campos" style="margin-top:0;grid-template-columns:repeat(auto-fit,minmax(120px,1fr))">
+            <label class="campo"><span>Calibre</span><input id="pmA" type="text" inputmode="decimal"></label>
+            <label class="campo"><span>Altura da lente</span><input id="pmB" type="text" inputmode="decimal"></label>
+            <label class="campo"><span>Ponte</span><input id="pmDBL" type="text" inputmode="decimal"></label>
+            <label class="campo"><span>Diagonal maior</span><input id="pmED" type="text" inputmode="decimal"></label>
+          </div>
+          <small class="nota">Vêm sozinhas do Medir DNP ao tocar em "Usar na receita". Dá para corrigir aqui.</small>
+        </div>
         <label class="campo"><span>Observações</span><input id="pObs" type="text" autocomplete="off" placeholder="Ex.: urgente, cliente retira na loja"></label>
         <ul class="avisos" id="pFalta"></ul>
         <pre class="txt" id="pTxt"></pre>
@@ -932,7 +942,7 @@ $('#pDest').value=PED.dest;$('#pOutro').value=PED.outro;
 const VOX_WPP='552126041377';
 let LOJA=LS.get('voxlentes.loja',false);
 function aplicaModo(){
-  $('#navPrecos').hidden=!LOJA;$('#pDestBox').hidden=!LOJA;$('#lojaPin').hidden=LOJA;
+  $('#navPrecos').hidden=!LOJA;$('#pDestBox').hidden=!LOJA;$('#pMedBox').hidden=!LOJA;$('#lojaPin').hidden=LOJA;
   $('#lojaTxt').textContent=LOJA?'Área da loja aberta neste aparelho.':'Área da loja';
   $('#lojaBtn').textContent=LOJA?'Sair da área da loja':'Entrar';
   $('#pIntro').textContent=LOJA?'Monta a mensagem com tudo que o laboratório precisa e abre o WhatsApp com o texto pronto. No celular abre direto o aplicativo; é só conferir e tocar em enviar.':'Monta a mensagem com o óculos, a lente e a receita, e abre o WhatsApp da VOX com o texto pronto. No celular abre direto o aplicativo; é só conferir e tocar em enviar.';
@@ -963,7 +973,11 @@ function renderPedido(P,temLente,det){
     }
   }
   if(!R.cli)falta.push('Falta o nome do cliente.');
+  const HAY=LOJA&&['552140404840','552140402412'].includes(numDestino());
+  const med={A:num($('#pmA').value),B:num($('#pmB').value),DBL:num($('#pmDBL').value),ED:num($('#pmED').value)};
+  if(HAY&&temLente&&(med.A==null||med.B==null||med.DBL==null||med.ED==null))falta.push('Faltam medidas da armação (calibre, altura, ponte e diagonal maior). Meça em Medir DNP ou digite acima.');
   $('#pFalta').innerHTML=falta.map(f=>`<li class="al">${f}</li>`).join('');
+  if(HAY){renderPedidoHaytek(P,temLente,R,med);return}
   const L=[];
   L.push(`*PEDIDO VOX* · nº ${nPedido()}`,`Data: ${new Date().toLocaleDateString('pt-BR')}`,`Cliente: ${R.cli||'—'}`,'');
   if(temLente&&P){
@@ -1001,6 +1015,48 @@ function renderPedido(P,temLente,det){
   $('#pEnviar').href=n?`https://wa.me/${n}?text=${encodeURIComponent(txt)}`:`https://wa.me/?text=${encodeURIComponent(txt)}`;
   $('#pNumTxt').textContent=n?`Destino: +${n.slice(0,2)} (${n.slice(2,4)}) ${n.slice(4,-4)}-${n.slice(-4)}. O pedido só é feito quando você tocar em enviar no WhatsApp.`:'Digite o número com DDD, ou o WhatsApp vai pedir para escolher o contato.';
 }
+// Pedido para a Haytek: mensagem educada, com o código da loja, sem preços, com receita e todas as medidas
+function renderPedidoHaytek(P,temLente,R,med){
+  const h=new Date().getHours();const sauda=h<12?'Bom dia':h<18?'Boa tarde':'Boa noite';
+  const mm=v=>v==null?'—':f1(v)+' mm';
+  const L=[`Olá, ${sauda.toLowerCase()}! Tudo bem?`,'',`Aqui é da *VOX*, código de cliente *RJ3450*.`,'Gostaria de fazer um pedido de lentes, por favor. Seguem os dados:',''];
+  L.push(`*Cliente:* ${R.cli||'—'}`,`*Nosso controle:* ${nPedido()}`,'');
+  if(temLente&&P){
+    const o=P.o;
+    L.push('*Lente*',`${nomeOpt(o)}${o.solar?'':' '+IDXN[o.idx]}`);
+    L.push(`• Produção: ${o.kind==='stk'?'pronta (estoque)':'surfaçada'}`);
+    L.push(`• Versão: ${o.solar?'solar, sem grau':VARN[o.v]}`);
+    L.push(`• Tratamento: ${o.solar?o.arTxt:OC.cor?'antirrisco tingível':o.kind==='stk'?o.arTxt:ARN[o.col]}`);
+    if(OC.cor)L.push(`• Coloração: ${corTxt(OC.cor)}`);
+    L.push('');
+  }
+  if(temLente&&OC.modo==='grau'){
+    const add=e=>e.add?sg(e.add):'—';
+    L.push('*Receita*');
+    L.push(`OD: esf ${sg(R.od.s)} | cil ${R.od.c?sg(R.od.c):'0,00'} | eixo ${R.od.c?(R.od.ax??'—')+'°':'—'} | adição ${add(R.od)}`);
+    L.push(`OE: esf ${sg(R.oe.s)} | cil ${R.oe.c?sg(R.oe.c):'0,00'} | eixo ${R.oe.c?(R.oe.ax??'—')+'°':'—'} | adição ${add(R.oe)}`);
+    if(X&&X.modo==='vs'&&X.add>0)L.push(`Uso: ${X.visao==='perto'?'visão simples de perto':'visão simples de longe'}`);
+    L.push('');
+  }else if(OC.modo==='plana')L.push('*Lente plana (sem grau)*','');
+  L.push('*Medidas*');
+  L.push(`DNP: OD ${mm(R.od.dnp)} / OE ${mm(R.oe.dnp)}${R.od.dnp!=null&&R.oe.dnp!=null?` (DP ${f1(R.od.dnp+R.oe.dnp)} mm)`:''}`);
+  if(R.od.alt!=null||R.oe.alt!=null)L.push(`Altura de montagem: OD ${R.od.alt!=null?R.od.alt+' mm':'—'} / OE ${R.oe.alt!=null?R.oe.alt+' mm':'—'}`);
+  L.push('');
+  if(FR){
+    L.push('*Armação*',`VOX ${FR.n} · ${ARO[aroDe(FR)].toLowerCase()}`);
+    L.push(`Calibre (horizontal): ${mm(med.A)}`,`Altura da lente (vertical): ${mm(med.B)}`,`Ponte: ${mm(med.DBL)}`,`Diagonal maior: ${mm(med.ED)}`);
+    if(FR.t==='s'&&OC.modo==='grau')L.push('A armação é de óculos de sol, mais curva. Poderiam, por gentileza, confirmar se a curvatura atende?');
+    L.push('');
+  }
+  const obs=$('#pObs').value.trim();if(obs)L.push(`*Observações:* ${obs}`,'');
+  L.push('Poderiam, por favor, confirmar o recebimento e o prazo de entrega?','Qualquer dúvida, fico à disposição.','','Muito obrigado!','Equipe VOX');
+  const txt=L.join('\n');
+  $('#pTxt').textContent=txt;
+  const n=numDestino();
+  $('#pEnviar').href=`https://wa.me/${n}?text=${encodeURIComponent(txt)}`;
+  $('#pNumTxt').textContent=`Destino: Haytek +${n.slice(0,2)} (${n.slice(2,4)}) ${n.slice(4,-4)}-${n.slice(-4)}. O pedido só é feito quando você tocar em enviar no WhatsApp.`;
+}
+['pmA','pmB','pmDBL','pmED'].forEach(id=>$('#'+id).addEventListener('input',()=>renderOC()));
 $('#pDest').addEventListener('change',()=>{$('#pOutroBox').hidden=$('#pDest').value!=='outro';PED.dest=$('#pDest').value;LS.set('voxlentes.pedido',PED);renderOC()});
 $('#pOutro').addEventListener('input',()=>{PED.outro=$('#pOutro').value;LS.set('voxlentes.pedido',PED);renderOC()});
 $('#pObs').addEventListener('input',()=>renderOC());
@@ -1057,7 +1113,7 @@ function carregaDNP(){if(dnpOk)return;dnpOk=true;const fr=$('#dnpFrame');
   fetch('dnp.html').then(r=>{if(!r.ok)throw 0;return r.text()}).then(t=>{fr.srcdoc=t}).catch(()=>{fr.src='dnp.html'})}
 window.addEventListener('message',e=>{const d=e.data;if(!d||d.type!=='vox-dnp')return;
   const put=(id,v,t)=>{if(v!=null)$('#'+id).value=t==='int'?String(Math.round(v)):v.toFixed(1).replace('.',',')};
-  if(d.A)FRM={A:d.A,B:d.B,DBL:d.DBL};
+  if(d.A){FRM={A:d.A,B:d.B,DBL:d.DBL,ED:d.ED};[['pmA',d.A],['pmB',d.B],['pmDBL',d.DBL],['pmED',d.ED]].forEach(([id,v])=>{if(v!=null)$('#'+id).value=v.toFixed(1).replace('.',',')})}
   put('oddnp',d.OD);put('oednp',d.OE);put('odalt',d.HOD,'int');put('oealt',d.HOE,'int');
   exemplo(false);atualiza();ir('receita');toast('DNP e altura trazidas do medidor');
 });

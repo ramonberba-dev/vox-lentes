@@ -582,7 +582,7 @@ function saveImg(mode,name){
     dl.save({filename:`${name} - ${cli}.jpg`,data:b}).then(()=>toast('Foto salva'),e=>{if(e&&e.code==='unavailable'){dl=null;update()}})},'image/jpeg',.92);
 }
 if(window.parent!==window)document.body.classList.add('emb');
-$('#useRx').onclick=()=>{const r=res;parent.postMessage({type:'vox-dnp',OD:r.OD,OE:r.OE,DP:r.DP,HOD:r.HOD,HOE:r.HOE,A:r.A,B:r.B,DBL:r.DBL},'*')};
+$('#useRx').onclick=()=>{const r=res;parent.postMessage({type:'vox-dnp',OD:r.OD,OE:r.OE,DP:r.DP,HOD:r.HOD,HOE:r.HOE,A:r.A,B:r.B,DBL:r.DBL,ED:r.ED,W:r.W},'*')};
 $('#saveDNP').onclick=()=>saveImg('dnp','Medidas DNP');
 $('#saveFR').onclick=()=>saveImg('fr','Medidas armacao');
 
