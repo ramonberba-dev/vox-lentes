@@ -282,7 +282,7 @@ async function loadFile(file){
   const c=document.createElement('canvas');c.width=Math.round(iw*s);c.height=Math.round(ih*s);
   c.getContext('2d',{willReadFrequently:true}).drawImage(im,0,0,c.width,c.height);if(im.close)im.close();
   setSource(c);S.demo=false;$('#tips').open=false;
-  const found=autoPlace();S.step=-1;S.mode='dnp';
+  const found=await autoPlace();S.step=-1;S.mode='dnp';
   $('#modeTag').textContent='Foto do cliente';sweep();update();
   $('#stageWrap').scrollIntoView({behavior:'smooth',block:'start'});
   toast(found?'Pupilas encontradas · confira as marcas':'Linhas colocadas · ajuste as marcas');
@@ -290,40 +290,122 @@ async function loadFile(file){
 ['inCam','inGal'].forEach(id=>$('#'+id).addEventListener('change',e=>{loadFile(e.target.files[0]);e.target.value=''}));
 
 /* ---------- posicionamento automático ---------- */
-function findPupils(){
-  const sw=Math.min(480,S.w),f=sw/S.w,sh=Math.round(S.h*f);
+// 1) acha o rosto: detector do próprio aparelho (quando existe) ou a região de pele da foto;
+// 2) dentro do rosto, pupila = ponto escuro e redondo, mais escuro que os dois lados e com branco do olho ao lado;
+// 3) se não achar, coloca os olhos pela proporção do rosto (e não no meio da foto).
+// Modelo de rosto do Google (MediaPipe Face Landmarker, arquivos na pasta mp/ do site): acha o centro da íris.
+// Se não carregar (sem internet na 1ª vez ou fora do site), segue com a busca por regras abaixo.
+let _faceIA=null,_faceIAerro=false;
+async function olhosPorIA(){
+  if(_faceIAerro)return null;
+  try{
+    if(!_faceIA){
+      const base=new URL('mp/',document.baseURI).href;
+      const v=await import(base+'vision_bundle.mjs');
+      const fs=await v.FilesetResolver.forVisionTasks(base+'wasm');
+      _faceIA=await v.FaceLandmarker.createFromOptions(fs,{baseOptions:{modelAssetPath:base+'face_landmarker.task',delegate:'CPU'},runningMode:'IMAGE',numFaces:1});
+    }
+    const r=_faceIA.detect(S.src);const lm=r&&r.faceLandmarks&&r.faceLandmarks[0];
+    if(!lm||lm.length<478)return null;
+    const p=i=>({x:lm[i].x*S.w,y:lm[i].y*S.h});const a=p(468),b=p(473);
+    return a.x<b.x?[a,b]:[b,a];
+  }catch(e){_faceIAerro=true;return null}
+}
+async function faceDoAparelho(){
+  if(!('FaceDetector' in window))return null;
+  try{
+    const fd=new FaceDetector({fastMode:false,maxDetectedFaces:3});
+    const fs=await fd.detect(S.src);if(!fs||!fs.length)return null;
+    const f=fs.sort((a,b)=>b.boundingBox.width*b.boundingBox.height-a.boundingBox.width*a.boundingBox.height)[0];
+    const bb=f.boundingBox;
+    let eyes=(f.landmarks||[]).filter(l=>l.type==='eye'&&l.locations&&l.locations.length).map(l=>({x:l.locations.reduce((s,q)=>s+q.x,0)/l.locations.length,y:l.locations.reduce((s,q)=>s+q.y,0)/l.locations.length}));
+    eyes=eyes.length===2?eyes.sort((a,b)=>a.x-b.x):null;
+    return{box:{x0:bb.x,x1:bb.x+bb.width,y0:bb.y,y1:bb.y+bb.height,w:bb.width,cx:bb.x+bb.width/2},eyes};
+  }catch(e){return null}
+}
+function rostoPelaPele(d,sw,sh){
+  const rows=new Float64Array(sh),pele=new Uint8Array(sw*sh);
+  for(let y=0;y<sh;y++)for(let x=0;x<sw;x++){const i=(y*sw+x)*4,r=d[i],g=d[i+1],b=d[i+2];
+    const cb=128-.168736*r-.331264*g+.5*b,cr=128+.5*r-.418688*g-.081312*b;
+    const lum=.299*r+.587*g+.114*b;if(cr>138&&cr<178&&cb>77&&cb<128&&lum>85&&r>90&&r-g>10&&r>=b){pele[y*sw+x]=1;rows[y]++}}
+  let mx=0;for(let y=0;y<sh;y++)mx=Math.max(mx,rows[y]);
+  if(mx<sw*.08)return null;
+  let top=-1,bot=-1;for(let y=0;y<sh;y++)if(rows[y]>mx*.3){if(top<0)top=y;bot=y}
+  if(top<0||bot-top<sh*.1)return null;
+  const yb=Math.round(top+(bot-top)*.6),xs=[];
+  for(let y=top;y<=yb;y++)for(let x=0;x<sw;x++)if(pele[y*sw+x])xs.push(x);
+  if(xs.length<50)return null;
+  xs.sort((a,b)=>a-b);const x0=xs[Math.floor(xs.length*.05)],x1=xs[Math.floor(xs.length*.95)],w=x1-x0;
+  if(w<sw*.12)return null;
+  return{x0,x1,w,cx:(x0+x1)/2,y0:top,y1:Math.min(sh,top+w*1.35)};
+}
+function findPupils(faceBox){
+  const sw=Math.min(800,S.w),f=sw/S.w,sh=Math.round(S.h*f);
   const c=document.createElement('canvas');c.width=sw;c.height=sh;const g=c.getContext('2d');g.drawImage(S.src,0,0,sw,sh);
-  const d=g.getImageData(0,0,sw,sh).data,W1=sw+1,I=new Float64Array(W1*(sh+1));
-  for(let y=0;y<sh;y++){let row=0;for(let x=0;x<sw;x++){const i=(y*sw+x)*4;row+=.299*d[i]+.587*d[i+1]+.114*d[i+2];I[(y+1)*W1+x+1]=I[y*W1+x+1]+row}}
-  const sum=(x0,y0,x1,y1)=>I[y1*W1+x1]-I[y0*W1+x1]-I[y1*W1+x0]+I[y0*W1+x0];
-  let cand=[];
-  [0.014,0.019,0.025,0.033,0.043].forEach(k=>{
-    const r=Math.max(2,Math.round(k*sw)),R=Math.round(r*1.9),st=Math.max(1,Math.round(r/2));
-    for(let y=Math.max(R,Math.round(sh*.12));y<Math.min(sh-R,sh*.8);y+=st)for(let x=Math.max(R,Math.round(sw*.06));x<Math.min(sw-R,sw*.94);x+=st){
-      const a1=(2*r)*(2*r),a2=(2*R)*(2*R),inS=sum(x-r,y-r,x+r,y+r),outS=sum(x-R,y-R,x+R,y+R)-inS;
-      const inn=inS/a1,out=outS/(a2-a1);if(inn>out*.75)continue;
-      cand.push({x,y,r,s:(out-inn)/255});
+  const d=g.getImageData(0,0,sw,sh).data,G=new Float32Array(sw*sh),W1=sw+1,I=new Float64Array(W1*(sh+1)),J=new Float64Array(W1*(sh+1)),K=new Float64Array(W1*(sh+1));
+  for(let y=0;y<sh;y++){let row=0,rw=0,rk=0;for(let x=0;x<sw;x++){const i=(y*sw+x)*4,r=d[i],gg=d[i+1],b=d[i+2],l=.299*r+.587*gg+.114*b;
+    const cbb=128-.168736*r-.331264*gg+.5*b,crr=128+.5*r-.418688*gg-.081312*b;rk+=(crr>136&&crr<178&&cbb>77&&cbb<130&&l>70&&r>=b)?1:0;
+    G[y*sw+x]=l;row+=l;rw+=(l>135&&Math.max(r,gg,b)-Math.min(r,gg,b)<48)?1:0;
+    I[(y+1)*W1+x+1]=I[y*W1+x+1]+row;J[(y+1)*W1+x+1]=J[y*W1+x+1]+rw;K[(y+1)*W1+x+1]=K[y*W1+x+1]+rk}}
+  let box=faceBox?{x0:faceBox.x0*f,x1:faceBox.x1*f,y0:faceBox.y0*f,y1:faceBox.y1*f,w:faceBox.w*f,cx:faceBox.cx*f}:rostoPelaPele(d,sw,sh);
+  const confiavel=!!faceBox;if(box&&!confiavel&&box.w>sw*.7)box=null;
+  const cl=(v,a,b)=>Math.max(a,Math.min(b,v));
+  const mean=(A,x0,y0,x1,y1)=>{x0=cl(Math.round(x0),0,sw);x1=cl(Math.round(x1),0,sw);y0=cl(Math.round(y0),0,sh);y1=cl(Math.round(y1),0,sh);
+    const a=(x1-x0)*(y1-y0);return a>0?(A[y1*W1+x1]-A[y0*W1+x1]-A[y1*W1+x0]+A[y0*W1+x0])/a:0};
+  const ref=box?box.w:sw*.45;
+  let X0=sw*.04,X1=sw*.96,Y0=sh*.08,Y1=sh*.85;
+  if(box&&confiavel){X0=Math.max(X0,box.x0+box.w*.05);X1=Math.min(X1,box.x1-box.w*.05);Y0=Math.max(Y0,box.y0+box.w*.12);Y1=Math.min(Y1,box.y0+box.w*.85)}
+  const cand=[];
+  (confiavel?[.022,.028,.035,.044,.055].map(k=>k*ref):[.005,.007,.0095,.013,.017,.023,.031,.042].map(k=>k*sw)).forEach(r0=>{
+    const r=Math.max(2,r0),st=Math.max(1,Math.round(r/2));
+    for(let y=Math.round(Y0);y<Y1;y+=st)for(let x=Math.round(X0);x<X1;x+=st){
+      const inn=mean(I,x-r,y-r,x+r,y+r);
+      const L=mean(I,x-3*r,y-r,x-r,y+r),R=mean(I,x+r,y-r,x+3*r,y+r),D=mean(I,x-r,y+r,x+r,y+3*r);
+      const lado=Math.min(L,R);if(inn>lado*.82||inn>D*.92)continue;
+      const wl=mean(J,x-3*r,y-r,x-r,y+r),wr=mean(J,x+r,y-r,x+3*r,y+r);if(Math.min(wl,wr)<.06)continue;
+      const peleAbaixo=mean(K,x-3*r,y+3*r,x+3*r,y+7*r);if(peleAbaixo<.35)continue;
+      const br=Math.min(1,Math.min(wl,wr)*3);
+      cand.push({x,y,r,s:(lado-inn)/255+.6*br+.25*(D-inn)/255});
     }
   });
   cand.sort((a,b)=>b.s-a.s);const keep=[];
-  for(const q of cand){if(keep.length>=40)break;if(keep.every(k=>Math.hypot(k.x-q.x,k.y-q.y)>Math.max(k.r,q.r)*2.2))keep.push(q)}
+  for(const q of cand){if(keep.length>=50)break;if(keep.every(k=>Math.hypot(k.x-q.x,k.y-q.y)>Math.max(k.r,q.r)*2.5))keep.push(q)}
+  const cx=box?box.cx:sw/2;
+  const px=(x,y)=>G[cl(Math.round(y),0,sh-1)*sw+cl(Math.round(x),0,sw-1)];
+  // os dois olhos são o espelho um do outro: compara a região do olho esquerdo com a do direito espelhada
+  const espelho=(a,b)=>{const r=(a.r+b.r)/2,ph=Math.max(3,Math.round(2.6*r)),pv=Math.max(2,Math.round(1.6*r)),st=Math.max(1,Math.round(r/3));
+    let n=0,sa=0,sb=0,saa=0,sbb=0,sab=0;
+    for(let dy=-pv;dy<=pv;dy+=st)for(let dx=-ph;dx<=ph;dx+=st){const va=px(a.x+dx,a.y+dy),vb=px(b.x-dx,b.y+dy);n++;sa+=va;sb+=vb;saa+=va*va;sbb+=vb*vb;sab+=va*vb}
+    const ca=saa-sa*sa/n,cb=sbb-sb*sb/n;return ca>1&&cb>1?(sab-sa*sb/n)/Math.sqrt(ca*cb):0};
   let best=null,bs=-1e9;
   for(let i=0;i<keep.length;i++)for(let j=i+1;j<keep.length;j++){
     const a=keep[i],b=keep[j],dx=Math.abs(a.x-b.x),dy=Math.abs(a.y-b.y);
-    if(dx<sw*.12||dx>sw*.7||dy>dx*.12)continue;const rr=a.r/b.r;if(rr<.6||rr>1.67)continue;
-    if(dx<Math.max(a.r,b.r)*5)continue;
-    const sc=a.s+b.s-dy/dx-Math.abs((a.x+b.x)/2-sw/2)/sw*.3;
-    if(sc>bs){bs=sc;best=a.x<b.x?[a,b]:[b,a]}
+    const rm=(a.r+b.r)/2;if(dx<rm*6||dx>rm*40||dy>dx*.15)continue;if(confiavel&&(dx<box.w*.28||dx>box.w*.68))continue;const rr=a.r/b.r;if(rr<.6||rr>1.67)continue;
+    const [l,r]=a.x<b.x?[a,b]:[b,a];const ncc=espelho(l,r);if(ncc<.25)continue;
+    const sc=a.s+b.s+1.6*ncc-2*dy/dx-Math.abs((a.x+b.x)/2-cx)/sw*(confiavel?3:.8);
+    if(sc>bs){bs=sc;best=[l,r]}
   }
-  if(!best||bs<.25)return null;
-  return best.map(q=>({x:q.x/f,y:q.y/f}));
+  const est=box?[{x:(box.cx-box.w*.215)/f,y:(box.y0+box.w*.45)/f},{x:(box.cx+box.w*.215)/f,y:(box.y0+box.w*.45)/f}]:null;
+  if(!best||bs<1)return{pp:null,est};
+  return{pp:best.map(q=>({x:q.x/f,y:q.y/f})),est};
 }
-function autoPlace(){
-  let pp=null;try{pp=findPupils()}catch(e){pp=null}
-  const found=!!pp;
+async function autoPlace(){
+  let fa=null,res={pp:null,est:null};
+  const ia=await olhosPorIA();
+  if(ia){S.pts={od:ia[0],oe:ia[1]};return montaLinhas(true,false)}
+  try{fa=await faceDoAparelho()}catch(e){fa=null}
+  try{res=findPupils(fa&&fa.box)}catch(e){}
+  let pp=res.pp,found=!!pp;
+  // o detector do aparelho também marca os olhos: se a busca discordar muito, vale o aparelho
+  if(fa&&fa.eyes){const tol=fa.box.w*.12;if(!pp||Math.hypot(pp[0].x-fa.eyes[0].x,pp[0].y-fa.eyes[0].y)>tol||Math.hypot(pp[1].x-fa.eyes[1].x,pp[1].y-fa.eyes[1].y)>tol){pp=fa.eyes;found=true}}
+  if(!pp)pp=res.est;
   if(!pp)pp=[{x:S.w*.37,y:S.h*.45},{x:S.w*.63,y:S.h*.45}];
   S.pts={od:pp[0],oe:pp[1]};
-  if(found){refine('od');refine('oe')}
+  return montaLinhas(found,true);
+}
+// a partir das duas pupilas, coloca ponte, lentes e diagonal no tamanho proporcional
+function montaLinhas(found,ajusta){
+  if(found&&ajusta){refine('od');refine('oe')}
   const L=S.pts.od,R=S.pts.oe,d=Math.hypot(R.x-L.x,R.y-L.y),s=d/63;
   const D=mmVal()||18,A=52,mx0=(L.x+R.x)/2;
   S.pts.lod={x0:mx0-(D/2+A)*s,x1:mx0-D/2*s,y0:L.y-18*s,y1:L.y+22*s};
