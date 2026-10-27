@@ -240,6 +240,12 @@ details.mais>summary::-webkit-details-marker{display:none}
 details.mais>summary::after{content:"+";font-size:26px;line-height:1;color:var(--ouro)}
 details.mais[open]>summary{background:var(--azul);color:var(--creme)}
 details.mais[open]>summary::after{content:"−";color:var(--ouro2)}
+dl.esp{display:grid;gap:4px;margin:0;font-size:14.5px}
+dl.esp dt{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ouro);font-weight:600;margin-top:6px}
+dl.esp dd{margin:0;color:var(--tinta)}
+.btn-grande{width:100%;min-height:72px;font-size:21px;font-weight:600;letter-spacing:.02em;background:var(--verm);border-color:var(--verm);color:#fff;border-radius:16px;box-shadow:0 14px 28px -14px rgba(163,52,43,.9)}
+.btn-grande:hover{filter:brightness(1.08)}
+.btn-grande span{font-size:26px;line-height:1}
 /* pedidos */
 .peds{display:grid;gap:12px}
 .ped{background:var(--papel);border:1px solid var(--linha);border-radius:14px;padding:16px;display:grid;gap:12px;min-width:0}
@@ -377,7 +383,7 @@ details.mais[open]>summary::after{content:"−";color:var(--ouro2)}
           <button class="chip" type="button" data-val="Trans Cinza" aria-pressed="false">Transitions Gen S cinza</button>
           <button class="chip" type="button" data-val="Trans Marrom" aria-pressed="false">Transitions Gen S marrom</button>
         </div></div>
-      <div class="acoes"><button class="btn" type="button" id="verLentes">Ver lentes indicadas</button></div>
+      <div class="acoes"><button class="btn btn-grande" type="button" id="verLentes">Ver lentes indicadas <span aria-hidden="true">→</span></button></div>
     </div>
     <aside class="folha leitura" aria-live="polite">
       <div><p class="eyebrow">Leitura técnica</p><h2>O que a receita pede</h2></div>
@@ -969,6 +975,53 @@ function cardVenda(o,i,grupo,ref){
     <div class="preco"><div><b>${brl(o.preco)}</b><br><small>a lente, o par${FR?` · com a VOX ${esc(FR.n)}: ${brl(tot)}`:''}</small></div></div>
     <button class="btn add ${dest?'ouro':''}" type="button" data-pick="${grupo}${i}">${LOJA?'Adicionar ao pedido':'Escolher esta lente'}</button></article>`;
 }
+
+/* ---------- lentes especiais: para que serve cada uma, sem rodeios ---------- */
+function especiaisVenda(X){
+  const R0=leRx(),Xm={...X,od:transp(R0.od),oe:transp(R0.oe)};  // com a adição da receita (Drive, Office e Easy precisam dela)
+  const temAdd=Math.max(Xm.od.add||0,Xm.oe.add||0)>0,prog=X.modo==='prog',base=prog?LINE.smart:LINE.vs;
+  const barata=(v,col)=>{const c=[surfAt(base,X.rec,v,col,X),...stkOpts(X).filter(o=>o.v===v&&rk(o.idx)>=rk(idxMin(X)))].filter(Boolean);c.forEach(o=>o.preco=venda(o,X).preco);return c.sort((a,b)=>a.preco-b.preco)[0]||null};
+  const semAdd='Precisa de adição na receita (o grau a mais para perto, comum depois dos 40 anos).';
+  const L=[];
+  const ocup=(id,tit,pra,como,nao)=>{const o=surfAt(LINE[id],Xm.rec,'',4,Xm);L.push({tit,pra,como,nao,o,req:o?'':(temAdd?'O grau desta receita está fora da faixa desta lente. Fale com a gente pelo WhatsApp.':semAdd)})};
+  ocup('drive','Haytek Drive · para dirigir','Quem dirige muito, principalmente à noite, e tem adição na receita.',
+    'Progressiva com a área de longe bem larga, painel e retrovisores nítidos. Reduz o ofuscamento dos faróis.',
+    'Ler ou ficar muito tempo no computador: a área de perto é menor.');
+  ocup('office','Haytek Office · para computador e escritório','Quem passa o dia no computador, lendo e em reuniões, e tem adição na receita.',
+    'Área larga para perto e meia distância: tela, mesa e papéis nítidos, com pescoço e olhos relaxados.',
+    'Dirigir e andar na rua: a visão de longe é limitada. É um segundo óculos, para o trabalho.');
+  ocup('easy','Haytek Easy · descanso visual','Quem começou a cansar a vista de perto, com adição de até +1,25 (geralmente entre 38 e 48 anos).',
+    'Uma ajuda leve para perto na parte de baixo da lente. Alivia o esforço no celular e no computador, e se usa o dia todo.',
+    'Adição acima de +1,25: nesse caso a indicada é a progressiva.');
+  {const e=L[L.length-1];if(!e.o&&temAdd&&Math.max(Xm.od.add||0,Xm.oe.add||0)>1.25)e.req='A sua adição é maior que +1,25. Para você, a indicada é a lente progressiva (opções acima).';}
+  L.push({tit:'Transitions Gen S · escurece no sol',pra:'Quem entra e sai do sol o dia todo e não quer ter dois óculos.',
+    como:'Escurece em segundos no sol e clareia rápido em lugares fechados. Cor cinza ou marrom.',
+    nao:'Dirigir com sol: dentro do carro ela quase não escurece, porque o para-brisa bloqueia o raio UV.',o:surfAt(base,X.rec,'Trans Cinza',2,X),req:'O grau desta receita está fora da faixa da Transitions.'});
+  L.push({tit:'Fotossensível Haytek',pra:'Quem quer a lente que escurece no sol pagando menos que a Transitions.',
+    como:'Escurece no sol e clareia em ambientes fechados, um pouco mais devagar que a Transitions.',
+    nao:'Dentro do carro: escurece pouco, pelo mesmo motivo da Transitions.',o:barata('Foto',2),req:'O grau desta receita está fora da faixa da lente fotossensível.'});
+  const sol=surfAt(base,X.rec,'',1,X);if(sol)sol._cor='T|Cinza|80';
+  L.push({tit:'Lente de sol com grau',pra:'Quem quer um óculos só para o sol, enxergando bem.',
+    como:'A lente é tingida: total ou degradê, em cinza, marrom ou verde. Você escolhe a cor e a intensidade no próximo passo.',
+    nao:'Lugar fechado ou à noite. A lente colorida não leva antirreflexo.',o:sol,req:'O grau desta receita está fora da faixa para lente colorida.'});
+  L.push({tit:'Filtro de luz azul',pra:'Quem passa muitas horas em telas e sente desconforto.',
+    como:'Filtra parte da luz azul das telas, o que pode deixar o uso mais confortável.',
+    nao:'Proteger a saúde dos olhos: não há prova científica disso. É um item de conforto.',o:barata('FA',2),req:'O grau desta receita está fora da faixa da lente com filtro azul.'});
+  return L;
+}
+function especiaisHTML(abertos){
+  const L=especiaisVenda(X);
+  L.forEach((e,i)=>{if(e.o)CARDS['esp'+i]={o:e.o}});
+  const card=(e,i)=>{const p=e.o?venda(e.o,X,e.o._cor||'').preco:null,tot=p!=null?p+(FR?FR.p:0):null;
+    return`<article class="nivel"><span class="selo">Lente especial</span><h3>${e.tit}</h3>
+      <dl class="esp"><dt>Para quem é</dt><dd>${e.pra}</dd><dt>Como funciona</dt><dd>${e.como}</dd><dt>Não é indicada para</dt><dd>${e.nao}</dd></dl>
+      ${e.o?`<div class="spec"><span class="tag">${nomeOpt(e.o).replace('Haytek ','')}</span><span class="tag">${IDXN[e.o.idx]}</span><span class="tag">${e.o._cor?'Coloração cinza 80%':arOpt(e.o)}</span></div>
+      <div class="preco"><div><b>${brl(p)}</b><br><small>a lente, o par${FR?` · com a VOX ${esc(FR.n)}: ${brl(tot)}`:''}</small></div></div>
+      <button class="btn add" type="button" data-pick="esp${i}">${LOJA?'Adicionar ao pedido':'Escolher esta lente'}</button>`:`<p class="fora">${e.req}</p>`}</article>`};
+  return`<details class="mais" data-g="esp" ${abertos.includes('esp')?'open':''}><summary>Precisa de lente para uma situação específica? (dirigir, computador, sol…)</summary>
+    <section><div class="head" style="margin-bottom:12px"><div><p class="eyebrow">Lentes especiais</p><h2>Para cada situação, a lente certa</h2></div></div>
+    <div class="niveis">${L.map(card).join('')}</div></section></details>`;
+}
 function renderGrupos(sel){sel=sel||'#grupos';
   const G=gruposVenda(X);const ref=G.cb[0]||G.premium[0];
   // "o que não entrega" compara cada lente barata com a opção logo acima em preço
@@ -980,7 +1033,7 @@ function renderGrupos(sel){sel=sel||'#grupos';
   const dobra=(g,pergunta,tit,sub)=>G[g].length?`<details class="mais" data-g="${g}" ${abertos.includes(g)?'open':''}><summary>${pergunta}</summary>${sec(g,tit,sub)}</details>`:'';
   $(sel).innerHTML=(sec('cb','Melhor custo-benefício','As lentes mais indicadas para a sua receita')
     +dobra('premium','Quer qualidade premium com garantia longa?','Premium','O melhor que a Haytek faz para este grau')
-    +dobra('baratas','Quer um preço mais em conta e abrir mão de alguns benefícios?','Menor preço','As 3 lentes de menor custo'))||'<div class="vazio">Nenhuma lente Haytek atende esta receita. Consulte o laboratório.</div>';
+    +dobra('baratas','Quer um preço mais em conta e abrir mão de alguns benefícios?','Menor preço','As 3 lentes de menor custo')+especiaisHTML(abertos))||'<div class="vazio">Nenhuma lente Haytek atende esta receita. Consulte o laboratório.</div>';
 }
 function renderOpcoes(){
   if(!X)return;
@@ -1014,6 +1067,7 @@ function usaOpcao(o){
   OC.line=o.kind==='stk'?'stk':o.line.id;OC.idx=o.idx;OC.ar=o.kind==='stk'?arDeTxt(o.arTxt):o.col;
   OC.fa=o.v.includes('FA');OC.foto=o.v.startsWith('Trans')?o.v:o.v.includes('Foto')?'Foto':'';
   if(!(FR&&FR.t==='s'))OC.cor='';
+  if(o._cor){OC.cor=o._cor;OC.ar=1;OC.foto=''}
   ir('oculos');
 }
 const vOf=c=>c.foto.startsWith('Trans')?c.foto:(c.fa&&c.foto?'FA+Foto':c.fa?'FA':c.foto?'Foto':'');
