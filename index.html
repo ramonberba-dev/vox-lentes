@@ -224,6 +224,15 @@ iframe#dnpFrame{width:100%;height:min(1400px,calc(100vh - 140px));min-height:640
 .cvba dd{margin:0}.cvba b{color:var(--tinta);font-weight:600}
 .falta{background:var(--alertabg);border-radius:10px;padding:10px 12px;font-size:14px;color:var(--alerta)}
 .falta ul{margin:6px 0 0;padding-left:18px;display:grid;gap:3px;color:var(--tinta)}
+.guia{display:grid;gap:12px}
+.passos{margin:0;padding-left:22px;display:grid;gap:8px;font-size:15.5px;max-width:80ch}
+details.ent summary{cursor:pointer;font-weight:600;color:var(--azul);min-height:44px;display:flex;align-items:center}
+.glossario{display:grid;grid-template-columns:minmax(120px,max-content) minmax(0,1fr);gap:8px 14px;margin:8px 0 0;font-size:15px}
+.glossario dt{font-weight:600;color:var(--azul)}.glossario dd{margin:0;color:var(--mudo)}
+@media (max-width:600px){.glossario{grid-template-columns:minmax(0,1fr)}.glossario dd{margin-bottom:6px}}
+.mact{grid-column:1/-1;position:sticky;bottom:0;background:var(--papel);border-top:1px solid var(--linha);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));display:flex;gap:10px;flex-wrap:wrap;z-index:2}
+.mact .btn{flex:1 1 180px}
+@media (max-width:760px){.gal .big{aspect-ratio:4/3}}
 /* pedidos */
 .peds{display:grid;gap:12px}
 .ped{background:var(--papel);border:1px solid var(--linha);border-radius:14px;padding:16px;display:grid;gap:12px;min-width:0}
@@ -256,8 +265,8 @@ iframe#dnpFrame{width:100%;height:min(1400px,calc(100vh - 140px));min-height:640
     <nav role="tablist" aria-label="Seções">
       <button role="tab" data-v="vitrine" aria-selected="true">Vitrine</button>
       <button role="tab" data-v="receita" aria-selected="false">Receita</button>
-      <button role="tab" data-v="dnp" aria-selected="false">Medir DNP</button>
-      <button role="tab" data-v="opcoes" aria-selected="false">Lentes</button>
+      <button role="tab" data-v="dnp" aria-selected="false" class="soLoja" hidden>Medir DNP</button>
+      <button role="tab" data-v="opcoes" aria-selected="false" class="soLoja" hidden>Lentes</button>
       <button role="tab" data-v="oculos" aria-selected="false">Seu óculos</button>
       <button role="tab" data-v="pedidos" aria-selected="false" id="navPedidos" hidden>Pedidos</button>
       <button role="tab" data-v="precos" aria-selected="false" id="navPrecos" hidden>Preços</button>
@@ -293,20 +302,40 @@ iframe#dnpFrame{width:100%;height:min(1400px,calc(100vh - 140px));min-height:640
 <!-- RECEITA -->
 <section class="view" id="v-receita" hidden>
   <div class="head">
-    <div><p class="eyebrow">Passo 2</p><h1>Receita do cliente</h1>
-      <p class="sub">Digite os valores como estão na receita. Use + e − para ajustar de 0,25 em 0,25. <span class="exemplo" id="tagEx">Receita de exemplo</span></p></div>
+    <div><p class="eyebrow">Passo 2</p><h1 id="rxTitulo">Sua receita</h1>
+      <p class="sub">Copie os números da receita. Use + e − para ajustar de 0,25 em 0,25. <span class="exemplo" id="tagEx">Receita de exemplo</span></p></div>
     <button class="btn sec" id="limpar" type="button">Nova receita</button>
+  </div>
+  <div class="folha guia soCliente">
+    <h2>Como preencher, em 4 passos</h2>
+    <ol class="passos">
+      <li><b>Pegue a sua receita.</b> Ela tem uma linha para o olho direito (<b>OD</b>) e outra para o olho esquerdo (<b>OE</b>).</li>
+      <li><b>Copie cada número como está escrito</b>, com o sinal de <b>+</b> ou <b>−</b> na frente. O que estiver em branco na receita fica em branco aqui.</li>
+      <li><b>Diga para que é a receita</b>: se só o quadro <b>"Para perto"</b> estiver preenchido, é óculos de leitura; marque <b>Perto</b>. Nos outros casos, deixe em <b>Longe</b>.</li>
+      <li><b>Escolha a sua lente</b> logo abaixo: mostramos as opções de menor preço, de melhor custo-benefício e premium, com o que cada uma oferece.</li>
+    </ol>
+    <details class="ent"><summary>Entenda cada campo da receita</summary>
+      <dl class="glossario">
+        <dt>Esférico (ESF)</dt><dd>É o grau principal. Com sinal de menos (−) é miopia, dificuldade de enxergar longe. Com sinal de mais (+) é hipermetropia ou vista cansada.</dd>
+        <dt>Cilíndrico (CIL)</dt><dd>Corrige o astigmatismo, que deixa a imagem embaçada ou distorcida. Se a receita não tiver, deixe em branco.</dd>
+        <dt>Eixo</dt><dd>Número de 0 a 180 que sempre vem junto com o cilíndrico. Só preencha se houver cilíndrico.</dd>
+        <dt>Adição (AD)</dt><dd>Grau a mais para enxergar de perto, comum depois dos 40 anos. Com adição você pode escolher lente multifocal: longe e perto no mesmo óculos.</dd>
+        <dt>DNP</dt><dd>Distância, em milímetros, do meio do nariz até o centro de cada pupila. Não sabe? Deixe em branco: a equipe VOX ajuda você a medir por foto, pelo WhatsApp.</dd>
+        <dt>Altura</dt><dd>Só para lente multifocal. Também medimos com você, pela foto com a armação no rosto.</dd>
+        <dt>"Para longe" e "Para perto"</dt><dd>Se a receita tem os dois quadros, use os números de longe e coloque a diferença em Adição, ou fale com a gente pelo WhatsApp que ajudamos a preencher.</dd>
+      </dl></details>
   </div>
   <div class="grid2">
     <div class="folha">
       <div class="rx" id="rx">
         <div></div><div class="ch">Esférico</div><div class="ch">Cilíndrico</div><div class="ch">Eixo</div><div class="ch">Adição</div><div class="ch">DNP mm</div><div class="ch">Altura mm</div>
       </div>
-      <p class="dica">DNP e altura podem vir do <b>Medir DNP</b>: meça pela foto e toque em "Usar na receita".</p>
+      <p class="dica soCliente" hidden>Não sabe a DNP ou a altura? Deixe em branco: a equipe VOX ajuda você a medir por foto, pelo WhatsApp.</p>
+      <p class="dica soLoja" hidden>DNP e altura podem vir do <b>Medir DNP</b>: meça pela foto e toque em "Usar na receita".</p>
       <div class="campos">
         <label class="campo"><span>Cliente</span><input id="cli" type="text" autocomplete="off" placeholder="Nome do cliente"></label>
         <label class="campo"><span>Idade</span><input id="idade" type="text" inputmode="numeric" placeholder="anos"></label>
-        <label class="campo"><span>Tipo de aro da armação</span>
+        <label class="campo soLoja" hidden><span>Tipo de aro da armação</span>
           <select id="armacao"><option value="fechado">Aro fechado (acetato, nylon ou metal)</option><option value="fio">Fio de nylon ou meio aro</option><option value="3pecas">Parafusada (3 peças, sem aro)</option><option value="balgriff">Balgriff (sem aro, presa por fio)</option></select>
           <small id="armOrig"></small></label>
       </div>
@@ -315,14 +344,14 @@ iframe#dnpFrame{width:100%;height:min(1400px,calc(100vh - 140px));min-height:640
           <button class="chip" type="button" data-val="longe" aria-pressed="true">Longe (uso diário)</button>
           <button class="chip" type="button" data-val="perto" aria-pressed="false">Perto (óculos de leitura)</button>
         </div>
-        <small class="nota">Receita com o quadro "Para perto" preenchido: escolha <b>Perto</b> e digite os valores de perto em esférico, cilíndrico e eixo, sem adição.</small></div>
+        <small class="nota"><b>Perto</b>: quando só o quadro "Para perto" da receita está preenchido (óculos de leitura). Digite os números de perto em esférico, cilíndrico e eixo, sem adição.<br><b>Longe</b>: todos os outros casos, inclusive receita com adição.</small></div>
       <div class="grupo" id="gVisao" hidden><span>Como vai usar a adição</span>
         <div class="chips" data-g="visao">
           <button class="chip" type="button" data-val="multi" aria-pressed="true">Multifocal (longe e perto)</button>
           <button class="chip" type="button" data-val="longe" aria-pressed="false">Só longe</button>
           <button class="chip" type="button" data-val="perto" aria-pressed="false">Só perto (leitura)</button>
         </div></div>
-      <div class="grupo"><span>Rotina do cliente</span>
+      <div class="grupo"><span>Rotina <small style="text-transform:none;letter-spacing:0;font-weight:400">(ajuda a indicar a lente certa)</small></span>
         <div class="chips" data-g="uso" data-multi="1">
           <button class="chip" type="button" data-val="tela" aria-pressed="false">Muitas horas no computador</button>
           <button class="chip" type="button" data-val="noite" aria-pressed="false">Dirige à noite</button>
@@ -351,6 +380,11 @@ iframe#dnpFrame{width:100%;height:min(1400px,calc(100vh - 140px));min-height:640
       <ul class="avisos" id="avisos"></ul>
     </aside>
   </div>
+  <section class="soCliente" id="rxLentesBox" hidden style="display:grid;gap:16px">
+    <div class="head"><div><p class="eyebrow">Passo 3</p><h1>Escolha a sua lente</h1>
+      <p class="sub">Separamos as lentes Haytek que servem para a sua receita em três faixas. Em cada uma você vê o que a lente oferece e, nas mais em conta, o que ela deixa de oferecer. Toque em "Escolher esta lente" na que preferir.</p></div></div>
+    <div id="rxLentes" style="display:grid;gap:32px"></div>
+  </section>
 </section>
 
 <!-- DNP -->
@@ -376,7 +410,7 @@ iframe#dnpFrame{width:100%;height:min(1400px,calc(100vh - 140px));min-height:640
 <!-- ÓCULOS -->
 <section class="view" id="v-oculos" hidden>
   <div class="head"><div><p class="eyebrow">Passo 4</p><h1>Seu óculos</h1></div>
-    <div class="acoes" style="margin-top:0"><button class="btn sec" type="button" data-ir="vitrine">Trocar armação</button><button class="btn sec" type="button" data-ir="opcoes">Ver outras lentes</button></div></div>
+    <div class="acoes" style="margin-top:0"><button class="btn sec" type="button" data-ir="vitrine">Trocar armação</button><button class="btn sec soLoja" type="button" data-ir="opcoes" hidden>Ver outras lentes</button><button class="btn sec soCliente" type="button" data-ir="receita" hidden>Trocar a lente</button></div></div>
   <div class="oc">
     <div style="display:grid;gap:16px">
       <div class="folha oc-arm" id="ocArm"></div>
@@ -389,7 +423,7 @@ iframe#dnpFrame{width:100%;height:min(1400px,calc(100vh - 140px));min-height:640
             <label class="campo"><span>Linha Haytek</span><select id="oLine"></select></label>
             <label class="campo"><span>Índice (espessura)</span><select id="oIdx"></select></label>
           </div>
-          <div><p class="eyebrow">Tratamentos</p><div class="trats" id="trats"></div></div>
+          <div><p class="eyebrow">Tratamentos para a sua lente</p><p class="nota" style="margin:0 0 8px">Marque o que quiser adicionar. O valor de cada um aparece ao lado e o total se atualiza na hora.</p><div class="trats" id="trats"></div></div>
           <p class="nota" id="oNota"></p>
         </div>
       </div>
@@ -399,10 +433,11 @@ iframe#dnpFrame{width:100%;height:min(1400px,calc(100vh - 140px));min-height:640
       <div class="linhas" id="ocLinhas"></div>
       <div class="total"><span>Total</span><b class="num" id="ocTotal"></b></div>
       <label class="campo"><span>Cliente</span><input id="ocCli" type="text" autocomplete="off" placeholder="Nome do cliente"></label>
-      <pre class="txt" id="ocTxt"></pre>
+      <pre class="txt soLoja" id="ocTxt" hidden></pre>
       <div class="acoes" style="margin-top:0">
-        <button class="btn" type="button" id="copiar">Copiar orçamento</button>
-        <a class="btn sec" id="wpp" href="#" target="_blank" rel="noopener">Enviar orçamento ao cliente</a>
+        <button class="btn ouro" type="button" id="baixarOrc">Baixar orçamento</button>
+        <button class="btn sec soLoja" type="button" id="copiar" hidden>Copiar orçamento</button>
+        <a class="btn sec soLoja" id="wpp" href="#" target="_blank" rel="noopener" hidden>Enviar orçamento ao cliente</a>
       </div>
       <div style="border-top:1px solid var(--linha);padding-top:14px;display:grid;gap:12px">
         <div><p class="eyebrow">Pedido</p><h2>Fazer pedido</h2>
@@ -428,13 +463,13 @@ iframe#dnpFrame{width:100%;height:min(1400px,calc(100vh - 140px));min-height:640
         </div>
         <label class="campo"><span>Observações</span><input id="pObs" type="text" autocomplete="off" placeholder="Ex.: urgente, cliente retira na loja"></label>
         <ul class="avisos" id="pFalta"></ul>
-        <pre class="txt" id="pTxt"></pre>
+        <pre class="txt soLoja" id="pTxt" hidden></pre>
         <div class="acoes" style="margin-top:0">
           <a class="btn ouro" id="pEnviar" href="#" target="_blank" rel="noopener">Fazer pedido pelo WhatsApp</a>
-          <button class="btn sec" type="button" id="pCopiar">Copiar pedido</button>
+          <button class="btn sec soLoja" type="button" id="pCopiar" hidden>Copiar pedido</button>
         </div>
         <p class="nota" id="pNumTxt"></p>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;border-top:1px dashed var(--linha2);padding-top:12px">
+        <div class="soLoja" hidden id="lojaBox" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;border-top:1px dashed var(--linha2);padding-top:12px">
           <span class="nota" id="lojaTxt">Área da loja</span>
           <input id="lojaPin" type="password" autocomplete="off" placeholder="Chave da loja" aria-label="Chave da área da loja" style="width:160px;padding:8px 10px;border:1px solid var(--linha2);border-radius:8px;background:#fff">
           <button class="btn sec" type="button" id="lojaBtn" style="min-height:40px;padding:8px 14px;font-size:14px">Entrar</button>
@@ -469,6 +504,11 @@ iframe#dnpFrame{width:100%;height:min(1400px,calc(100vh - 140px));min-height:640
 </main>
 
 <div class="veu" id="veu" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mNome" id="modal"></div></div>
+<div class="veu" id="lojaDlg" hidden><div class="folha" role="dialog" aria-modal="true" aria-labelledby="lojaDlgT" style="max-width:380px;width:100%;display:grid;gap:12px">
+  <h2 id="lojaDlgT">Área da loja</h2><p class="nota">Só para a equipe VOX.</p>
+  <input id="lojaChave" type="password" autocomplete="off" placeholder="Chave da loja" aria-label="Chave da loja" style="padding:12px;border:1px solid var(--linha2);border-radius:10px;background:#fff;font-size:16px">
+  <div class="acoes" style="margin-top:0"><button class="btn" type="button" id="lojaEntrar">Entrar</button><button class="btn sec" type="button" id="lojaCancelar">Cancelar</button></div>
+</div></div>
 <div class="toast" id="toast" hidden></div>
 
 <script>
@@ -482,7 +522,7 @@ const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}
 
 /* ================= LENTES HAYTEK: faixas de grau e disponibilidade (preços de venda em PRECOS) ================= */
 const IDX=['1.50','1.56','1.59','1.61','1.67','1.74'];
-const IDXN={'1.50':'1.50 resina','1.56':'1.56','1.59':'1.59 policarbonato','1.61':'1.61','1.67':'1.67','1.74':'1.74'};
+const IDXN={'1.50':'1.50 resina','1.56':'1.56 resina','1.59':'1.59 policarbonato','1.61':'1.61','1.67':'1.67','1.74':'1.74'};
 const ARN=['Antirrisco','Antirrisco tingível','AR Verde','AR Azul','AR Premium Verde','AR Premium Azul'];
 const AR_STD=[0,0,0,0,0,0], AR_GO=AR_STD;
 const BASE={'1.56':1,'1.56|FA':1,'1.56|Foto':1,'1.56|FA+Foto':1,
@@ -556,6 +596,7 @@ const aroDe=p=>AROFIX[p.id]||p.aro;
 function carregaCatalogo(){
   fetch('catalogo.json').then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{
     CAT=d.produtos;CAMP=d.campanha;
+    if(window.__frId&&!FR){FR=CAT.find(p=>p.id===window.__frId)||null;window.__frId=null;if(FR){$('#armacao').value=aroDe(FR);atualiza();if(!$('#v-oculos').hidden)renderOC()}}
     const pick=['camp-voxhavana-02.jpg','camp-vox-selectus-i-01.jpg','camp-vox-veritas-03.jpg'];
     const nomes=d.campanhaNomes||CAMP;
     $('#heroFotos').innerHTML=pick.map(f=>CAMP[nomes.findIndex(c=>c.endsWith(f))]).filter(Boolean).map(s=>`<img src="${s}" alt="Campanha VOX" loading="lazy">`).join('');
@@ -585,13 +626,13 @@ function abreProduto(p){
       <div><p class="eyebrow">${p.t==='s'?'Óculos de sol':'Armação de grau'}${p.pol?' · polarizado':''}${p.clip?' · com clip-on':''}</p><h2 id="mNome">VOX ${esc(p.n)}</h2></div>
       <div class="preco" style="border:0;padding:0;margin:0"><b>${brl(p.p)}</b><small>${p.t==='s'?'óculos completo, lente original':'só a armação'}</small></div>
       <p class="d">${esc(p.d||'Armação VOX com a gravação na haste.')}</p>
-      <label class="campo"><span>Tipo de aro</span><select id="mAro">${Object.entries(ARO).map(([k,n])=>`<option value="${k}" ${k===a?'selected':''}>${n}</option>`).join('')}</select>
+      <label class="campo" ${LOJA?'':'hidden'}><span>Tipo de aro</span><select id="mAro">${Object.entries(ARO).map(([k,n])=>`<option value="${k}" ${k===a?'selected':''}>${n}</option>`).join('')}</select>
         <small>Define a montagem e quais lentes podem ir nesta armação.</small></label>
       ${p.esp?'<p class="nota" style="color:var(--erro)">Óculos esportivo curvo: não aceita lente de grau.</p>':''}
-      <div class="acoes" style="margin-top:auto">
+      </div><div class="mact">
         ${p.t==='g'?`<button class="btn ouro" type="button" data-esc="grau">Escolher e colocar grau</button><button class="btn sec" type="button" data-esc="arm">Só a armação</button>`
           :`${p.esp?'':'<button class="btn ouro" type="button" data-esc="grau">Trocar por lente de grau</button>'}<button class="btn sec" type="button" data-esc="plana">Trocar por lente plana</button><button class="btn sec" type="button" data-esc="arm">Como está</button>`}
-      </div></div>`;
+      </div>`;
   $('#veu').hidden=false;$('#mFechar').focus();
   $('#modal').onclick=e=>{
     const t=e.target.closest('[data-img]');if(t){$('#mBig').src=t.dataset.img;$$('#modal .th button').forEach(b=>b.setAttribute('aria-pressed',b===t));return}
@@ -821,6 +862,7 @@ function atualiza(){
   $('#medidas').innerHTML=m(X.od,'od')+m(X.oe,'oe')+`<div class="med" style="grid-column:1/-1"><div class="l">Tipo de lente</div><div class="v">${tipo}${X.add>0?' · adição '+sg(X.add):''}</div></div>`;
   $('#avisos').innerHTML=X.avisos.map(([c,t])=>`<li class="${c}">${t}</li>`).join('')||'<li class="ok">Receita sem pendências.</li>';
   if(!$('#v-opcoes').hidden)renderOpcoes();
+  if(typeof LOJA!=='undefined'&&!LOJA)renderGrupos('#rxLentes');
   if(!$('#v-oculos').hidden){ajustaOC();renderOC()}
 }
 const nomeOpt=o=>o.kind==='stk'?(o.solar?'Haytek Visão Simples Acabada Solar':o.tipo==='prog'?'Haytek Progressiva Acabada':'Haytek Visão Simples Acabada'):'Haytek '+o.line.nome;
@@ -843,13 +885,14 @@ function cardHTML(c,i,grp){
 const LINEQ={vs:3,vsid:5,go:3,light:4,smart:5,top:6,proid:7,office:5,drive:5,easy:4};
 const arNivel=o=>o.kind==='stk'?(/Sem antirreflexo|^Antirrisco/.test(o.arTxt)?0:arDeTxt(o.arTxt)):o.col;
 function qualidade(o,X){let q=o.kind==='stk'?1:LINEQ[o.line.id];q+=[0,0,1.5,1.5,2.5,2.5][arNivel(o)];q+=Math.max(0,rk(o.idx)-rk(X.rec))*.5;if(o.v&&o.v===variante(X))q+=.5;return q}
+function idxMin(X){if(X.minPoli)return X.rec;const p=Math.max(Pmax(X.od),Pmax(X.oe));return p>5?X.rec:IDX[Math.max(0,rk(X.rec)-1)]}
 function candidatosVenda(X){
   const v=variante(X),out=[],vistos=new Set();
   const add=o=>{if(!o)return;const k=nomeOpt(o)+o.idx+o.v+arNivel(o);if(vistos.has(k))return;vistos.add(k);o.preco=venda(o,X).preco;o.q=qualidade(o,X);out.push(o)};
-  stkOpts(X).filter(o=>(rk(o.idx)>=rk(X.rec)||X.rec==='1.50')&&o.v===v).forEach(add);
+  stkOpts(X).filter(o=>rk(o.idx)>=rk(idxMin(X))&&o.v===v).forEach(add);
   const linhas=LINES.filter(l=>X.modo==='prog'?l.tipo==='prog':l.tipo==='vs');
   for(const l of linhas)for(const col of [0,2,4])for(const i of IDX){
-    if(rk(i)<rk(X.rec)&&!(v.startsWith('Trans')&&i==='1.50'&&rk(X.rec)<=rk('1.56')))continue;
+    if(rk(i)<rk(idxMin(X))&&!(v.startsWith('Trans')&&i==='1.50'&&rk(X.rec)<=rk('1.56')))continue;
     add(surfOpt(l,i,v,col,X));
   }
   if(!out.length&&v)return candidatosVenda({...X,fa:false,sol:''});
@@ -864,12 +907,12 @@ function gruposVenda(X){
     for(const o of reserva){if(r.length>=3)break;if(!usados.has(o)){usados.add(o);r.push(o)}}return r.slice(0,3).sort((a,b)=>a.preco-b.preco)};
   const prog=X.modo==='prog';
   const premium=monta(prog?[['proid',4,0],['proid',4,1],['top',4,1]]:[['vsid',4,0],['vsid',4,1],['vsid',4,2]],[...C].filter(o=>arNivel(o)>=4).sort((a,b)=>b.q-a.q));
-  const cb=monta(prog?[['light',2,0],['smart',2,0],['top',2,0]]:[['vs',2,0],['vs',4,0],['vsid',2,0]],C.filter(o=>arNivel(o)>=2&&o.kind==='surf'));
+  const cb=monta(prog?[['light',2,-1],['smart',2,0],['top',2,0]]:[['vs',2,-1],['vs',2,0],['vs',4,0]],C.filter(o=>arNivel(o)>=2&&o.kind==='surf'));
   const chave=o=>nomeOpt(o)+o.idx;const ks=new Set(),baratas=[];
   for(const o of C){if(usados.has(o)||ks.has(chave(o)))continue;ks.add(chave(o));baratas.push(o);if(baratas.length===3)break}
   return{baratas,cb,premium};
 }
-const vantIdx={'1.50':'resina 1.50, de ótima nitidez óptica','1.56':'índice 1.56, mais fina que a resina comum','1.59':'policarbonato 1.59: leve e muito resistente a impacto','1.61':'índice 1.61: fina, leve e com ótima nitidez','1.67':'índice 1.67: até 40% mais fina que a lente comum','1.74':'índice 1.74: a lente mais fina que existe'};
+const vantIdx={'1.50':'resina 1.50, de ótima nitidez óptica','1.56':'resina 1.56: mais fina que a resina comum, com ótimo preço','1.59':'policarbonato 1.59: leve e muito resistente a impacto','1.61':'índice 1.61: fina, leve e com ótima nitidez','1.67':'índice 1.67: até 40% mais fina que a lente comum','1.74':'índice 1.74: a lente mais fina que existe'};
 const vantLinha={vs:'surfaçada digital (freeform): calculada ponto a ponto para o seu grau',vsid:'freeform personalizada pela posição da armação no seu rosto',go:'progressiva digital com campos amplos para quem está começando',light:'progressiva com transição suave e adaptação fácil',smart:'progressiva com flutuação reduzida: visão lateral estável',top:'progressiva de campos largos e foco rápido em todas as distâncias',proid:'progressiva totalmente personalizada para o seu rosto e a sua armação'};
 const nomeCurto=o=>o.kind==='stk'?'pronta':o.line.nome.replace(' Freeform','').replace(' (descanso visual)','');
 function cvba(o,X,grupo){
@@ -914,18 +957,18 @@ function cardVenda(o,i,grupo,ref){
     <h3>${nomeOpt(o)}</h3>
     <div class="spec"><span class="tag">${IDXN[o.idx]}</span>${o.v?`<span class="tag">${VARN[o.v]}</span>`:''}<span class="tag">${arOpt(o)}</span><span class="tag ${o.kind==='stk'?'pr':''}">${prodOpt(o)}</span></div>
     <p class="argv">${c.arg}</p>
-    <dl class="cvba"><dt>C</dt><dd><b>Característica:</b> ${c.caract}</dd><dt>V</dt><dd><b>Vantagem:</b> ${c.vant}</dd><dt>B</dt><dd><b>Benefício:</b> ${c.benef}</dd><dt>A</dt><dd><b>Ação:</b> ${c.acao}</dd></dl>
+    <dl class="cvba"><dt>C</dt><dd><b>Característica:</b> ${c.caract}</dd><dt>V</dt><dd><b>Vantagem:</b> ${c.vant}</dd><dt>B</dt><dd><b>Benefício:</b> ${c.benef}</dd>${LOJA?`<dt>A</dt><dd><b>Ação:</b> ${c.acao}</dd>`:''}</dl>
     ${falta.length?`<div class="falta"><b>O que não entrega${dif>0?` (por +${brl(dif)} leva a ${nomeCurto(ref)} ${ref.idx})`:''}:</b><ul>${falta.map(x=>`<li>${x}</li>`).join('')}</ul></div>`:''}
     <div class="preco"><div><b>${brl(o.preco)}</b><br><small>a lente, o par${FR?` · com a VOX ${esc(FR.n)}: ${brl(tot)}`:''}</small></div></div>
-    <button class="btn add ${dest?'ouro':''}" type="button" data-pick="${grupo}${i}">Adicionar ao pedido</button></article>`;
+    <button class="btn add ${dest?'ouro':''}" type="button" data-pick="${grupo}${i}">${LOJA?'Adicionar ao pedido':'Escolher esta lente'}</button></article>`;
 }
-function renderGrupos(){
+function renderGrupos(sel){sel=sel||'#grupos';
   const G=gruposVenda(X);const ref=G.cb[0]||G.premium[0];
   // "o que não entrega" compara cada lente barata com a opção logo acima em preço
   G.baratas.forEach(o=>{o._ref=[...G.baratas,...G.cb,...G.premium].filter(x=>x.preco>o.preco&&x!==o).sort((a,b)=>a.preco-b.preco).find(x=>naoEntrega(o,x,X).some(t=>!t.startsWith('Mesma')))||ref});
   ['baratas','cb','premium'].forEach(g=>G[g].forEach((o,i)=>CARDS[g+i]={o}));
   const sec=(g,tit,sub)=>G[g].length?`<section><div class="head" style="margin-bottom:12px"><div><p class="eyebrow">${tit}</p><h2>${sub}</h2></div></div><div class="niveis">${G[g].map((o,i)=>cardVenda(o,i,g,ref)).join('')}</div></section>`:'';
-  $('#grupos').innerHTML=(sec('baratas','Opção 1 · Menor preço','As 3 lentes de menor custo')+sec('cb','Opção 2 · Melhor custo-benefício','3 opções intermediárias')+sec('premium','Opção 3 · Premium','O melhor para este grau'))||'<div class="vazio">Nenhuma lente Haytek atende esta receita. Consulte o laboratório.</div>';
+  $(sel).innerHTML=(sec('baratas','Opção 1 · Menor preço','As 3 lentes de menor custo')+sec('cb','Opção 2 · Melhor custo-benefício','3 opções intermediárias')+sec('premium','Opção 3 · Premium','O melhor para este grau'))||'<div class="vazio">Nenhuma lente Haytek atende esta receita. Consulte o laboratório.</div>';
 }
 function renderOpcoes(){
   if(!X)return;
@@ -1087,6 +1130,8 @@ async function api(acao,extra){
   return r.json();
 }
 function aplicaModo(){
+  $$('.soLoja').forEach(e=>e.hidden=!LOJA);$$('.soCliente').forEach(e=>e.hidden=LOJA);$('#rxTitulo').textContent=LOJA?'Receita do cliente':'Sua receita';
+  if(!LOJA&&['dnp','opcoes'].includes(VIEW_ATUAL))ir('vitrine');if(!LOJA)renderGrupos('#rxLentes');
   $('#navPrecos').hidden=!LOJA;$('#navPedidos').hidden=!LOJA;$('#pDestBox').hidden=!LOJA;$('#pMedBox').hidden=!LOJA;$('#lojaPin').hidden=LOJA;
   $('#lojaTxt').textContent=LOJA?'Área da loja aberta neste aparelho.':'É da equipe VOX? Abra a área da loja:';
   $('#lojaBtn').textContent=LOJA?'Sair da área da loja':'Entrar';
@@ -1354,8 +1399,81 @@ $('#pedLista').addEventListener('click',e=>{
   if(e.target.closest('[data-cancelar]')){const b=e.target.closest('[data-cancelar]');if(b.dataset.ok){salvaPed(p,{cancelado:new Date().toISOString(),status:'Cancelado'})}else{b.dataset.ok=1;b.textContent='Toque de novo para cancelar';setTimeout(()=>{if(b.isConnected){delete b.dataset.ok;b.textContent='Cancelar'}},4000)}}
 });
 
+
+/* ================= ESTADO SALVO, ÁREA DA LOJA, BAIXAR ORÇAMENTO ================= */
+// tudo o que o cliente preencheu fica salvo neste aparelho e volta ao abrir o app de novo
+var VIEW_ATUAL='vitrine';let tSalva;
+function estadoAtual(){
+  const rx={};$$('#rx input').forEach(i=>rx[i.id]=i.value);
+  const chips={};$$('.chips[data-g]').forEach(g=>chips[g.dataset.g]=[...g.querySelectorAll('.chip[aria-pressed="true"]')].map(b=>b.dataset.val));
+  return{rx,cli:$('#cli').value,idade:$('#idade').value,armacao:$('#armacao').value,chips,fr:FR?FR.id:(window.__frId||null),oc:OC,tel:$('#pTel').value,obs:$('#pObs').value,view:VIEW_ATUAL,ex:!$('#tagEx').hidden};
+}
+function salvaEstado(){clearTimeout(tSalva);tSalva=setTimeout(()=>LS.set('voxlentes.estado',estadoAtual()),250)}
+function restauraEstado(E){
+  Object.entries(E.rx||{}).forEach(([id,v])=>{const i=$('#'+id);if(i)i.value=v});
+  $('#cli').value=E.cli||'';$('#idade').value=E.idade||'';if(E.armacao)$('#armacao').value=E.armacao;
+  Object.entries(E.chips||{}).forEach(([g,vals])=>{const box=$(`.chips[data-g="${g}"]`);if(box)box.querySelectorAll('.chip').forEach(b=>b.setAttribute('aria-pressed',vals.includes(b.dataset.val)))});
+  if(E.oc)Object.assign(OC,E.oc);$('#pTel').value=E.tel||'';$('#pObs').value=E.obs||'';window.__frId=E.fr||null;exemplo(!!E.ex);
+}
+['input','change','click'].forEach(ev=>document.addEventListener(ev,salvaEstado,true));
+window.addEventListener('pagehide',()=>LS.set('voxlentes.estado',estadoAtual()));
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')LS.set('voxlentes.estado',estadoAtual())});
+
+// área da loja: 5 toques seguidos no logo VOX (ou o endereço terminado em #loja)
+let toques=0,tToque;
+function abreLoja(){if(LOJA){toast('A área da loja já está aberta neste aparelho');return}$('#lojaDlg').hidden=false;setTimeout(()=>$('#lojaChave').focus(),50)}
+$('.marca').addEventListener('click',()=>{toques++;clearTimeout(tToque);tToque=setTimeout(()=>toques=0,1500);if(toques>=5){toques=0;abreLoja()}});
+$('#lojaCancelar').addEventListener('click',()=>{$('#lojaDlg').hidden=true});
+$('#lojaEntrar').addEventListener('click',()=>{$('#lojaPin').value=$('#lojaChave').value;$('#lojaChave').value='';$('#lojaBtn').click();
+  const t=setInterval(()=>{if(LOJA){clearInterval(t);$('#lojaDlg').hidden=true}},300);setTimeout(()=>clearInterval(t),15000)});
+$('#lojaChave').addEventListener('keydown',e=>{if(e.key==='Enter')$('#lojaEntrar').click()});
+
+// orçamento em imagem (PNG) com a marca VOX
+function quebraTexto(g,txt,max){const ps=String(txt).split(' '),L=[];let l='';for(const p of ps){const n=l?l+' '+p:p;if(g.measureText(n).width>max&&l){L.push(l);l=p}else l=n}if(l)L.push(l);return L}
+async function geraOrcamentoPNG(){
+  const W=1080,H=1350,c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
+  const carrega=src=>new Promise(r=>{if(!src)return r(null);const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src});
+  try{await document.fonts.ready}catch(e){}
+  g.fillStyle='#F5F2EC';g.fillRect(0,0,W,H);g.fillStyle='#1E2A44';g.fillRect(0,0,W,190);
+  const logo=await carrega($('.marca .logo')&&$('.marca .logo').src);if(logo){const h=64,w=logo.width*h/logo.height;g.drawImage(logo,70,63,w,h)}
+  g.textAlign='right';g.fillStyle='#D4AF6A';g.font='600 30px Jost, sans-serif';g.fillText('ORÇAMENTO',W-70,92);
+  g.fillStyle='#C9CEDB';g.font='26px Jost, sans-serif';g.fillText(new Date().toLocaleDateString('pt-BR'),W-70,136);g.textAlign='left';
+  let y=250;const R=leRx();
+  if(R.cli){g.fillStyle='#5E6476';g.font='26px Jost, sans-serif';g.fillText('Para',70,y);g.fillStyle='#1E2A44';g.font='600 48px "Cormorant Garamond", Georgia, serif';g.fillText(R.cli,70,y+52);y+=100}
+  if(FR){const im=await carrega(FR.img[0]);const bw=360,bh=270;
+    if(im){g.save();g.beginPath();g.roundRect?g.roundRect(70,y,bw,bh,18):g.rect(70,y,bw,bh);g.clip();const s=Math.max(bw/im.width,bh/im.height);g.drawImage(im,70+(bw-im.width*s)/2,y+(bh-im.height*s)/2,im.width*s,im.height*s);g.restore()}
+    g.fillStyle='#A8843F';g.font='600 24px Jost, sans-serif';g.fillText(FR.t==='s'?'ÓCULOS DE SOL':'ARMAÇÃO',470,y+50);
+    g.fillStyle='#1E2A44';g.font='600 56px "Cormorant Garamond", Georgia, serif';g.fillText('VOX '+FR.n,470,y+115);
+    g.fillStyle='#5E6476';g.font='26px Jost, sans-serif';quebraTexto(g,(FR.d||'').split('.')[0],540).slice(0,3).forEach((l,k)=>g.fillText(l,470,y+165+k*34));y+=bh+50}
+  g.strokeStyle='#E2DCCF';g.lineWidth=2;g.beginPath();g.moveTo(70,y);g.lineTo(W-70,y);g.stroke();y+=55;
+  $$('#ocLinhas .lin').forEach(li=>{const s=li.querySelectorAll('span'),det=li.classList.contains('det');const nome=s[0].textContent,val=s[1]?s[1].textContent:'';
+    g.font=det?'24px Jost, sans-serif':'30px Jost, sans-serif';g.fillStyle=det?'#5E6476':'#1E2A44';
+    const ls=quebraTexto(g,nome,det?900:700);ls.forEach((l,k)=>g.fillText(l,70,y+k*(det?32:40)));
+    if(val){g.textAlign='right';g.font='600 30px Jost, sans-serif';g.fillStyle='#1E2A44';g.fillText(val,W-70,y);g.textAlign='left'}
+    y+=ls.length*(det?32:40)+18});
+  y+=10;g.strokeStyle='#1E2A44';g.lineWidth=3;g.beginPath();g.moveTo(70,y);g.lineTo(W-70,y);g.stroke();y+=80;
+  g.fillStyle='#1E2A44';g.font='30px Jost, sans-serif';g.fillText('Total',70,y);g.textAlign='right';g.font='600 84px "Cormorant Garamond", Georgia, serif';g.fillText($('#ocTotal').textContent,W-70,y+6);g.textAlign='left';
+  g.fillStyle='#1E2A44';g.fillRect(0,H-150,W,150);g.fillStyle='#F5F2EC';g.font='28px Jost, sans-serif';g.fillText('usevox.com.br  ·  WhatsApp (21) 2604-1377',70,H-88);
+  g.fillStyle='#C9CEDB';g.font='22px Jost, sans-serif';g.fillText('Valores sujeitos à confirmação da receita e da disponibilidade da lente.',70,H-50);
+  return c;
+}
+function mostraImagem(url){
+  $('#modal').innerHTML=`<div style="grid-column:1/-1;padding:16px;display:grid;gap:12px"><p class="nota" style="margin:0">Toque e segure a imagem para salvar ou compartilhar.</p><img src="${url}" alt="Orçamento VOX" style="width:100%;border-radius:12px"><button class="btn" type="button" data-fecha>Fechar</button></div>`;
+  $('#veu').hidden=false;$('#modal').onclick=e=>{if(e.target.closest('[data-fecha]'))fechaModal()};
+}
+$('#baixarOrc').addEventListener('click',async()=>{
+  const c=await geraOrcamentoPNG();const nome=`orcamento-vox${FR?'-'+FR.n.toLowerCase().replace(/[^a-z0-9]+/g,'-'):''}.png`;
+  const nativo=!!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform());
+  c.toBlob(async b=>{
+    const arq=new File([b],nome,{type:'image/png'});
+    if(!nativo&&navigator.canShare&&navigator.canShare({files:[arq]})){try{await navigator.share({files:[arq],title:'Orçamento VOX'});return}catch(e){if(e&&e.name==='AbortError')return}}
+    if(nativo||window.parent!==window){mostraImagem(c.toDataURL('image/png'));return}
+    const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=nome;document.body.appendChild(a);a.click();a.remove();toast('Orçamento baixado');
+  },'image/png');
+});
+
 const VIEWS=['vitrine','receita','dnp','opcoes','oculos','pedidos','precos'];
-function ir(v){if(!VIEWS.includes(v))v='vitrine';
+function ir(v){if(!VIEWS.includes(v))v='vitrine';if(!LOJA&&['dnp','opcoes','pedidos','precos'].includes(v))v=v==='opcoes'?'receita':'vitrine';VIEW_ATUAL=v;salvaEstado();
   $$('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.v===v));
   VIEWS.forEach(k=>$('#v-'+k).hidden=k!==v);
   if(v==='dnp')carregaDNP();if(v==='precos')renderPrecos();if(v==='pedidos')carregaPedidos();if(v==='opcoes')renderOpcoes();if(v==='oculos'){$('#ocCli').value=$('#cli').value;renderOC()}
@@ -1363,7 +1481,8 @@ function ir(v){if(!VIEWS.includes(v))v='vitrine';
 }
 $$('nav button').forEach(b=>b.addEventListener('click',()=>ir(b.dataset.v)));
 document.addEventListener('click',e=>{const b=e.target.closest('[data-ir]');if(b)ir(b.dataset.ir)});
-$('#verLentes').addEventListener('click',()=>ir('opcoes'));
+$('#verLentes').addEventListener('click',()=>{if(LOJA)ir('opcoes');else $('#rxLentesBox').scrollIntoView({behavior:'smooth',block:'start'})});
+$('#rxLentes').addEventListener('click',e=>{const b=e.target.closest('[data-pick]');if(b&&CARDS[b.dataset.pick])usaOpcao(CARDS[b.dataset.pick].o)});
 let dnpOk=false;
 function carregaDNP(){if(dnpOk)return;dnpOk=true;const fr=$('#dnpFrame');
   fetch('dnp.html').then(r=>{if(!r.ok)throw 0;return r.text()}).then(t=>{fr.srcdoc=t}).catch(()=>{fr.src='dnp.html'})}
@@ -1376,10 +1495,12 @@ window.addEventListener('message',e=>{const d=e.data;if(!d||d.type!=='vox-dnp')r
 let tT;function toast(t){const el=$('#toast');el.textContent=t;el.hidden=false;clearTimeout(tT);tT=setTimeout(()=>el.hidden=true,2600)}
 $('#limpar').addEventListener('click',()=>{$$('#rx input').forEach(i=>i.value='');$('#cli').value='';$('#idade').value='';exemplo(false);atualiza();$('#odesf').focus()});
 const EX={odesf:-2.5,odcil:-1,odeixo:180,oddnp:31.5,odalt:19,oeesf:-2.25,oecil:-0.75,oeeixo:170,oednp:31,oealt:19};
-for(const[id,v]of Object.entries(EX))$('#'+id).value=fmtField(id.slice(2),v);
-$('#idade').value='34';exemplo(true);
+const EST=LS.get('voxlentes.estado',null);
+if(EST)restauraEstado(EST);else{for(const[id,v]of Object.entries(EX))$('#'+id).value=fmtField(id.slice(2),v);
+$('#idade').value='34';exemplo(true)}
 atualiza();carregaCatalogo();aplicaModo();enviaFila();
-ir((location.hash||'').slice(1)||'vitrine');
+const h0=(location.hash||'').slice(1);if(h0==='loja')setTimeout(abreLoja,300);
+ir(h0&&h0!=='loja'?h0:(EST&&EST.view)||'vitrine');
 </script>
 
 <script>
