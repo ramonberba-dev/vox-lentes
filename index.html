@@ -218,6 +218,12 @@ tr.click:hover td{background:#FBF7EE}
 pre.txt{white-space:pre-wrap;background:var(--creme);border-radius:10px;padding:12px;font-family:var(--corpo);font-size:14px;margin:0;max-height:300px;overflow:auto}
 .vazio{padding:28px;text-align:center;color:var(--mudo);border:1px dashed var(--linha2);border-radius:14px}
 iframe#dnpFrame{width:100%;height:min(1400px,calc(100vh - 140px));min-height:640px;border:1px solid var(--linha);border-radius:14px;background:var(--creme)}
+.argv{margin:0;font-family:var(--disp);font-size:18px;font-style:italic;color:var(--azul)}
+.cvba{display:grid;grid-template-columns:24px minmax(0,1fr);gap:6px 8px;margin:0;font-size:14px;color:var(--mudo)}
+.cvba dt{width:24px;height:24px;border-radius:50%;background:var(--azul);color:var(--ouro2);font-weight:700;font-size:12px;display:grid;place-items:center}
+.cvba dd{margin:0}.cvba b{color:var(--tinta);font-weight:600}
+.falta{background:var(--alertabg);border-radius:10px;padding:10px 12px;font-size:14px;color:var(--alerta)}
+.falta ul{margin:6px 0 0;padding-left:18px;display:grid;gap:3px;color:var(--tinta)}
 /* pedidos */
 .peds{display:grid;gap:12px}
 .ped{background:var(--papel);border:1px solid var(--linha);border-radius:14px;padding:16px;display:grid;gap:12px;min-width:0}
@@ -358,7 +364,7 @@ iframe#dnpFrame{width:100%;height:min(1400px,calc(100vh - 140px));min-height:640
 <section class="view" id="v-opcoes" hidden>
   <div class="head"><div><p class="eyebrow">Passo 3</p><h1 id="opTitulo">Lentes indicadas</h1><p class="sub" id="opSub"></p></div>
     <button class="btn sec" type="button" data-ir="receita">Editar receita</button></div>
-  <div class="niveis" id="niveis"></div>
+  <div id="grupos" style="display:grid;gap:32px"></div>
   <div id="extrasBox" hidden><h2 style="margin-bottom:12px">Também vale oferecer</h2><div class="extras" id="extras"></div></div>
   <div>
     <div class="head" style="margin-bottom:10px"><h2>Todas as lentes Haytek para esta receita</h2><div class="filtros" id="filtroTipo"></div></div>
@@ -833,12 +839,100 @@ function cardHTML(c,i,grp){
     <div class="preco"><div><b>${brl(p.preco)}</b><br><small>a lente, o par${FR?` · com a VOX ${esc(FR.n)}: ${brl(p.preco+FR.p)}`:''}</small></div></div>
     <button class="btn add ${c.rec?'ouro':''}" type="button" data-pick="${grp}${i}">Adicionar ao pedido</button></article>`;
 }
+/* ---------- grupos de venda: menor preço, custo-benefício e premium, com CVBA ---------- */
+const LINEQ={vs:3,vsid:5,go:3,light:4,smart:5,top:6,proid:7,office:5,drive:5,easy:4};
+const arNivel=o=>o.kind==='stk'?(/Sem antirreflexo|^Antirrisco/.test(o.arTxt)?0:arDeTxt(o.arTxt)):o.col;
+function qualidade(o,X){let q=o.kind==='stk'?1:LINEQ[o.line.id];q+=[0,0,1.5,1.5,2.5,2.5][arNivel(o)];q+=Math.max(0,rk(o.idx)-rk(X.rec))*.5;if(o.v&&o.v===variante(X))q+=.5;return q}
+function candidatosVenda(X){
+  const v=variante(X),out=[],vistos=new Set();
+  const add=o=>{if(!o)return;const k=nomeOpt(o)+o.idx+o.v+arNivel(o);if(vistos.has(k))return;vistos.add(k);o.preco=venda(o,X).preco;o.q=qualidade(o,X);out.push(o)};
+  stkOpts(X).filter(o=>(rk(o.idx)>=rk(X.rec)||X.rec==='1.50')&&o.v===v).forEach(add);
+  const linhas=LINES.filter(l=>X.modo==='prog'?l.tipo==='prog':l.tipo==='vs');
+  for(const l of linhas)for(const col of [0,2,4])for(const i of IDX){
+    if(rk(i)<rk(X.rec)&&!(v.startsWith('Trans')&&i==='1.50'&&rk(X.rec)<=rk('1.56')))continue;
+    add(surfOpt(l,i,v,col,X));
+  }
+  if(!out.length&&v)return candidatosVenda({...X,fa:false,sol:''});
+  return out;
+}
+function gruposVenda(X){
+  const C=candidatosVenda(X).sort((a,b)=>a.preco-b.preco||b.q-a.q);
+  const usados=new Set();
+  // lente de uma linha, com um nível de antirreflexo, no índice indicado + passos (a mais próxima disponível)
+  const acha=(linha,ar,passo)=>C.filter(o=>!usados.has(o)&&o.kind==='surf'&&o.line.id===linha&&arNivel(o)===ar&&rk(o.idx)>=rk(X.rec)+passo).sort((a,b)=>rk(a.idx)-rk(b.idx))[0];
+  const monta=(specs,reserva)=>{const r=[];for(const s of specs){const o=acha(...s);if(o){usados.add(o);r.push(o)}}
+    for(const o of reserva){if(r.length>=3)break;if(!usados.has(o)){usados.add(o);r.push(o)}}return r.slice(0,3).sort((a,b)=>a.preco-b.preco)};
+  const prog=X.modo==='prog';
+  const premium=monta(prog?[['proid',4,0],['proid',4,1],['top',4,1]]:[['vsid',4,0],['vsid',4,1],['vsid',4,2]],[...C].filter(o=>arNivel(o)>=4).sort((a,b)=>b.q-a.q));
+  const cb=monta(prog?[['light',2,0],['smart',2,0],['top',2,0]]:[['vs',2,0],['vs',4,0],['vsid',2,0]],C.filter(o=>arNivel(o)>=2&&o.kind==='surf'));
+  const chave=o=>nomeOpt(o)+o.idx;const ks=new Set(),baratas=[];
+  for(const o of C){if(usados.has(o)||ks.has(chave(o)))continue;ks.add(chave(o));baratas.push(o);if(baratas.length===3)break}
+  return{baratas,cb,premium};
+}
+const vantIdx={'1.50':'resina 1.50, de ótima nitidez óptica','1.56':'índice 1.56, mais fina que a resina comum','1.59':'policarbonato 1.59: leve e muito resistente a impacto','1.61':'índice 1.61: fina, leve e com ótima nitidez','1.67':'índice 1.67: até 40% mais fina que a lente comum','1.74':'índice 1.74: a lente mais fina que existe'};
+const vantLinha={vs:'surfaçada digital (freeform): calculada ponto a ponto para o seu grau',vsid:'freeform personalizada pela posição da armação no seu rosto',go:'progressiva digital com campos amplos para quem está começando',light:'progressiva com transição suave e adaptação fácil',smart:'progressiva com flutuação reduzida: visão lateral estável',top:'progressiva de campos largos e foco rápido em todas as distâncias',proid:'progressiva totalmente personalizada para o seu rosto e a sua armação'};
+const nomeCurto=o=>o.kind==='stk'?'pronta':o.line.nome.replace(' Freeform','').replace(' (descanso visual)','');
+function cvba(o,X,grupo){
+  const ar=arNivel(o),prog=X.modo==='prog',perto=X.para==='perto';
+  const caract=`${nomeOpt(o)} ${IDXN[o.idx]} · ${o.kind==='stk'?'pronta de estoque':'surfaçada sob medida'} · ${arOpt(o)}${o.v?' · '+VARN[o.v].toLowerCase():''}`;
+  const v=[];
+  v.push(o.kind==='stk'?'pronta em estoque: chega mais rápido':vantLinha[o.line.id]||'surfaçada sob medida para o seu grau');
+  v.push(vantIdx[o.idx]);
+  if(ar>=4)v.push('antirreflexo premium super-hidrofóbico e antiestático, com 2 anos de garantia');else if(ar>=2)v.push('antirreflexo: tira os reflexos da luz e da tela');
+  if(o.v.includes('FA'))v.push('filtro de luz azul para mais conforto nas telas');
+  if(o.v.includes('Foto'))v.push('escurece sozinha no sol');
+  if(o.v.startsWith('Trans'))v.push('Transitions Gen S: escurece em segundos e clareia rápido');
+  const b=[];
+  b.push(prog?'Enxerga longe, meio e perto com um só óculos, sem ficar tirando e pondo.':perto?'Lê, usa o celular e o computador com conforto, sem forçar a vista.':'Enxerga com nitidez o dia inteiro.');
+  if(ar>=2)b.push('Menos cansaço no fim do dia, e o olhar aparece nas fotos e nas chamadas de vídeo.');
+  if(rk(o.idx)>=rk('1.59'))b.push('O óculos fica mais leve e bonito no rosto.');
+  if(ar>=4)b.push('A lente fica limpa por mais tempo e dura mais.');
+  const tot=o.preco+(FR?FR.p:0);
+  const acao=`"Posso separar essa lente para ${FR?'a sua VOX '+FR.n:'a sua armação'}? O óculos completo fica ${brl(tot)}."`;
+  const arg={baratas:'Para quem quer resolver o grau gastando o mínimo, com lente Haytek e garantia da VOX.',
+    cb:`A escolha mais inteligente: ${prog?'progressiva de qualidade':'lente feita para o seu grau'} com o que realmente faz diferença no dia a dia, sem pagar por excesso.`,
+    premium:`O melhor que a Haytek faz para o seu grau: ${o.kind==='surf'&&(o.line.id==='proid'||o.line.id==='vsid')?'personalizada para o seu rosto, ':''}máxima nitidez, conforto e durabilidade. Para quem usa óculos o dia todo e quer o melhor.`}[grupo];
+  return{caract,vant:v.join('; ')+'.',benef:b.join(' '),acao,arg};
+}
+function naoEntrega(o,ref,X){
+  if(!ref)return[];const f=[];
+  if(o.kind==='stk'&&ref.kind==='surf')f.push(X.modo==='prog'?'Progressiva pronta: campos de visão estreitos e adaptação mais difícil.':'Lente pronta: não é calculada para o seu grau, a nitidez cai nas bordas.');
+  if(o.kind==='surf'&&ref.kind==='surf'&&LINEQ[o.line.id]<LINEQ[ref.line.id])f.push(X.modo==='prog'?`Campos laterais mais estreitos que na ${nomeCurto(ref)}.`:`Desenho menos personalizado que a ${nomeCurto(ref)}.`);
+  const a=arNivel(o),b=arNivel(ref);
+  if(a<2&&b>=2)f.push('Sem antirreflexo: reflexos de luz e de tela, mais cansaço visual.');
+  else if(a<4&&b>=4)f.push('Antirreflexo comum: suja e marca mais fácil, sem a garantia de 2 anos.');
+  if(rk(o.idx)<rk(ref.idx))f.push(`Índice ${o.idx}: lente mais grossa e pesada que a ${ref.idx}.`);
+  const pedido=variante(X);if(pedido&&!o.v&&ref.v)f.push(`Sem ${VARN[pedido].toLowerCase()}.`);
+  if(!f.length)f.push(`Mesma proposta da ${nomeCurto(ref)} ${ref.idx}, com acabamento mais simples.`);
+  return f;
+}
+function cardVenda(o,i,grupo,ref){
+  if(grupo==='baratas'&&o._ref)ref=o._ref;
+  const c=cvba(o,X,grupo),tot=o.preco+(FR?FR.p:0),falta=grupo==='baratas'?naoEntrega(o,ref,X):[];
+  const dif=ref&&grupo==='baratas'?ref.preco-o.preco:0,dest=grupo==='cb'&&i===1;
+  return`<article class="nivel ${dest?'rec':''}"><span class="selo">${dest?'★ Mais indicada':{baratas:'Menor preço',cb:'Custo-benefício',premium:'Premium'}[grupo]}</span>
+    <h3>${nomeOpt(o)}</h3>
+    <div class="spec"><span class="tag">${IDXN[o.idx]}</span>${o.v?`<span class="tag">${VARN[o.v]}</span>`:''}<span class="tag">${arOpt(o)}</span><span class="tag ${o.kind==='stk'?'pr':''}">${prodOpt(o)}</span></div>
+    <p class="argv">${c.arg}</p>
+    <dl class="cvba"><dt>C</dt><dd><b>Característica:</b> ${c.caract}</dd><dt>V</dt><dd><b>Vantagem:</b> ${c.vant}</dd><dt>B</dt><dd><b>Benefício:</b> ${c.benef}</dd><dt>A</dt><dd><b>Ação:</b> ${c.acao}</dd></dl>
+    ${falta.length?`<div class="falta"><b>O que não entrega${dif>0?` (por +${brl(dif)} leva a ${nomeCurto(ref)} ${ref.idx})`:''}:</b><ul>${falta.map(x=>`<li>${x}</li>`).join('')}</ul></div>`:''}
+    <div class="preco"><div><b>${brl(o.preco)}</b><br><small>a lente, o par${FR?` · com a VOX ${esc(FR.n)}: ${brl(tot)}`:''}</small></div></div>
+    <button class="btn add ${dest?'ouro':''}" type="button" data-pick="${grupo}${i}">Adicionar ao pedido</button></article>`;
+}
+function renderGrupos(){
+  const G=gruposVenda(X);const ref=G.cb[0]||G.premium[0];
+  // "o que não entrega" compara cada lente barata com a opção logo acima em preço
+  G.baratas.forEach(o=>{o._ref=[...G.baratas,...G.cb,...G.premium].filter(x=>x.preco>o.preco&&x!==o).sort((a,b)=>a.preco-b.preco).find(x=>naoEntrega(o,x,X).some(t=>!t.startsWith('Mesma')))||ref});
+  ['baratas','cb','premium'].forEach(g=>G[g].forEach((o,i)=>CARDS[g+i]={o}));
+  const sec=(g,tit,sub)=>G[g].length?`<section><div class="head" style="margin-bottom:12px"><div><p class="eyebrow">${tit}</p><h2>${sub}</h2></div></div><div class="niveis">${G[g].map((o,i)=>cardVenda(o,i,g,ref)).join('')}</div></section>`:'';
+  $('#grupos').innerHTML=(sec('baratas','Opção 1 · Menor preço','As 3 lentes de menor custo')+sec('cb','Opção 2 · Melhor custo-benefício','3 opções intermediárias')+sec('premium','Opção 3 · Premium','O melhor para este grau'))||'<div class="vazio">Nenhuma lente Haytek atende esta receita. Consulte o laboratório.</div>';
+}
 function renderOpcoes(){
   if(!X)return;
   const{N,ex}=sugestoes(X);CARDS={};N.forEach((c,i)=>CARDS['n'+i]=c);ex.forEach((c,i)=>CARDS['e'+i]=c);
   $('#opTitulo').textContent=X.modo==='prog'?'Multifocais indicadas':'Lentes indicadas';
   $('#opSub').textContent=`${X.cli?X.cli+' · ':''}${FR?'VOX '+FR.n+' · ':''}Índice indicado ${X.rec} · ${VARN[variante(X)]} · ${ARO[X.arm].toLowerCase()}. Os tratamentos podem ser trocados no próximo passo.`;
-  $('#niveis').innerHTML=N.map((c,i)=>cardHTML(c,i,'n')).join('');
+  renderGrupos();
   $('#extrasBox').hidden=!ex.length;$('#extras').innerHTML=ex.map((c,i)=>cardHTML(c,i,'e')).join('');
   const all=todas(X);
   const tipos=[['todas','Todas'],['stk','Prontas'],['vs','Visão simples'],['prog','Progressivas'],['ocup','Ocupacionais'],['easy','Easy']].filter(([k])=>k==='todas'||all.some(o=>k==='stk'?o.kind==='stk':o.kind==='surf'&&o.line.tipo===k));
