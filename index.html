@@ -251,6 +251,12 @@ dl.esp dd{margin:0;color:var(--tinta)}
 .passos-app li{display:grid;grid-template-columns:36px minmax(0,1fr);gap:12px;align-items:start;font-size:15.5px;counter-increment:p}
 .passos-app li::before{content:counter(p);width:36px;height:36px;border-radius:50%;background:var(--azul);color:var(--ouro2);font-weight:700;display:grid;place-items:center}
 .ico-share{display:inline-block;vertical-align:-4px;width:20px;height:20px}
+.modo-cliente .rx .c-dnp,.modo-cliente .rx .c-alt,.modo-cliente .rx .ch-med{display:none}
+.modo-cliente .rx{grid-template-columns:52px repeat(4,minmax(0,1fr))}
+@media (max-width:700px){.modo-cliente .rx{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.dnpbox{border-top:1px solid var(--linha);padding-top:16px;display:grid;gap:10px}
+.dnpbox p{margin:0;font-size:15px;color:var(--tinta)}.dnpbox .eyebrow{margin:0}
+.dnpbox .btn-grande{font-size:18px;min-height:64px}
 /* pedidos */
 .peds{display:grid;gap:12px}
 .ped{background:var(--papel);border:1px solid var(--linha);border-radius:14px;padding:16px;display:grid;gap:12px;min-width:0}
@@ -339,17 +345,17 @@ dl.esp dd{margin:0;color:var(--tinta)}
         <dt>Cilíndrico (CIL)</dt><dd>Corrige o astigmatismo, que deixa a imagem embaçada ou distorcida. Se a receita não tiver, deixe em branco.</dd>
         <dt>Eixo</dt><dd>Número de 0 a 180 que sempre vem junto com o cilíndrico. Só preencha se houver cilíndrico.</dd>
         <dt>Adição (AD)</dt><dd>Grau a mais para enxergar de perto, comum depois dos 40 anos. Com adição você pode escolher lente multifocal: longe e perto no mesmo óculos.</dd>
-        <dt>DNP</dt><dd>Distância, em milímetros, do meio do nariz até o centro de cada pupila. Não sabe? Deixe em branco: a equipe VOX ajuda você a medir por foto, pelo WhatsApp.</dd>
-        <dt>Altura</dt><dd>Só para lente multifocal. Também medimos com você, pela foto com a armação no rosto.</dd>
+        <dt>DNP</dt><dd>Medida do rosto: distância, em milímetros, do meio do nariz até o centro de cada pupila. Você não precisa saber: a equipe VOX mede com você pelo WhatsApp, depois do orçamento.</dd>
+        <dt>Altura</dt><dd>Só para lente multifocal: onde o olho fica dentro da armação. Também medimos com você pelo WhatsApp.</dd>
         <dt>"Para longe" e "Para perto"</dt><dd>Se a receita tem os dois quadros, use os números de longe e coloque a diferença em Adição, ou fale com a gente pelo WhatsApp que ajudamos a preencher.</dd>
       </dl></details>
   </div>
   <div class="grid2">
     <div class="folha">
       <div class="rx" id="rx">
-        <div></div><div class="ch">Esférico</div><div class="ch">Cilíndrico</div><div class="ch">Eixo</div><div class="ch">Adição</div><div class="ch">DNP mm</div><div class="ch">Altura mm</div>
+        <div></div><div class="ch">Esférico</div><div class="ch">Cilíndrico</div><div class="ch">Eixo</div><div class="ch">Adição</div><div class="ch ch-med">DNP mm</div><div class="ch ch-med">Altura mm</div>
       </div>
-      <p class="dica soCliente" hidden>Não sabe a DNP ou a altura? Deixe em branco: a equipe VOX ajuda você a medir por foto, pelo WhatsApp.</p>
+      <p class="dica soCliente" hidden>As medidas do rosto (DNP e altura) você não precisa saber: a equipe VOX faz com você pelo WhatsApp, depois do orçamento.</p>
       <p class="dica soLoja" hidden>DNP e altura podem vir do <b>Medir DNP</b>: meça pela foto e toque em "Usar na receita".</p>
       <div class="campos">
         <label class="campo"><span>Cliente</span><input id="cli" type="text" autocomplete="off" placeholder="Nome do cliente"></label>
@@ -457,6 +463,13 @@ dl.esp dd{margin:0;color:var(--tinta)}
         <button class="btn ouro" type="button" id="baixarOrc">Baixar orçamento</button>
         <button class="btn sec soLoja" type="button" id="copiar" hidden>Copiar orçamento</button>
         <a class="btn sec soLoja" id="wpp" href="#" target="_blank" rel="noopener" hidden>Enviar orçamento ao cliente</a>
+      </div>
+      <div class="soCliente dnpbox" hidden>
+        <p class="eyebrow">Próximo passo</p>
+        <h3>Falta só uma medida: a DNP</h3>
+        <p>A <b>DNP</b> é a distância do meio do seu nariz até o centro de cada pupila, em milímetros. Com ela o laboratório sabe onde fica o centro de cada olho, e a lente fica alinhada: você enxerga bem e não cansa a vista. Nas lentes multifocais também medimos a <b>altura</b>, que é a posição do olho dentro da armação.</p>
+        <p>É rápido e sem sair de casa: você manda uma foto de frente pelo WhatsApp e a equipe VOX faz a medida para você.</p>
+        <a class="btn btn-grande" id="pedeDNP" href="https://wa.me/552126041377" target="_blank" rel="noopener">Solicitar medidas DNP pelo WhatsApp</a>
       </div>
       <div style="border-top:1px solid var(--linha);padding-top:14px;display:grid;gap:12px">
         <div><p class="eyebrow">Pedido</p><h2>Fazer pedido</h2>
@@ -686,7 +699,7 @@ const COLS=[['esf','Esférico',.25,-30,25,'sg'],['cil','Cilíndrico',.25,-10,10,
   for(const e of ['od','oe']){
     const o=document.createElement('div');o.className='olho '+e;o.textContent=e.toUpperCase();rx.appendChild(o);
     for(const [k,lab] of COLS){
-      const c=document.createElement('div');c.className='cel';
+      const c=document.createElement('div');c.className='cel c-'+k;
       c.innerHTML=`<span class="ml">${lab}</span><input id="${e}${k}" inputmode="decimal" autocomplete="off" aria-label="${lab} ${e.toUpperCase()}"><div class="st"><button type="button" data-d="-1" aria-label="Diminuir">−</button><button type="button" data-d="1" aria-label="Aumentar">+</button></div>`;
       rx.appendChild(c);
     }
@@ -813,14 +826,14 @@ function analisa(){
       else{const f=tab.find(t=>R.idade<=t[0]);if(add<f[1]-.75||add>f[2]+.75)A.push(['al',`Adição ${sg(add)} fora do comum para ${R.idade} anos (esperado ${sg(f[1])} a ${sg(f[2])}). Vale confirmar.`])}}
     if(modo==='prog'){
       const alts=[R.od.alt,R.oe.alt].filter(v=>v!=null);
-      if(!alts.length)A.push(['er','Multifocal precisa da altura de montagem. Meça em Medir DNP ou com a régua.']);
+      if(!alts.length)A.push(LOJA?['er','Multifocal precisa da altura de montagem. Meça em Medir DNP ou com a régua.']:['ok','A altura de montagem da lente multifocal a equipe VOX mede com você pelo WhatsApp, depois do orçamento.']);
       else if(Math.min(...alts)<16)A.push(['er',`Altura de ${Math.min(...alts)} mm: as progressivas Haytek pedem no mínimo 16 mm. Escolha uma armação mais alta.`]);
       else if(Math.min(...alts)<20)A.push(['ok',`Altura de ${Math.min(...alts)} mm atende as progressivas (mín. 16 mm). Ocupacionais Office e Drive pedem 20 mm.`]);
       if(add>2.25)A.push(['ok','Adição alta: prefira armação com altura de 18 mm ou mais para um corredor confortável.']);
     }
   }
   for(const[k,e]of[['OD',R.od],['OE',R.oe]])if(e.dnp!=null&&(e.dnp<25||e.dnp>40))A.push(['al',`${k}: DNP de ${f1(e.dnp)} mm fora do comum (25 a 40 mm). Meça de novo.`]);
-  if(R.od.dnp==null||R.oe.dnp==null)A.push(['al','Falta a DNP de um dos olhos. Ela é obrigatória para o laboratório centralizar a lente.']);
+  if(LOJA&&(R.od.dnp==null||R.oe.dnp==null))A.push(['al','Falta a DNP de um dos olhos. Ela é obrigatória para o laboratório centralizar a lente.']);
   if(R.arm==='3pecas')A.push(['ok','Armação parafusada: só policarbonato 1.59 ou índice 1.61 para cima, que não trincam no furo.']);
   if(R.arm==='balgriff')A.push(['ok','Armação Balgriff: lente resistente (1.59 policarbonato ou 1.61 para cima). A Haytek não lista essa montagem; confirme no pedido.']);
   if(R.arm==='fio')A.push(['ok','Fio de nylon ou meio aro: a lente recebe um canal na borda. Evite 1.50 resina.']);
@@ -1184,7 +1197,7 @@ function renderOC(){
   const txt=[`VOX · Orçamento${R.cli?' · '+R.cli:''}`,new Date().toLocaleDateString('pt-BR'),'',
     ...(temLente&&OC.modo==='grau'?['Receita',rxl('OD',R.od),rxl('OE',R.oe),'']:[]),
     ...L.map(([n,v])=>`${n}: ${brl(v)}`),...(det?[det]:[]),'',`Total: ${brl(tot)}`].join('\n');
-  $('#ocTxt').textContent=txt;$('#wpp').href='https://wa.me/?text='+encodeURIComponent(txt);
+  $('#ocTxt').textContent=txt;atualizaPedeDNP();$('#wpp').href='https://wa.me/?text='+encodeURIComponent(txt);
   renderPedido(P,temLente,det);
 }
 /* ================= PEDIDO ================= */
@@ -1202,7 +1215,7 @@ async function api(acao,extra){
   return r.json();
 }
 function aplicaModo(){
-  $$('.soLoja').forEach(e=>e.hidden=!LOJA);$$('.soCliente').forEach(e=>e.hidden=LOJA);$('#rxTitulo').textContent=LOJA?'Receita do cliente':'Sua receita';
+  $$('.soLoja').forEach(e=>e.hidden=!LOJA);$$('.soCliente').forEach(e=>e.hidden=LOJA);$('#rxTitulo').textContent=LOJA?'Receita do cliente':'Sua receita';document.body.classList.toggle('modo-cliente',!LOJA);
   if(!LOJA&&['dnp','opcoes'].includes(VIEW_ATUAL))ir('vitrine');if(!LOJA)renderGrupos('#rxLentes');
   $('#navPrecos').hidden=!LOJA;$('#navPedidos').hidden=!LOJA;$('#pDestBox').hidden=!LOJA;$('#pMedBox').hidden=!LOJA;$('#lojaPin').hidden=LOJA;
   $('#lojaTxt').textContent=LOJA?'Área da loja aberta neste aparelho.':'É da equipe VOX? Abra a área da loja:';
@@ -1229,7 +1242,7 @@ function telCliente(){let d=$('#pTel').value.replace(/\D/g,'');if(d.length===10|
 function montaRegistro(P,temLente,R,txt,HAY){
   const agora=new Date();const pronta=temLente&&P&&P.o.kind==='stk';const prazo=!temLente?0:pronta?7:14;
   const rx=e=>`${sg(e.s)} ${e.c?sg(e.c)+' x '+(e.ax??'—')+'°':''}${e.add?' ad '+sg(e.add):''}`;
-  const med=[R.od.dnp!=null?`DNP ${f1(R.od.dnp)}/${f1(R.oe.dnp)}`:'',R.od.alt!=null?`alt ${R.od.alt}/${R.oe.alt}`:'',['pmA','pmB','pmDBL','pmED'].map(id=>$('#'+id).value).some(Boolean)?`armação ${['pmA','pmB','pmDBL','pmED'].map(id=>$('#'+id).value||'—').join(' / ')}`:''].filter(Boolean).join(' · ');
+  const med=!LOJA?'a medir pela VOX':[R.od.dnp!=null?`DNP ${f1(R.od.dnp)}/${f1(R.oe.dnp)}`:'',R.od.alt!=null?`alt ${R.od.alt}/${R.oe.alt}`:'',['pmA','pmB','pmDBL','pmED'].map(id=>$('#'+id).value).some(Boolean)?`armação ${['pmA','pmB','pmDBL','pmED'].map(id=>$('#'+id).value||'—').join(' / ')}`:''].filter(Boolean).join(' · ');
   const tot=(FR?FR.p:0)+(temLente&&P?venda(P.o,P.XX,OC.cor).preco:0);
   PED_ATUAL={id:PID(),criado:agora.toISOString(),origem:LOJA?'loja':'cliente',status:HAY?'Enviado ao laboratório':'Novo pedido',
     cliente:R.cli,telefone:telCliente(),armacao:FR?'VOX '+FR.n:'',aro:FR?ARO[aroDe(FR)]:'',
@@ -1269,8 +1282,8 @@ function renderPedido(P,temLente,det){
     for(const[k,e]of[['OD',R.od],['OE',R.oe]]){
       if(e.esfVazio)falta.push(`${k}: falta o esférico.`);
       if(e.c!==0&&e.ax==null)falta.push(`${k}: falta o eixo.`);
-      if(e.dnp==null)falta.push(`${k}: falta a DNP.`);
-      if(P&&P.o.kind==='surf'&&P.o.line.alt&&e.alt==null)falta.push(`${k}: falta a altura de montagem (obrigatória na ${P.o.line.nome}).`);
+      if(LOJA&&e.dnp==null)falta.push(`${k}: falta a DNP.`);
+      if(LOJA&&P&&P.o.kind==='surf'&&P.o.line.alt&&e.alt==null)falta.push(`${k}: falta a altura de montagem (obrigatória na ${P.o.line.nome}).`);
     }
   }
   if(!R.cli)falta.push('Falta o nome do cliente.');
@@ -1297,8 +1310,9 @@ function renderPedido(P,temLente,det){
     L.push('*RECEITA*');
     L.push(`OD: esf ${sg(R.od.s)} | cil ${R.od.c?sg(R.od.c):'0,00'} | eixo ${R.od.c?(R.od.ax??'—')+'°':'—'} | ad ${add(R.od)}`);
     L.push(`OE: esf ${sg(R.oe.s)} | cil ${R.oe.c?sg(R.oe.c):'0,00'} | eixo ${R.oe.c?(R.oe.ax??'—')+'°':'—'} | ad ${add(R.oe)}`);
-    L.push(`DNP: OD ${f1(R.od.dnp)} / OE ${f1(R.oe.dnp)} mm${R.od.dnp!=null&&R.oe.dnp!=null?` (DP ${f1(R.od.dnp+R.oe.dnp)})`:''}`);
-    if(R.od.alt!=null||R.oe.alt!=null)L.push(`Altura: OD ${v(R.od.alt)} / OE ${v(R.oe.alt)} mm`);
+    if(LOJA){L.push(`DNP: OD ${f1(R.od.dnp)} / OE ${f1(R.oe.dnp)} mm${R.od.dnp!=null&&R.oe.dnp!=null?` (DP ${f1(R.od.dnp+R.oe.dnp)})`:''}`);
+    if(R.od.alt!=null||R.oe.alt!=null)L.push(`Altura: OD ${v(R.od.alt)} / OE ${v(R.oe.alt)} mm`);}
+    else L.push('DNP e altura: a combinar com a equipe VOX pelo WhatsApp.');
     if(R.para==='perto')L.push('Uso: *para perto* (óculos de leitura)');
     else if(X&&X.modo==='vs'&&X.add>0)L.push(`Uso: ${X.visao==='perto'?'visão simples de perto (esf + adição)':'visão simples de longe'}`);
     L.push('');
@@ -1581,6 +1595,13 @@ function abreBaixarApp(){
 if(naoInstalado())$('#btnBaixarApp').hidden=false;
 $('#btnBaixarApp').addEventListener('click',abreBaixarApp);
 
+// mensagem pronta para pedir a medida da DNP pelo WhatsApp da VOX
+function atualizaPedeDNP(){
+  const R=leRx(),P=OC.modo!=='arm'?precoDe(OC):null;
+  const txt=[`Olá! ${R.cli?'Sou '+R.cli+'. ':''}Fiz meu orçamento no app da VOX e quero fazer as medidas da DNP.`,
+    FR?`Armação: VOX ${FR.n}`:'',P?`Lente: ${nomeOpt(P.o)}${P.o.solar?'':' '+P.o.idx}`:'',`Total do orçamento: ${$('#ocTotal').textContent}`,'Como envio a foto?'].filter(Boolean).join('\n');
+  $('#pedeDNP').href='https://wa.me/552126041377?text='+encodeURIComponent(txt);
+}
 const VIEWS=['vitrine','receita','dnp','opcoes','oculos','pedidos','precos'];
 function ir(v){if(!VIEWS.includes(v))v='vitrine';if(!LOJA&&['dnp','opcoes','pedidos','precos'].includes(v))v=v==='opcoes'?'receita':'vitrine';VIEW_ATUAL=v;salvaEstado();
   $$('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.v===v));
