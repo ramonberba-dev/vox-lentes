@@ -304,6 +304,12 @@ iframe#dnpFrame{width:100%;height:min(1400px,calc(100vh - 140px));min-height:640
           <select id="armacao"><option value="fechado">Aro fechado (acetato, nylon ou metal)</option><option value="fio">Fio de nylon ou meio aro</option><option value="3pecas">Parafusada (3 peças, sem aro)</option><option value="balgriff">Balgriff (sem aro, presa por fio)</option></select>
           <small id="armOrig"></small></label>
       </div>
+      <div class="grupo" id="gPara"><span>A receita é para</span>
+        <div class="chips" data-g="para">
+          <button class="chip" type="button" data-val="longe" aria-pressed="true">Longe (uso diário)</button>
+          <button class="chip" type="button" data-val="perto" aria-pressed="false">Perto (óculos de leitura)</button>
+        </div>
+        <small class="nota">Receita com o quadro "Para perto" preenchido: escolha <b>Perto</b> e digite os valores de perto em esférico, cilíndrico e eixo, sem adição.</small></div>
       <div class="grupo" id="gVisao" hidden><span>Como vai usar a adição</span>
         <div class="chips" data-g="visao">
           <button class="chip" type="button" data-val="multi" aria-pressed="true">Multifocal (longe e perto)</button>
@@ -651,7 +657,7 @@ function leRx(){
   const eye=e=>{const g=k=>num($('#'+e+k).value);return{s:g('esf')??0,c:g('cil')??0,ax:g('eixo'),add:g('add')??0,dnp:g('dnp'),alt:g('alt'),esfVazio:g('esf')==null}};
   const uso=chipSet('uso');
   return{od:eye('od'),oe:eye('oe'),idade:num($('#idade').value),arm:$('#armacao').value,cli:$('#cli').value.trim(),
-    visao:chipVal('visao')||'multi',fa:chipVal('fa')==='1',sol:chipVal('sol'),tela:uso.includes('tela'),noite:uso.includes('noite'),esporte:uso.includes('esporte'),fina:uso.includes('fina')};
+    visao:chipVal('visao')||'multi',para:chipVal('para')||'longe',fa:chipVal('fa')==='1',sol:chipVal('sol'),tela:uso.includes('tela'),noite:uso.includes('noite'),esporte:uso.includes('esporte'),fina:uso.includes('fina')};
 }
 function transp(e){let{s,c,ax}=e,t=false;if(c>0){s=s+c;c=-c;if(ax!=null)ax=ax>90?ax-90:ax+90;t=true}return{...e,s,c,ax,t}}
 const Pmax=e=>Math.max(Math.abs(e.s),Math.abs(e.s+e.c));
@@ -752,6 +758,10 @@ function analisa(){
   if(R.arm==='3pecas')A.push(['ok','Armação parafusada: só policarbonato 1.59 ou índice 1.61 para cima, que não trincam no furo.']);
   if(R.arm==='balgriff')A.push(['ok','Armação Balgriff: lente resistente (1.59 policarbonato ou 1.61 para cima). A Haytek não lista essa montagem; confirme no pedido.']);
   if(R.arm==='fio')A.push(['ok','Fio de nylon ou meio aro: a lente recebe um canal na borda. Evite 1.50 resina.']);
+  if(R.para==='perto'){
+    if(add>0)A.push(['al','Receita para perto normalmente não tem adição: digite os valores do quadro "Para perto" em esférico, cilíndrico e eixo e deixe a adição em branco.']);
+    A.push(['ok','Óculos de leitura: a DNP de perto é cerca de 1,5 mm menor por olho que a de longe. O medidor mede olhando longe; se usar a medida dele, desconte 1,5 mm de cada olho.']);
+  }
   if(R.esporte)A.push(['ok','Esporte ou criança: policarbonato 1.59, a lente mais resistente a impacto.']);
   if(R.fa)A.push(['ok','Filtro azul é um opcional de conforto para telas. Não há prova científica de que proteja a saúde dos olhos (revisão Cochrane, 2023); não prometa isso ao cliente.']);
   if(R.noite&&!R.fa)A.push(['ok','Dirige à noite: priorize antirreflexo (AR Premium reduz reflexos dos faróis).']);
@@ -800,7 +810,7 @@ function atualiza(){
   $('#gVisao').hidden=!(X.add>0);
   const motivo=X.minPoli&&rk(X.recGrau)<rk('1.59')?(['3pecas','balgriff'].includes(X.arm)?'pelo tipo de aro da armação':'pela resistência a impacto'):'pelo grau mais forte ('+f1(Math.max(Pmax(X.od),Pmax(X.oe)))+' dioptrias)';
   $('#indiceBox').innerHTML=`<b>${X.rec}</b><p><strong>Índice indicado: ${IDXN[X.rec]}</strong><br>Escolhido ${motivo}. Índice maior deixa a lente mais fina.</p>`;
-  const tipo=X.modo==='prog'?'Multifocal':X.add>0?(X.visao==='perto'?'Visão simples de perto':'Visão simples de longe'):'Visão simples';
+  const tipo=X.para==='perto'?'Visão simples para perto (leitura)':X.modo==='prog'?'Multifocal':X.add>0?(X.visao==='perto'?'Visão simples de perto':'Visão simples de longe'):'Visão simples';
   const m=(e,k)=>`<div class="med ${k}"><div class="l">${k.toUpperCase()}</div><div class="v num">${sg(e.s)} ${e.c?sg(e.c)+' × '+(e.ax??'—')+'°':''}</div><small>Grau máximo ${f1(Pmax(e))} · equivalente ${sg(EE(e))}${e.dnp!=null?' · DNP '+f1(e.dnp):''}${e.alt!=null?' · alt. '+e.alt:''}</small></div>`;
   $('#medidas').innerHTML=m(X.od,'od')+m(X.oe,'oe')+`<div class="med" style="grid-column:1/-1"><div class="l">Tipo de lente</div><div class="v">${tipo}${X.add>0?' · adição '+sg(X.add):''}</div></div>`;
   $('#avisos').innerHTML=X.avisos.map(([c,t])=>`<li class="${c}">${t}</li>`).join('')||'<li class="ok">Receita sem pendências.</li>';
@@ -1014,7 +1024,7 @@ function montaRegistro(P,temLente,R,txt,HAY){
     cliente:R.cli,telefone:telCliente(),armacao:FR?'VOX '+FR.n:'',aro:FR?ARO[aroDe(FR)]:'',
     lente:temLente&&P?`${nomeOpt(P.o)}${P.o.solar?'':' '+P.o.idx}`:'Sem troca de lente',producao:!temLente?'sem lente':pronta?'pronta':'surfaçada',
     tratamento:temLente&&P?[P.o.solar?'':VARN[P.o.v],P.o.solar?P.o.arTxt:OC.cor?'coloração '+corTxt(OC.cor):P.o.kind==='stk'?P.o.arTxt:ARN[P.o.col]].filter(Boolean).join(' · '):'',
-    receita:OC.modo==='grau'?`OD ${rx(R.od)} | OE ${rx(R.oe)}`:OC.modo==='plana'?'plana':'',medidas:med,destino:numDestino(),valor:tot,
+    receita:OC.modo==='grau'?`${R.para==='perto'?'PERTO · ':''}OD ${rx(R.od)} | OE ${rx(R.oe)}`:OC.modo==='plana'?'plana':'',medidas:med,destino:numDestino(),valor:tot,
     prazo_dias:prazo,previsao:addUteis(agora,prazo).toISOString().slice(0,10),enviado_lab:HAY?agora.toISOString():'',obs:$('#pObs').value.trim(),texto:txt};
 }
 function filaPedidos(){return LS.get('voxlentes.fila',[])}
@@ -1078,7 +1088,8 @@ function renderPedido(P,temLente,det){
     L.push(`OE: esf ${sg(R.oe.s)} | cil ${R.oe.c?sg(R.oe.c):'0,00'} | eixo ${R.oe.c?(R.oe.ax??'—')+'°':'—'} | ad ${add(R.oe)}`);
     L.push(`DNP: OD ${f1(R.od.dnp)} / OE ${f1(R.oe.dnp)} mm${R.od.dnp!=null&&R.oe.dnp!=null?` (DP ${f1(R.od.dnp+R.oe.dnp)})`:''}`);
     if(R.od.alt!=null||R.oe.alt!=null)L.push(`Altura: OD ${v(R.od.alt)} / OE ${v(R.oe.alt)} mm`);
-    if(X&&X.modo==='vs'&&X.add>0)L.push(`Uso: ${X.visao==='perto'?'visão simples de perto (esf + adição)':'visão simples de longe'}`);
+    if(R.para==='perto')L.push('Uso: *para perto* (óculos de leitura)');
+    else if(X&&X.modo==='vs'&&X.add>0)L.push(`Uso: ${X.visao==='perto'?'visão simples de perto (esf + adição)':'visão simples de longe'}`);
     L.push('');
   }
   if(FR){
@@ -1115,7 +1126,8 @@ function renderPedidoHaytek(P,temLente,R,med){
     L.push('*Receita*');
     L.push(`OD: esf ${sg(R.od.s)} | cil ${R.od.c?sg(R.od.c):'0,00'} | eixo ${R.od.c?(R.od.ax??'—')+'°':'—'} | adição ${add(R.od)}`);
     L.push(`OE: esf ${sg(R.oe.s)} | cil ${R.oe.c?sg(R.oe.c):'0,00'} | eixo ${R.oe.c?(R.oe.ax??'—')+'°':'—'} | adição ${add(R.oe)}`);
-    if(X&&X.modo==='vs'&&X.add>0)L.push(`Uso: ${X.visao==='perto'?'visão simples de perto':'visão simples de longe'}`);
+    if(R.para==='perto')L.push('Receita *para perto* (óculos de leitura). DNP informada já é a de perto.');
+    else if(X&&X.modo==='vs'&&X.add>0)L.push(`Uso: ${X.visao==='perto'?'visão simples de perto':'visão simples de longe'}`);
     L.push('');
   }else if(OC.modo==='plana')L.push('*Lente plana (sem grau)*','');
   L.push('*Medidas*');
