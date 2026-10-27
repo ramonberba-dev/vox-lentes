@@ -233,6 +233,13 @@ details.ent summary{cursor:pointer;font-weight:600;color:var(--azul);min-height:
 .mact{grid-column:1/-1;position:sticky;bottom:0;background:var(--papel);border-top:1px solid var(--linha);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));display:flex;gap:10px;flex-wrap:wrap;z-index:2}
 .mact .btn{flex:1 1 180px}
 @media (max-width:760px){.gal .big{aspect-ratio:4/3}}
+details.mais>section{margin-top:16px}
+details.mais>summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:space-between;gap:12px;width:100%;
+  border:1px solid var(--azul);border-radius:14px;padding:14px 18px;min-height:56px;font-weight:600;font-size:16.5px;color:var(--azul);background:var(--papel)}
+details.mais>summary::-webkit-details-marker{display:none}
+details.mais>summary::after{content:"+";font-size:26px;line-height:1;color:var(--ouro)}
+details.mais[open]>summary{background:var(--azul);color:var(--creme)}
+details.mais[open]>summary::after{content:"−";color:var(--ouro2)}
 /* pedidos */
 .peds{display:grid;gap:12px}
 .ped{background:var(--papel);border:1px solid var(--linha);border-radius:14px;padding:16px;display:grid;gap:12px;min-width:0}
@@ -968,7 +975,12 @@ function renderGrupos(sel){sel=sel||'#grupos';
   G.baratas.forEach(o=>{o._ref=[...G.baratas,...G.cb,...G.premium].filter(x=>x.preco>o.preco&&x!==o).sort((a,b)=>a.preco-b.preco).find(x=>naoEntrega(o,x,X).some(t=>!t.startsWith('Mesma')))||ref});
   ['baratas','cb','premium'].forEach(g=>G[g].forEach((o,i)=>CARDS[g+i]={o}));
   const sec=(g,tit,sub)=>G[g].length?`<section><div class="head" style="margin-bottom:12px"><div><p class="eyebrow">${tit}</p><h2>${sub}</h2></div></div><div class="niveis">${G[g].map((o,i)=>cardVenda(o,i,g,ref)).join('')}</div></section>`:'';
-  $(sel).innerHTML=(sec('baratas','Opção 1 · Menor preço','As 3 lentes de menor custo')+sec('cb','Opção 2 · Melhor custo-benefício','3 opções intermediárias')+sec('premium','Opção 3 · Premium','O melhor para este grau'))||'<div class="vazio">Nenhuma lente Haytek atende esta receita. Consulte o laboratório.</div>';
+  // guarda quais botões estavam abertos, porque a tela é redesenhada a cada mudança na receita
+  const box=$(sel),abertos=box?[...box.querySelectorAll('details.mais[open]')].map(d=>d.dataset.g):[];
+  const dobra=(g,pergunta,tit,sub)=>G[g].length?`<details class="mais" data-g="${g}" ${abertos.includes(g)?'open':''}><summary>${pergunta}</summary>${sec(g,tit,sub)}</details>`:'';
+  $(sel).innerHTML=(sec('cb','Melhor custo-benefício','As lentes mais indicadas para a sua receita')
+    +dobra('premium','Quer qualidade premium com garantia longa?','Premium','O melhor que a Haytek faz para este grau')
+    +dobra('baratas','Quer um preço mais em conta e abrir mão de alguns benefícios?','Menor preço','As 3 lentes de menor custo'))||'<div class="vazio">Nenhuma lente Haytek atende esta receita. Consulte o laboratório.</div>';
 }
 function renderOpcoes(){
   if(!X)return;
