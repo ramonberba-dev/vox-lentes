@@ -1650,7 +1650,7 @@ function estadoAtual(){
   const chips={};$$('.chips[data-g]').forEach(g=>chips[g.dataset.g]=[...g.querySelectorAll('.chip[aria-pressed="true"]')].map(b=>b.dataset.val));
   return{qz:QZ,rx,cli:$('#cli').value,idade:$('#idade').value,armacao:$('#armacao').value,chips,fr:FR?FR.id:(window.__frId||null),oc:OC,tel:$('#pTel').value,obs:$('#pObs').value,view:VIEW_ATUAL,ex:!$('#tagEx').hidden};
 }
-function salvaEstado(){clearTimeout(tSalva);tSalva=setTimeout(()=>LS.set('voxlentes.estado',estadoAtual()),250)}
+function salvaEstado(){}
 function restauraEstado(E){
   Object.entries(E.rx||{}).forEach(([id,v])=>{const i=$('#'+id);if(i)i.value=v});
   $('#cli').value=E.cli||'';$('#idade').value=E.idade||'';if(E.armacao)$('#armacao').value=E.armacao;
@@ -1658,8 +1658,6 @@ function restauraEstado(E){
   if(E.qz)Object.assign(QZ,E.qz);if(E.oc)Object.assign(OC,E.oc);$('#pTel').value=E.tel||'';$('#pObs').value=E.obs||'';window.__frId=E.fr||null;exemplo(!!E.ex);
 }
 ['input','change','click'].forEach(ev=>document.addEventListener(ev,salvaEstado,true));
-window.addEventListener('pagehide',()=>LS.set('voxlentes.estado',estadoAtual()));
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')LS.set('voxlentes.estado',estadoAtual())});
 
 // área da loja: 5 toques seguidos no logo VOX (ou o endereço terminado em #loja)
 let toques=0,tToque;
@@ -2095,10 +2093,38 @@ espEl('#espFoto').addEventListener('click',async()=>{
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!espEl('#espelho').hidden)espFecha()});
 
+/* ================= SAIR SEM SALVAR ================= */
+// Há progresso quando a pessoa já escolheu armação, mexeu na receita ou passou do Início.
+const temProgresso=()=>!!FR||VIEW_ATUAL!=='inicio'||($('#tagEx')&&$('#tagEx').hidden&&[...$$('#rx input')].some(i=>i.value));
+function apagaProgresso(){try{localStorage.removeItem('voxlentes.estado')}catch(e){}}
+function avisoSair(sair){
+  iaAbre(`${iaTopo('Sair do app','Deseja sair?')}
+    <p class="nota" style="font-size:16px">Se você sair agora, <b>o progresso do seu óculos será apagado</b>: armação, receita e lente escolhidas.</p>
+    <div class="acoes"><button class="btn ouro" type="button" data-sair="fica">Continuar montando</button><button class="btn sec" type="button" data-sair="sai">Sair e apagar</button></div>`);
+  $('#modalIA').onclick=e=>{const b=e.target.closest('[data-sair]');if(!b)return;
+    if(b.dataset.sair==='fica'){iaFecha();history.pushState({vox:1},'');return}
+    apagaProgresso();window.__saindo=true;
+    const app=window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.App;
+    if(app&&app.exitApp)app.exitApp();else{iaFecha();history.back()}};
+}
+// "armadilha" no histórico: o voltar do celular/navegador passa por aqui
+history.pushState({vox:1},'');
+window.addEventListener('popstate',()=>{
+  if(window.__saindo)return;
+  if(!$('#veuIA').hidden){iaFecha();history.pushState({vox:1},'');return}
+  if(!$('#veu').hidden){fechaModal();history.pushState({vox:1},'');return}
+  const i=PASSOS_CLI.findIndex(e=>e[0]===VIEW_ATUAL);
+  if(VIEW_ATUAL!=='inicio'){history.pushState({vox:1},'');if(VIEW_ATUAL==='rotina'&&QZ.q>0){QZ.q--;renderQuiz()}else ir(i>0?PASSOS_CLI[i-1][0]:'inicio');return}
+  if(temProgresso()){history.pushState({vox:1},'');avisoSair();return}
+  window.__saindo=true;history.back();
+});
+// fechar a aba ou recarregar: aviso padrão do navegador
+window.addEventListener('beforeunload',e=>{if(!window.__saindo&&temProgresso()){e.preventDefault();e.returnValue=''}});
+
 let tT;function toast(t){const el=$('#toast');el.textContent=t;el.hidden=false;clearTimeout(tT);tT=setTimeout(()=>el.hidden=true,2600)}
 $('#limpar').addEventListener('click',()=>{$$('#rx input').forEach(i=>i.value='');$('#cli').value='';$('#idade').value='';exemplo(false);atualiza();$('#odesf').focus()});
 const EX={odesf:-2.5,odcil:-1,odeixo:180,oddnp:31.5,odalt:19,oeesf:-2.25,oecil:-0.75,oeeixo:170,oednp:31,oealt:19};
-const EST=LS.get('voxlentes.estado',null);
+try{localStorage.removeItem('voxlentes.estado')}catch(e){}const EST=null;
 if(EST)restauraEstado(EST);else{for(const[id,v]of Object.entries(EX))$('#'+id).value=fmtField(id.slice(2),v);
 $('#idade').value='34';exemplo(true)}
 atualiza();carregaCatalogo();aplicaModo();enviaFila();
