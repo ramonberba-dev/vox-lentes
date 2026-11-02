@@ -257,6 +257,88 @@ dl.esp dd{margin:0;color:var(--tinta)}
 .dnpbox{border-top:1px solid var(--linha);padding-top:16px;display:grid;gap:10px}
 .dnpbox p{margin:0;font-size:15px;color:var(--tinta)}.dnpbox .eyebrow{margin:0}
 .dnpbox .btn-grande{font-size:18px;min-height:64px}
+/* fluxo do cliente em etapas */
+.passos-cli{max-width:1180px;margin:0 auto;padding:2px 0 12px;display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;align-items:center}
+.passos-cli[hidden]{display:none}
+.voltar{width:40px;height:40px;border-radius:50%;border:1px solid rgba(245,242,236,.3);background:transparent;color:var(--creme);font-size:22px;line-height:1;cursor:pointer;display:grid;place-items:center;padding:0 0 2px}
+.voltar:disabled{visibility:hidden}
+.pc{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.pc button{background:none;border:0;padding:6px 0 0;color:#8E97AC;font-size:12px;font-weight:600;text-align:left;display:grid;gap:6px;cursor:pointer;min-height:36px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc button::before{content:"";height:3px;border-radius:2px;background:rgba(245,242,236,.18)}
+.pc button.feito{color:var(--creme)}.pc button.feito::before{background:var(--creme)}
+.pc button.atual{color:var(--ouro2)}.pc button.atual::before{background:var(--ouro2)}
+.pc button:disabled{cursor:default}
+.modo-cliente .bar nav{display:none}
+.modo-cliente .view>.head h1,.modo-cliente #rxLentesBox h1{font-size:clamp(34px,7vw,46px);font-style:italic;font-weight:500;line-height:1.02}
+.modo-cliente .folha,.modo-cliente .nivel,.modo-cliente .prod{border-radius:18px}
+.modo-cliente #v-vitrine .hero{display:none}
+@media (max-width:560px){.modo-cliente .vitrine{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.modo-cliente .prod .nm{font-size:19px}.modo-cliente .prod .tx{padding:10px}}
+.modo-cliente .g-quiz{display:none}
+.ini,.quiz{width:100%;max-width:560px;margin:0 auto;display:grid;gap:22px}
+.ini{padding-top:12px}
+.ini-tit{font-size:clamp(58px,15vw,88px);font-weight:500;line-height:.9;letter-spacing:-.01em}
+.ini-tit em{font-style:italic}
+.ini-sub{margin:0;font-size:17px;color:var(--mudo);max-width:34ch}
+.ini-foto{border-radius:24px;overflow:hidden;background:var(--foto);aspect-ratio:4/3}
+.ini-foto img{width:100%;height:100%;object-fit:cover;display:block}
+.ini-q{margin:6px 0 -8px;font-size:14px;font-weight:600;color:var(--mudo)}
+.ini-op,.qz-op{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px;align-items:center;width:100%;padding:16px 18px;border-radius:18px;border:1px solid var(--linha);background:var(--papel);text-align:left;cursor:pointer;color:var(--azul)}
+.ini-op:hover,.qz-op:hover{border-color:var(--azul)}
+.ini-op b,.qz-op b{display:block;font-size:17px;font-weight:600}
+.ini-op small,.qz-op small{display:block;font-size:14px;color:var(--mudo);margin-top:2px}
+.ini-op>i{width:52px;height:52px;border-radius:14px;background:var(--creme);display:flex;align-items:center;justify-content:center;gap:2px}
+.ini-op>i::before,.ini-op>i::after{content:"";width:16px;height:12px;border:2px solid var(--azul);border-radius:40%}
+.ini-op.sol>i::before,.ini-op.sol>i::after{border-radius:4px 4px 8px 8px;background:var(--azul)}
+.ini-op>span:last-child{font-size:24px;color:var(--fraco)}
+.qz-tit{font-size:clamp(36px,8vw,48px);font-style:italic;font-weight:500;line-height:1.02}
+.qz-ops{display:grid;gap:10px}
+.qz-op{grid-template-columns:minmax(0,1fr) auto}
+.qz-op>i{width:22px;height:22px;border-radius:50%;border:2px solid var(--linha2)}
+.qz-op[aria-pressed="true"]{background:var(--azul);border-color:var(--azul);color:var(--creme)}
+.qz-op[aria-pressed="true"] small{color:#C9CEDB}
+.qz-op[aria-pressed="true"]>i{border-color:var(--ouro2);background:radial-gradient(circle,var(--ouro2) 0 5px,transparent 6px)}
+.qz-pular{justify-self:center;background:none;border:0;color:var(--mudo);text-decoration:underline;font-size:15px;cursor:pointer;min-height:44px}
+.foto-rx{display:grid;gap:10px;align-items:center;grid-template-columns:minmax(0,1fr) auto}
+.foto-rx p{margin:0;font-size:15px;color:var(--mudo)}
+@media (max-width:600px){.foto-rx{grid-template-columns:minmax(0,1fr)}}
+.ia-rx{display:grid;gap:14px;border-color:var(--ouro);background:linear-gradient(180deg,var(--papel),#fff)}
+.ia-rx h2{margin:2px 0 4px}
+.ia-rx .acoes{margin:0;display:flex;gap:10px;flex-wrap:wrap}
+.ia-rx .acoes .btn{flex:1 1 200px}
+.ia-rx p{margin:0}
+.ia-modal{grid-template-columns:minmax(0,1fr)!important;max-width:640px;padding:20px;gap:14px;align-content:start}
+.ia-modal h2{margin:0}
+.ia-modal .topo{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.ia-modal .acoes{display:flex;gap:10px;flex-wrap:wrap;margin:0}
+.ia-modal .acoes .btn{flex:1 1 180px}
+.ia-modal .nota{margin:0}
+.prov-par{display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;align-items:center}
+.prov-par img{width:96px;aspect-ratio:3/4;object-fit:cover;border-radius:10px;background:var(--foto)}
+.prov-foto{width:100%;max-height:62vh;object-fit:contain;border-radius:14px;background:var(--creme);display:block}
+.prov-dicas{margin:0;padding-left:18px;color:var(--mudo);font-size:14.5px;display:grid;gap:2px}
+.ia-espera{display:grid;place-items:center;gap:14px;padding:30px 10px;text-align:center}
+.ia-espera i{width:44px;height:44px;border-radius:50%;border:3px solid var(--linha);border-top-color:var(--ouro);animation:gira 1s linear infinite}
+@keyframes gira{to{transform:rotate(360deg)}}
+.ia-aviso{font-size:13px;color:var(--mudo);border-left:3px solid var(--ouro);padding:6px 10px;background:var(--creme);border-radius:8px}
+.rxlido{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.rxlido th,.rxlido td{border-bottom:1px solid var(--linha);padding:8px 6px;text-align:center;font-size:15px}
+.rxlido th{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--mudo);font-weight:600}
+.rxlido td:first-child{font-family:var(--disp);font-weight:700;font-size:18px}
+.rxlido td.vz{color:var(--linha2)}
+.rx-miniatura{width:100%;max-height:220px;object-fit:contain;border-radius:10px;background:var(--creme)}
+.contou{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:14px;color:var(--mudo)}
+.contou span{border:1px solid var(--linha2);border-radius:999px;padding:4px 12px;background:#fff;color:var(--azul)}
+.dica-qz{margin:0;background:var(--papel);border-left:3px solid var(--ouro);border-radius:10px;padding:10px 14px;font-size:15px}
+#v-lente .nivel.rec{order:-1;background:var(--azul);border-color:var(--azul);color:var(--creme);box-shadow:0 18px 36px -20px rgba(30,42,68,.8)}
+#v-lente .nivel.rec .selo{background:var(--ouro2);color:var(--azul);border-radius:999px;padding:4px 12px}
+#v-lente .nivel.rec .argv{color:var(--creme)}
+#v-lente .nivel.rec .tag{background:transparent;border-color:rgba(245,242,236,.35);color:var(--creme)}
+#v-lente .nivel.rec .cvba{color:#D5D9E3}
+#v-lente .nivel.rec .cvba dt{background:var(--ouro2);color:var(--azul)}
+#v-lente .nivel.rec .cvba b{color:var(--creme)}
+#v-lente .nivel.rec .preco{border-top-color:rgba(245,242,236,.2)}
+#v-lente .nivel.rec .preco small{color:#C9CEDB}
+#v-lente .nivel.rec .add{background:var(--ouro2);border-color:var(--ouro2);color:var(--azul);font-weight:600}
 /* pedidos */
 .peds{display:grid;gap:12px}
 .ped{background:var(--papel);border:1px solid var(--linha);border-radius:14px;padding:16px;display:grid;gap:12px;min-width:0}
@@ -297,11 +379,29 @@ dl.esp dd{margin:0;color:var(--tinta)}
       <button role="tab" data-v="precos" aria-selected="false" id="navPrecos" hidden>Preços</button>
     </nav>
   </div>
+  <div class="passos-cli" id="passosCli" hidden>
+    <button class="voltar" type="button" id="voltar" aria-label="Voltar">‹</button>
+    <div class="pc" id="pc"></div>
+  </div>
 </header>
 
 <main>
+<!-- INÍCIO (cliente) -->
+<section class="view" id="v-inicio" hidden>
+  <div class="ini">
+    <p class="eyebrow" style="margin:0">Coleção VOX</p>
+    <h1 class="ini-tit">Busque<br><em>o alto.</em></h1>
+    <p class="ini-sub">Escolha a armação, conte um pouco da sua rotina e a gente indica a lente certa. Leva uns 2 minutos.</p>
+    <div class="ini-foto" id="iniFoto"></div>
+    <p class="ini-q">Por onde começamos?</p>
+    <button class="ini-op" type="button" data-ini="g"><i aria-hidden="true"></i><span><b>Óculos de grau</b><small>Armação + lentes para a sua receita</small></span><span aria-hidden="true">›</span></button>
+    <button class="ini-op sol" type="button" data-ini="s"><i aria-hidden="true"></i><span><b>Óculos de sol</b><small>Como vem, ou com lente de grau</small></span><span aria-hidden="true">›</span></button>
+  </div>
+</section>
+
 <!-- VITRINE -->
 <section class="view" id="v-vitrine">
+  <div class="head soCliente" hidden><div><p class="eyebrow">Passo 1</p><h1>Escolha a armação</h1><p class="sub">Toque em uma para ver as fotos e escolher.</p></div></div>
   <div class="hero">
     <div class="hero-txt">
       <p class="eyebrow" style="color:var(--ouro2)">Coleção VOX</p>
@@ -331,13 +431,22 @@ dl.esp dd{margin:0;color:var(--tinta)}
       <p class="sub">Copie os números da receita. Use + e − para ajustar de 0,25 em 0,25. <span class="exemplo" id="tagEx">Receita de exemplo</span></p></div>
     <button class="btn sec" id="limpar" type="button">Nova receita</button>
   </div>
+  <div class="folha ia-rx" id="iaRx">
+    <div><p class="eyebrow">Sem digitar</p><h2>Preencher pela foto da receita</h2>
+      <p class="nota">Tire uma foto da receita ou anexe a imagem ou o PDF. A inteligência artificial copia os números como estão escritos, com o mesmo sinal de + ou −, e você confere antes de usar.</p></div>
+    <div class="acoes">
+      <label class="btn ouro">Tirar foto da receita<input type="file" id="rxCam" accept="image/*" capture="environment" hidden></label>
+      <label class="btn sec">Anexar foto ou PDF<input type="file" id="rxArq" accept="image/*,application/pdf" hidden></label>
+    </div>
+    <p class="nota soCliente" hidden>Prefere ajuda de uma pessoa? <a id="fotoRx" href="https://wa.me/552126041377" target="_blank" rel="noopener">Envie a foto pelo WhatsApp</a> e a equipe VOX preenche com você.</p>
+  </div>
   <div class="folha guia soCliente">
     <h2>Como preencher, em 4 passos</h2>
     <ol class="passos">
       <li><b>Pegue a sua receita.</b> Ela tem uma linha para o olho direito (<b>OD</b>) e outra para o olho esquerdo (<b>OE</b>).</li>
       <li><b>Copie cada número como está escrito</b>, com o sinal de <b>+</b> ou <b>−</b> na frente. O que estiver em branco na receita fica em branco aqui.</li>
       <li><b>Diga para que é a receita</b>: se só o quadro <b>"Para perto"</b> estiver preenchido, é óculos de leitura; marque <b>Perto</b>. Nos outros casos, deixe em <b>Longe</b>.</li>
-      <li><b>Escolha a sua lente</b> logo abaixo: mostramos as opções de menor preço, de melhor custo-benefício e premium, com o que cada uma oferece.</li>
+      <li><b>Toque em "Ver lentes indicadas"</b>: responda 3 perguntas rápidas sobre a sua rotina e veja a lente mais indicada, com outras opções para comparar.</li>
     </ol>
     <details class="ent"><summary>Entenda cada campo da receita</summary>
       <dl class="glossario">
@@ -376,19 +485,19 @@ dl.esp dd{margin:0;color:var(--tinta)}
           <button class="chip" type="button" data-val="longe" aria-pressed="false">Só longe</button>
           <button class="chip" type="button" data-val="perto" aria-pressed="false">Só perto (leitura)</button>
         </div></div>
-      <div class="grupo"><span>Rotina <small style="text-transform:none;letter-spacing:0;font-weight:400">(ajuda a indicar a lente certa)</small></span>
+      <div class="grupo g-quiz"><span>Rotina <small style="text-transform:none;letter-spacing:0;font-weight:400">(ajuda a indicar a lente certa)</small></span>
         <div class="chips" data-g="uso" data-multi="1">
           <button class="chip" type="button" data-val="tela" aria-pressed="false">Muitas horas no computador</button>
           <button class="chip" type="button" data-val="noite" aria-pressed="false">Dirige à noite</button>
           <button class="chip" type="button" data-val="esporte" aria-pressed="false">Esporte ou criança</button>
           <button class="chip" type="button" data-val="fina" aria-pressed="false">Quer a lente mais fina</button>
         </div></div>
-      <div class="grupo"><span>Filtro de luz azul</span>
+      <div class="grupo g-quiz"><span>Filtro de luz azul</span>
         <div class="chips" data-g="fa">
           <button class="chip" type="button" data-val="0" aria-pressed="true">Sem filtro</button>
           <button class="chip" type="button" data-val="1" aria-pressed="false">Com filtro azul</button>
         </div></div>
-      <div class="grupo"><span>Lente que escurece no sol</span>
+      <div class="grupo g-quiz"><span>Lente que escurece no sol</span>
         <div class="chips" data-g="sol">
           <button class="chip" type="button" data-val="" aria-pressed="true">Não</button>
           <button class="chip" type="button" data-val="Foto" aria-pressed="false">Fotossensível Haytek</button>
@@ -406,11 +515,17 @@ dl.esp dd{margin:0;color:var(--tinta)}
     </aside>
   </div>
   <section class="soCliente" id="rxLentesBox" hidden style="display:grid;gap:16px">
-    <div class="head"><div><p class="eyebrow">Passo 3</p><h1>Escolha a sua lente</h1>
-      <p class="sub">Separamos as lentes Haytek que servem para a sua receita em três faixas. Em cada uma você vê o que a lente oferece e, nas mais em conta, o que ela deixa de oferecer. Toque em "Escolher esta lente" na que preferir.</p></div></div>
+    <div class="head"><div><p class="eyebrow">Sua lente ideal</p><h1>Feita para a sua rotina</h1>
+      <p class="sub">Em destaque, a lente Haytek mais indicada para a sua receita e para o que você contou. Logo abaixo, outras opções para comparar.</p></div></div>
     <div id="rxLentes" style="display:grid;gap:32px"></div>
   </section>
 </section>
+
+<!-- ROTINA (cliente) -->
+<section class="view" id="v-rotina" hidden><div class="quiz" id="quiz"></div></section>
+
+<!-- LENTE (cliente) -->
+<section class="view" id="v-lente" hidden><div id="lenteTopo" style="display:grid;gap:12px"></div></section>
 
 <!-- DNP -->
 <section class="view" id="v-dnp" hidden>
@@ -434,8 +549,8 @@ dl.esp dd{margin:0;color:var(--tinta)}
 
 <!-- ÓCULOS -->
 <section class="view" id="v-oculos" hidden>
-  <div class="head"><div><p class="eyebrow">Passo 4</p><h1>Seu óculos</h1></div>
-    <div class="acoes" style="margin-top:0"><button class="btn sec" type="button" data-ir="vitrine">Trocar armação</button><button class="btn sec soLoja" type="button" data-ir="opcoes" hidden>Ver outras lentes</button><button class="btn sec soCliente" type="button" data-ir="receita" hidden>Trocar a lente</button></div></div>
+  <div class="head"><div><p class="eyebrow" id="ocEyebrow">Passo 4</p><h1>Seu óculos</h1></div>
+    <div class="acoes" style="margin-top:0"><button class="btn sec" type="button" id="provarOc">Provar no rosto</button><button class="btn sec" type="button" data-ir="vitrine">Trocar armação</button><button class="btn sec soLoja" type="button" data-ir="opcoes" hidden>Ver outras lentes</button><button class="btn sec soCliente" type="button" data-ir="lente" hidden>Trocar a lente</button></div></div>
   <div class="oc">
     <div style="display:grid;gap:16px">
       <div class="folha oc-arm" id="ocArm"></div>
@@ -535,6 +650,7 @@ dl.esp dd{margin:0;color:var(--tinta)}
 </section>
 </main>
 
+<div class="veu" id="veuIA" hidden><div class="modal ia-modal" role="dialog" aria-modal="true" aria-labelledby="iaTit" id="modalIA"></div></div>
 <div class="veu" id="veu" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mNome" id="modal"></div></div>
 <div class="veu" id="lojaDlg" hidden><div class="folha" role="dialog" aria-modal="true" aria-labelledby="lojaDlgT" style="max-width:380px;width:100%;display:grid;gap:12px">
   <h2 id="lojaDlgT">Área da loja</h2><p class="nota">Só para a equipe VOX.</p>
@@ -631,6 +747,7 @@ function carregaCatalogo(){
     if(window.__frId&&!FR){FR=CAT.find(p=>p.id===window.__frId)||null;window.__frId=null;if(FR){$('#armacao').value=aroDe(FR);atualiza();if(!$('#v-oculos').hidden)renderOC()}}
     const pick=['camp-voxhavana-02.jpg','camp-vox-selectus-i-01.jpg','camp-vox-veritas-03.jpg'];
     const nomes=d.campanhaNomes||CAMP;
+    {const s=CAMP[nomes.findIndex(c=>c.endsWith(pick[0]))];if(s)$('#iniFoto').innerHTML=`<img src="${s}" alt="Campanha VOX">`}
     $('#heroFotos').innerHTML=pick.map(f=>CAMP[nomes.findIndex(c=>c.endsWith(f))]).filter(Boolean).map(s=>`<img src="${s}" alt="Campanha VOX" loading="lazy">`).join('');
     renderVitrine();renderArmRx();
   }).catch(()=>{$('#vitrine').innerHTML='<div class="vazio">Não consegui carregar o catálogo. Verifique a internet e recarregue a página.</div>'});
@@ -664,11 +781,13 @@ function abreProduto(p){
       </div><div class="mact">
         ${p.t==='g'?`<button class="btn ouro" type="button" data-esc="grau">Escolher e colocar grau</button><button class="btn sec" type="button" data-esc="arm">Só a armação</button>`
           :`${p.esp?'':'<button class="btn ouro" type="button" data-esc="grau">Trocar por lente de grau</button>'}<button class="btn sec" type="button" data-esc="plana">Trocar por lente plana</button><button class="btn sec" type="button" data-esc="arm">Como está</button>`}
+        <button class="btn sec" type="button" data-provar>Provar no rosto</button>
       </div>`;
   $('#veu').hidden=false;$('#mFechar').focus();
   $('#modal').onclick=e=>{
     const t=e.target.closest('[data-img]');if(t){$('#mBig').src=t.dataset.img;$$('#modal .th button').forEach(b=>b.setAttribute('aria-pressed',b===t));return}
     const c=e.target.closest('[data-esc]');if(c){escolheArmacao(p,c.dataset.esc);fechaModal()}
+    if(e.target.closest('[data-provar]')){fechaModal();abreProvador(p);return}
     if(e.target.closest('#mFechar'))fechaModal();
   };
   $('#mAro').onchange=e=>{AROFIX[p.id]=e.target.value;LS.set('voxlentes.aro',AROFIX);renderVitrine();if(FR&&FR.id===p.id)escolheArmacao(p,OC.modo,true)};
@@ -1216,7 +1335,7 @@ async function api(acao,extra){
 }
 function aplicaModo(){
   $$('.soLoja').forEach(e=>e.hidden=!LOJA);$$('.soCliente').forEach(e=>e.hidden=LOJA);$('#rxTitulo').textContent=LOJA?'Receita do cliente':'Sua receita';document.body.classList.toggle('modo-cliente',!LOJA);
-  if(!LOJA&&['dnp','opcoes'].includes(VIEW_ATUAL))ir('vitrine');if(!LOJA)renderGrupos('#rxLentes');
+  if(!LOJA&&['dnp','opcoes'].includes(VIEW_ATUAL))ir('vitrine');if(LOJA&&['inicio','rotina','lente'].includes(VIEW_ATUAL))ir('vitrine');passos(VIEW_ATUAL);if(!LOJA)renderGrupos('#rxLentes');
   $('#navPrecos').hidden=!LOJA;$('#navPedidos').hidden=!LOJA;$('#pDestBox').hidden=!LOJA;$('#pMedBox').hidden=!LOJA;$('#lojaPin').hidden=LOJA;
   $('#lojaTxt').textContent=LOJA?'Área da loja aberta neste aparelho.':'É da equipe VOX? Abra a área da loja:';
   $('#lojaBtn').textContent=LOJA?'Sair da área da loja':'Entrar';
@@ -1492,14 +1611,14 @@ var VIEW_ATUAL='vitrine';let tSalva;
 function estadoAtual(){
   const rx={};$$('#rx input').forEach(i=>rx[i.id]=i.value);
   const chips={};$$('.chips[data-g]').forEach(g=>chips[g.dataset.g]=[...g.querySelectorAll('.chip[aria-pressed="true"]')].map(b=>b.dataset.val));
-  return{rx,cli:$('#cli').value,idade:$('#idade').value,armacao:$('#armacao').value,chips,fr:FR?FR.id:(window.__frId||null),oc:OC,tel:$('#pTel').value,obs:$('#pObs').value,view:VIEW_ATUAL,ex:!$('#tagEx').hidden};
+  return{qz:QZ,rx,cli:$('#cli').value,idade:$('#idade').value,armacao:$('#armacao').value,chips,fr:FR?FR.id:(window.__frId||null),oc:OC,tel:$('#pTel').value,obs:$('#pObs').value,view:VIEW_ATUAL,ex:!$('#tagEx').hidden};
 }
 function salvaEstado(){clearTimeout(tSalva);tSalva=setTimeout(()=>LS.set('voxlentes.estado',estadoAtual()),250)}
 function restauraEstado(E){
   Object.entries(E.rx||{}).forEach(([id,v])=>{const i=$('#'+id);if(i)i.value=v});
   $('#cli').value=E.cli||'';$('#idade').value=E.idade||'';if(E.armacao)$('#armacao').value=E.armacao;
   Object.entries(E.chips||{}).forEach(([g,vals])=>{const box=$(`.chips[data-g="${g}"]`);if(box)box.querySelectorAll('.chip').forEach(b=>b.setAttribute('aria-pressed',vals.includes(b.dataset.val)))});
-  if(E.oc)Object.assign(OC,E.oc);$('#pTel').value=E.tel||'';$('#pObs').value=E.obs||'';window.__frId=E.fr||null;exemplo(!!E.ex);
+  if(E.qz)Object.assign(QZ,E.qz);if(E.oc)Object.assign(OC,E.oc);$('#pTel').value=E.tel||'';$('#pObs').value=E.obs||'';window.__frId=E.fr||null;exemplo(!!E.ex);
 }
 ['input','change','click'].forEach(ev=>document.addEventListener(ev,salvaEstado,true));
 window.addEventListener('pagehide',()=>LS.set('voxlentes.estado',estadoAtual()));
@@ -1602,16 +1721,70 @@ function atualizaPedeDNP(){
     FR?`Armação: VOX ${FR.n}`:'',P?`Lente: ${nomeOpt(P.o)}${P.o.solar?'':' '+P.o.idx}`:'',`Total do orçamento: ${$('#ocTotal').textContent}`,'Como envio a foto?'].filter(Boolean).join('\n');
   $('#pedeDNP').href='https://wa.me/552126041377?text='+encodeURIComponent(txt);
 }
-const VIEWS=['vitrine','receita','dnp','opcoes','oculos','pedidos','precos'];
-function ir(v){if(!VIEWS.includes(v))v='vitrine';if(!LOJA&&['dnp','opcoes','pedidos','precos'].includes(v))v=v==='opcoes'?'receita':'vitrine';VIEW_ATUAL=v;salvaEstado();
+/* ---------- fluxo do cliente: rotina em 3 perguntas e etapas no topo ---------- */
+var QZ={q:0,telas:'',onde:'',prio:'',novo:0};
+const QUIZ=[
+  {k:'telas',q:'Quanto tempo do seu dia é em telas?',o:[['pouco','Pouco','Celular de vez em quando'],['horas','Algumas horas','Trabalho e lazer misturados'],['todo','O dia todo','O computador é meu escritório']]},
+  {k:'onde',q:'Onde você mais usa o óculos?',o:[['dentro','Em lugares fechados','Casa, escritório, aulas'],['fora','Bastante ao ar livre','Rua e sol, entra e sai o tempo todo'],['noite','Dirijo à noite','Faróis e reflexos me incomodam'],['esporte','Esporte ou criança','Precisa de lente resistente a impacto']]},
+  {k:'prio',q:'O que pesa mais na sua escolha?',o:[['fina','Lente fina e leve','Estética e conforto em primeiro lugar'],['equilibrio','Equilíbrio','Boa lente, sem exageros'],['preco','Melhor preço','O essencial bem feito']]}];
+function renderQuiz(){
+  const i=Math.min(QZ.q,QUIZ.length-1),Q=QUIZ[i];
+  $('#quiz').innerHTML=`<div><p class="eyebrow">Rotina · ${i+1} de ${QUIZ.length}</p><h1 class="qz-tit">${Q.q}</h1></div>
+    <div class="qz-ops">${Q.o.map(([v,t,s])=>`<button class="qz-op" type="button" data-qv="${v}" aria-pressed="${QZ[Q.k]===v}"><span><b>${t}</b><small>${s}</small></span><i aria-hidden="true"></i></button>`).join('')}</div>
+    <button class="qz-pular" type="button" id="qzPular">Pular e ver as lentes</button>`;
+}
+function aplicaQuiz(){
+  const liga=(g,val,on)=>{const b=$(`.chips[data-g="${g}"] .chip[data-val="${val}"]`);if(b)b.setAttribute('aria-pressed',on)};
+  if(QZ.telas){liga('uso','tela',QZ.telas==='todo');liga('fa','1',QZ.telas==='todo');liga('fa','0',QZ.telas!=='todo')}
+  if(QZ.onde){liga('uso','noite',QZ.onde==='noite');liga('uso','esporte',QZ.onde==='esporte')}
+  if(QZ.prio)liga('uso','fina',QZ.prio==='fina');
+  atualiza();
+}
+$('#quiz').addEventListener('click',e=>{
+  if(e.target.closest('#qzPular')){aplicaQuiz();QZ.novo=1;ir('lente');return}
+  const b=e.target.closest('[data-qv]');if(!b)return;
+  const Q=QUIZ[Math.min(QZ.q,QUIZ.length-1)];QZ[Q.k]=b.dataset.qv;renderQuiz();salvaEstado();
+  setTimeout(()=>{if(QZ.q<QUIZ.length-1){QZ.q++;renderQuiz()}else{aplicaQuiz();QZ.novo=1;ir('lente')}window.scrollTo({top:0})},260);
+});
+function renderLenteTopo(){
+  const n={todo:'Telas o dia todo',horas:'Algumas horas de tela',pouco:'Pouca tela',dentro:'Usa mais em lugares fechados',fora:'Fica bastante ao ar livre',noite:'Dirige à noite',esporte:'Esporte ou criança',fina:'Quer lente fina e leve',equilibrio:'Busca equilíbrio',preco:'Quer o melhor preço'};
+  const it=[QZ.telas,QZ.onde,QZ.prio].filter(Boolean).map(k=>`<span>${n[k]}</span>`).join('');
+  const d=[];
+  if(QZ.onde==='fora')d.push('Você fica bastante ao ar livre: em "Lentes especiais" estão as lentes que escurecem no sol.');
+  if(QZ.onde==='noite')d.push('Para dirigir à noite, o antirreflexo tira o brilho dos faróis. Se a sua receita tem adição, veja também a Haytek Drive em "Lentes especiais".');
+  if(QZ.telas==='todo')d.push('Como você passa o dia em telas, já incluímos o filtro de luz azul, para mais conforto. Dá para tirar no resumo.');
+  $('#lenteTopo').innerHTML=(it?`<div class="contou">Pelo que você contou: ${it}<button class="qz-pular" type="button" data-refaz style="min-height:32px">refazer</button></div>`:'')+d.map(x=>`<p class="dica-qz">${x}</p>`).join('');
+  if(QZ.novo){QZ.novo=0;const abre=g=>{const el=$(`#rxLentes details.mais[data-g="${g}"]`);if(el)el.open=true};
+    if(QZ.prio==='preco')abre('baratas');if(QZ.prio==='fina')abre('premium');if(QZ.onde==='fora'||QZ.onde==='noite')abre('esp')}
+}
+$('#lenteTopo').addEventListener('click',e=>{if(e.target.closest('[data-refaz]')){QZ.q=0;ir('rotina')}});
+$('#v-inicio').addEventListener('click',e=>{const b=e.target.closest('[data-ini]');if(!b)return;
+  fCat=b.dataset.ini;$$('#fCat .chip').forEach(c=>c.setAttribute('aria-pressed',c.dataset.c===fCat));renderVitrine();ir('vitrine')});
+const PASSOS_CLI=[['vitrine','Armação'],['receita','Receita'],['rotina','Rotina'],['lente','Lente'],['oculos','Resumo']];
+function passos(v){
+  $('#ocEyebrow').textContent=LOJA?'Passo 4':'Resumo';
+  const box=$('#passosCli'),on=!LOJA&&v!=='inicio';box.hidden=!on;if(!on)return;
+  const i=PASSOS_CLI.findIndex(e=>e[0]===v);
+  $('#pc').innerHTML=PASSOS_CLI.map(([k,n],j)=>`<button type="button" data-etapa="${k}" class="${j<i?'feito':j===i?'atual':''}" ${j>i?'disabled':''}>${n}</button>`).join('');
+}
+$('#pc').addEventListener('click',e=>{const b=e.target.closest('[data-etapa]');if(b&&!b.disabled)ir(b.dataset.etapa)});
+$('#voltar').addEventListener('click',()=>{
+  if(VIEW_ATUAL==='rotina'&&QZ.q>0){QZ.q--;renderQuiz();return}
+  const i=PASSOS_CLI.findIndex(e=>e[0]===VIEW_ATUAL);ir(i>0?PASSOS_CLI[i-1][0]:'inicio');
+});
+$('#fotoRx').addEventListener('click',()=>{const R=leRx();
+  $('#fotoRx').href='https://wa.me/552126041377?text='+encodeURIComponent(`Olá! ${R.cli?'Sou '+R.cli+'. ':''}Estou fazendo meu orçamento no app da VOX${FR?' com a armação VOX '+FR.n:''}. Vou mandar a foto da minha receita para vocês me ajudarem a preencher.`)});
+$('#v-lente').appendChild($('#rxLentesBox'));$('#rxLentesBox .head').after($('#lenteTopo'));
+const VIEWS=['inicio','vitrine','receita','rotina','lente','dnp','opcoes','oculos','pedidos','precos'];
+function ir(v){if(!VIEWS.includes(v))v=LOJA?'vitrine':'inicio';if(!LOJA&&['dnp','opcoes','pedidos','precos'].includes(v))v=v==='opcoes'?'lente':'vitrine';if(LOJA&&['inicio','rotina','lente'].includes(v))v={inicio:'vitrine',rotina:'receita',lente:'opcoes'}[v];VIEW_ATUAL=v;salvaEstado();passos(v);
   $$('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.v===v));
   VIEWS.forEach(k=>$('#v-'+k).hidden=k!==v);
-  if(v==='dnp')carregaDNP();if(v==='precos')renderPrecos();if(v==='pedidos')carregaPedidos();if(v==='opcoes')renderOpcoes();if(v==='oculos'){$('#ocCli').value=$('#cli').value;renderOC()}
+  if(v==='dnp')carregaDNP();if(v==='precos')renderPrecos();if(v==='pedidos')carregaPedidos();if(v==='opcoes')renderOpcoes();if(v==='rotina')renderQuiz();if(v==='lente'){renderGrupos('#rxLentes');renderLenteTopo()}if(v==='oculos'){$('#ocCli').value=$('#cli').value;renderOC()}
   window.scrollTo({top:0});
 }
 $$('nav button').forEach(b=>b.addEventListener('click',()=>ir(b.dataset.v)));
 document.addEventListener('click',e=>{const b=e.target.closest('[data-ir]');if(b)ir(b.dataset.ir)});
-$('#verLentes').addEventListener('click',()=>{if(LOJA)ir('opcoes');else $('#rxLentesBox').scrollIntoView({behavior:'smooth',block:'start'})});
+$('#verLentes').addEventListener('click',()=>{if(LOJA)ir('opcoes');else{QZ.q=0;ir('rotina')}});
 $('#rxLentes').addEventListener('click',e=>{const b=e.target.closest('[data-pick]');if(b&&CARDS[b.dataset.pick])usaOpcao(CARDS[b.dataset.pick].o)});
 let dnpOk=false;
 function carregaDNP(){if(dnpOk)return;dnpOk=true;const fr=$('#dnpFrame');
@@ -1622,6 +1795,160 @@ window.addEventListener('message',e=>{const d=e.data;if(!d||d.type!=='vox-dnp')r
   put('oddnp',d.OD);put('oednp',d.OE);put('odalt',d.HOD,'int');put('oealt',d.HOE,'int');
   exemplo(false);atualiza();ir('receita');toast('DNP e altura trazidas do medidor');
 });
+/* ================= IA: PROVADOR VIRTUAL E LEITURA DA RECEITA (Gemini pelo Apps Script) ================= */
+async function iaChama(acao,dados){
+  const r=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({acao,...dados})});
+  if(!r.ok)throw new Error('rede');return r.json();
+}
+// Reduz a foto (corrige a rotação do celular) e devolve {data: base64 sem cabeçalho, mime, url}
+function iaImagem(src,max,q){return new Promise((ok,erro)=>{
+  const im=new Image();im.onload=()=>{
+    const s=Math.min(1,max/Math.max(im.naturalWidth,im.naturalHeight));
+    const c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*s);c.height=Math.round(im.naturalHeight*s);
+    const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);
+    const url=c.toDataURL('image/jpeg',q);ok({data:url.split(',')[1],mime:'image/jpeg',url});
+  };im.onerror=()=>erro(new Error('imagem'));im.src=src;
+})}
+const iaArquivo=f=>new Promise((ok,erro)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=erro;r.readAsDataURL(f)});
+function iaAbre(html){$('#modalIA').innerHTML=html;$('#veuIA').hidden=false}
+function iaFecha(){$('#veuIA').hidden=true;$('#modalIA').innerHTML=''}
+$('#veuIA').addEventListener('click',e=>{if(e.target.id==='veuIA'||e.target.closest('[data-iafecha]'))iaFecha()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#veuIA').hidden)iaFecha()});
+const iaTopo=(eb,tit)=>`<div class="topo"><div><p class="eyebrow">${eb}</p><h2 id="iaTit">${tit}</h2></div><button class="fechar" type="button" data-iafecha aria-label="Fechar">✕</button></div>`;
+const iaEspera=t=>`<div class="ia-espera"><i aria-hidden="true"></i><p class="nota" aria-live="polite">${t}</p></div>`;
+
+/* ---------- Provador virtual ---------- */
+const PROV={p:null,foto:null,res:null,antes:false}; // a foto fica só na memória desta tela, nunca é salva
+function abreProvador(p){
+  if(!p){toast('Escolha uma armação primeiro');ir('vitrine');return}
+  PROV.p=p;PROV.res=null;PROV.antes=false;telaProvador();
+}
+function telaProvador(){
+  const p=PROV.p;
+  if(PROV.res){
+    iaAbre(`${iaTopo('Provador virtual','VOX '+esc(p.n)+' em você')}
+      <img class="prov-foto" id="provImg" src="${PROV.antes?PROV.foto.url:PROV.res}" alt="${PROV.antes?'Sua foto original':'Você usando o VOX '+esc(p.n)}">
+      <div class="acoes"><button class="btn sec" type="button" data-pv="antes">${PROV.antes?'Ver com o óculos':'Ver a foto original'}</button><button class="btn sec" type="button" data-pv="salvar">Salvar ou compartilhar</button></div>
+      <p class="ia-aviso">Imagem simulada por inteligência artificial. Tamanho, cor e caimento podem variar um pouco no óculos real: na loja você prova de verdade.</p>
+      <div class="acoes"><button class="btn ouro" type="button" data-pv="escolher">${FR&&FR.id===p.id?'Continuar com este':'Quero este óculos'}</button><button class="btn sec" type="button" data-pv="outro">Provar outro modelo</button></div>`);
+    return;
+  }
+  iaAbre(`${iaTopo('Provador virtual','Prove o VOX '+esc(p.n))}
+    <div class="prov-par"><img src="${p.img[0]}" alt="VOX ${esc(p.n)}"><p class="nota">Mande uma foto sua e a inteligência artificial mostra como fica o óculos no seu rosto, sem mudar nada em você.</p></div>
+    ${PROV.foto?`<img class="prov-foto" src="${PROV.foto.url}" alt="Sua foto"><div class="acoes"><button class="btn ouro" type="button" data-pv="gerar">Provar com esta foto</button></div>`:''}
+    <ul class="prov-dicas"><li>Rosto inteiro, de frente, olhando para a câmera</li><li>Boa luz, sem sombra forte no rosto</li><li>De preferência sem óculos e com o cabelo fora dos olhos</li></ul>
+    <div class="acoes">
+      <label class="btn ${PROV.foto?'sec':'ouro'}">Tirar selfie<input type="file" accept="image/*" capture="user" hidden data-pvfoto></label>
+      <label class="btn sec">Escolher foto<input type="file" accept="image/*" hidden data-pvfoto></label>
+    </div>
+    <p class="ia-aviso">Sua foto vai só para a inteligência artificial gerar a imagem. A VOX não guarda a sua foto.</p>`);
+}
+$('#modalIA').addEventListener('change',async e=>{
+  const f=e.target.files&&e.target.files[0];if(!f)return;
+  if(e.target.matches('[data-pvfoto]')){
+    try{PROV.foto=await iaImagem(URL.createObjectURL(f),1280,.88);provaGera()}catch(er){toast('Não consegui abrir essa foto')}
+  }
+});
+$('#modalIA').addEventListener('click',e=>{
+  const b=e.target.closest('[data-pv]');if(!b)return;const a=b.dataset.pv,p=PROV.p;
+  if(a==='gerar')provaGera();
+  if(a==='antes'){PROV.antes=!PROV.antes;telaProvador()}
+  if(a==='outro'){PROV.res=null;iaFecha();ir('vitrine');toast('Escolha outro modelo e toque em "Provar no rosto"')}
+  if(a==='escolher'){iaFecha();if(!(FR&&FR.id===p.id))escolheArmacao(p,p.t==='g'?'grau':'arm')}
+  if(a==='salvar')provaSalva();
+});
+async function provaGera(){
+  const p=PROV.p;
+  iaAbre(`${iaTopo('Provador virtual','Prove o VOX '+esc(p.n))}${iaEspera('Colocando o VOX '+esc(p.n)+' no seu rosto… pode levar até 40 segundos.')}`);
+  try{
+    const oc=await iaImagem(p.img[0],1024,.9);
+    const j=await iaChama('provar',{foto:PROV.foto.data,mime:PROV.foto.mime,oculos:oc.data,oculosMime:oc.mime,nome:p.n,tipo:p.t,
+      lente:FR&&FR.id===p.id?OC.modo:''});
+    if(!j.ok)throw new Error(j.erro||'erro');
+    PROV.res=`data:${j.mime};base64,${j.img}`;PROV.antes=false;telaProvador();
+  }catch(er){
+    telaProvador();toast(er.message&&er.message!=='rede'&&er.message!=='erro'?er.message:'A IA não respondeu. Confira a internet e tente de novo.');
+  }
+}
+async function provaSalva(){
+  const nome=`vox-${PROV.p.n.toLowerCase().replace(/[^a-z0-9]+/g,'-')}-provador.png`;
+  const b=await (await fetch(PROV.res)).blob();const arq=new File([b],nome,{type:b.type||'image/png'});
+  const nativo=!!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform());
+  if(navigator.canShare&&navigator.canShare({files:[arq]})){try{await navigator.share({files:[arq],title:'VOX '+PROV.p.n});return}catch(e){if(e&&e.name==='AbortError')return}}
+  if(nativo||window.parent!==window){toast('Toque e segure a imagem para salvar');return}
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=nome;document.body.appendChild(a);a.click();a.remove();toast('Imagem baixada');
+}
+$('#provarOc').addEventListener('click',()=>abreProvador(FR));
+
+/* ---------- Leitura da receita ---------- */
+let RXIA=null; // última leitura, até o cliente confirmar
+const iaNum=v=>{if(v==null)return null;v=String(v).trim().replace(/[−–—]/g,'-').replace(',','.').replace(/[°º\s]/g,'');if(!v||/^(pl|plano)$/i.test(v))return v?0:null;return num(v)};
+const iaTemSinal=v=>/^[+\-−–]/.test(String(v||'').trim());
+function iaOlhoVazio(o){return!o||['esferico','cilindrico','eixo','adicao'].every(k=>iaNum(o[k])==null)}
+async function leReceitaArquivo(f){
+  if(!f)return;
+  iaAbre(`${iaTopo('Receita','Lendo a sua receita')}${iaEspera('A inteligência artificial está copiando os números… leva até 30 segundos.')}`);
+  try{
+    let foto;
+    if(f.type==='application/pdf'){if(f.size>6e6)throw new Error('PDF grande demais (máximo 6 MB)');const u=await iaArquivo(f);foto={data:u.split(',')[1],mime:'application/pdf',url:''}}
+    else foto=await iaImagem(URL.createObjectURL(f),2000,.9);
+    const j=await iaChama('receita',{foto:foto.data,mime:foto.mime});
+    if(!j.ok)throw new Error(j.erro||'erro');
+    RXIA={rx:j.rx,url:foto.url};telaReceitaLida();
+  }catch(er){
+    iaAbre(`${iaTopo('Receita','Não deu para ler')}<p class="nota">${esc(er.message&&er.message!=='rede'&&er.message!=='erro'?er.message:'A IA não respondeu. Confira a internet e tente de novo.')}</p>
+      <div class="acoes"><label class="btn ouro">Tentar outra foto<input type="file" accept="image/*,application/pdf" hidden data-rxnova></label><button class="btn sec" type="button" data-iafecha>Digitar à mão</button></div>`);
+  }
+}
+// Monta o que vai para o formulário, sem mudar nenhum sinal.
+function receitaParaForm(rx){
+  const L=rx.longe||{},P=rx.perto||{},avisos=[],v={};
+  const temL=!iaOlhoVazio(L.od)||!iaOlhoVazio(L.oe),temP=!iaOlhoVazio(P.od)||!iaOlhoVazio(P.oe);
+  const para=!temL&&temP?'perto':'longe';const F=para==='perto'?P:L;
+  for(const e of ['od','oe']){
+    const o=F[e]||{},E=e.toUpperCase();
+    for(const [k,campo,ehGrau] of [['esferico','esf',1],['cilindrico','cil',1],['eixo','eixo',0],['adicao','add',0],['dnp','dnp',0],['altura','alt',0]]){
+      const bruto=o[k];let n=iaNum(bruto);if(n==null)continue;
+      if(ehGrau&&n!==0&&!iaTemSinal(bruto)){avisos.push(`${E}: o ${campo==='esf'?'esférico':'cilíndrico'} (${esc(bruto)}) está sem sinal na receita. Ficou em branco: digite com o sinal + ou − que o médico escreveu.`);continue}
+      const [,,,mn,mx]=COLS.find(c=>c[0]===campo);
+      if(n<mn||n>mx){avisos.push(`${E}: ${esc(bruto)} parece fora do normal para ${campo}. Ficou em branco para você conferir.`);continue}
+      v[e+campo]=n;
+    }
+    if(para==='longe'&&v[e+'add']==null&&!iaOlhoVazio(P[e])){ // receita com longe e perto sem AD: adição = esférico de perto − esférico de longe
+      const pe=iaNum((P[e]||{}).esferico),le=v[e+'esf'];
+      if(pe!=null&&le!=null&&iaTemSinal(P[e].esferico)){const ad=Math.round((pe-le)*4)/4;if(ad>0&&ad<=4){v[e+'add']=ad;avisos.push(`${E}: a receita tem "perto" sem adição escrita. A adição +${ad.toFixed(2).replace('.',',')} foi calculada (perto − longe). Confira.`)}}
+    }
+  }
+  return{v,para,avisos};
+}
+function telaReceitaLida(){
+  const rx=RXIA.rx,{v,para,avisos}=receitaParaForm(rx);RXIA.form={v,para};
+  const fmt=(e,k)=>{const x=v[e+k];return x==null?'<td class="vz">—</td>':`<td>${fmtField(k,x)}</td>`};
+  const linhas=['od','oe'].map(e=>`<tr><td>${e.toUpperCase()}</td>${fmt(e,'esf')}${fmt(e,'cil')}${fmt(e,'eixo')}${fmt(e,'add')}</tr>`).join('');
+  const duv=(rx.duvidas||[]).filter(Boolean);
+  const nada=!Object.keys(v).length;
+  iaAbre(`${iaTopo('Receita','Confira antes de usar')}
+    ${RXIA.url?`<img class="rx-miniatura" src="${RXIA.url}" alt="Foto da receita">`:''}
+    ${rx.legivel===false||nada?'<p class="falta">Não consegui ler números de grau nesta imagem. Tente uma foto mais nítida, de cima, com a receita inteira.</p>':''}
+    <table class="rxlido"><thead><tr><th></th><th>Esférico</th><th>Cilíndrico</th><th>Eixo</th><th>Adição</th></tr></thead><tbody>${linhas}</tbody></table>
+    <p class="nota">Receita para <b>${para==='perto'?'perto (óculos de leitura)':'longe (uso diário)'}</b>${rx.paciente?` · ${esc(rx.paciente)}`:''}</p>
+    ${avisos.length||duv.length?`<ul class="avisos">${avisos.map(a=>`<li class="al">${a}</li>`).join('')}${duv.map(d=>`<li class="al">A IA ficou em dúvida: ${esc(d)}</li>`).join('')}</ul>`:''}
+    <p class="ia-aviso">Compare cada número e cada sinal (+ ou −) com a sua receita. Depois você ainda pode ajustar qualquer campo.</p>
+    <div class="acoes"><button class="btn ouro" type="button" data-rxusa ${nada?'disabled':''}>Usar estes números</button>
+      <label class="btn sec">Tentar outra foto<input type="file" accept="image/*,application/pdf" hidden data-rxnova></label></div>`);
+}
+$('#modalIA').addEventListener('change',e=>{if(e.target.matches('[data-rxnova]'))leReceitaArquivo(e.target.files[0])});
+$('#modalIA').addEventListener('click',e=>{
+  if(!e.target.closest('[data-rxusa]')||!RXIA)return;
+  const {v,para}=RXIA.form,rx=RXIA.rx;
+  $$('#rx input').forEach(i=>i.value='');
+  for(const [id,n] of Object.entries(v))$('#'+id).value=fmtField(id.slice(2),n);
+  $$('.chips[data-g="para"] .chip').forEach(c=>c.setAttribute('aria-pressed',c.dataset.val===para));
+  if(rx.paciente&&!$('#cli').value.trim()){$('#cli').value=rx.paciente;$('#ocCli').value=rx.paciente}
+  exemplo(false);atualiza();iaFecha();RXIA=null;toast('Receita preenchida. Confira os números.');
+});
+['#rxCam','#rxArq'].forEach(s=>$(s).addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';leReceitaArquivo(f)}));
+
 let tT;function toast(t){const el=$('#toast');el.textContent=t;el.hidden=false;clearTimeout(tT);tT=setTimeout(()=>el.hidden=true,2600)}
 $('#limpar').addEventListener('click',()=>{$$('#rx input').forEach(i=>i.value='');$('#cli').value='';$('#idade').value='';exemplo(false);atualiza();$('#odesf').focus()});
 const EX={odesf:-2.5,odcil:-1,odeixo:180,oddnp:31.5,odalt:19,oeesf:-2.25,oecil:-0.75,oeeixo:170,oednp:31,oealt:19};
@@ -1630,7 +1957,7 @@ if(EST)restauraEstado(EST);else{for(const[id,v]of Object.entries(EX))$('#'+id).v
 $('#idade').value='34';exemplo(true)}
 atualiza();carregaCatalogo();aplicaModo();enviaFila();
 const h0=(location.hash||'').slice(1);if(h0==='loja')setTimeout(abreLoja,300);
-ir(h0&&h0!=='loja'?h0:(EST&&EST.view)||'vitrine');
+ir(h0&&h0!=='loja'?h0:(EST&&EST.view)||(LOJA?'vitrine':'inicio'));
 </script>
 
 <script>
