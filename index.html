@@ -1723,13 +1723,13 @@ const ehIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platfo
 const ehAndroid=()=>/android/i.test(navigator.userAgent);
 const svgShare='<svg class="ico-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M8 7l4-4 4 4"/><path d="M5 11v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9"/></svg>';
 function blocoAndroid(){return`<section style="display:grid;gap:12px"><h3>Android</h3>
-  <a class="btn ouro" href="${APK_URL}" download="VOX-Lentes.apk" style="width:100%">Baixar o app para Android</a>
+  <button class="btn ouro" type="button" id="btnInstalarPWA" style="width:100%">Instalar o app VOX Lentes</button>
   <ol class="passos-app">
-    <li><span>Toque em <b>Baixar o app para Android</b>. O arquivo <b>VOX-Lentes.apk</b> vai para os Downloads do celular.</span></li>
-    <li><span>Abra o arquivo: toque na notificação do download ou procure em <b>Arquivos › Downloads</b>.</span></li>
-    <li><span>Se aparecer <b>"Por segurança, o celular não permite instalar apps desta fonte"</b>, toque em <b>Configurações</b>, ligue <b>Permitir desta fonte</b> e volte.</span></li>
-    <li><span>Toque em <b>Instalar</b>. Pronto: o ícone da VOX aparece na tela inicial e o app se atualiza sozinho.</span></li>
-  </ol></section>`}
+    <li><span>Toque em <b>Instalar o app VOX Lentes</b> e confirme em <b>Instalar</b>. Não precisa baixar arquivo nem mexer nas configurações.</span></li>
+    <li><span>Se o botão não abrir a instalação, abra este endereço no <b>Chrome</b>, toque nos <b>3 pontinhos ⋮</b> no canto de cima e escolha <b>"Instalar app"</b> (ou <b>"Adicionar à tela inicial"</b>).</span></li>
+    <li><span>Pronto: o ícone da VOX aparece na tela inicial, abre em tela cheia e se atualiza sozinho.</span></li>
+  </ol>
+  <p class="nota" style="margin:0">Prefere o arquivo de instalação? <a href="${APK_URL}" download="VOX-Lentes.apk">Baixar o APK</a> (alguns celulares pedem para liberar nas configurações).</p></section>`}
 function blocoIOS(){return`<section style="display:grid;gap:12px"><h3>iPhone e iPad</h3>
   <ol class="passos-app">
     <li><span>Abra este endereço no <b>Safari</b> (o navegador da bússola azul). No Chrome ou no Instagram não funciona.</span></li>
@@ -2132,6 +2132,16 @@ window.addEventListener('popstate',()=>{
 $('#navSairLoja').addEventListener('click',()=>avisoSair(()=>{LOJA=false;CHAVE='';LS.set('voxlentes.chave','');location.replace(location.pathname)}));
 // fechar a aba ou recarregar: aviso padrão do navegador
 window.addEventListener('beforeunload',e=>{if(!window.__saindo&&temProgresso()){e.preventDefault();e.returnValue=''}});
+
+/* ================= INSTALAR PELO NAVEGADOR (Android) ================= */
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();window.__instalar=e});
+window.addEventListener('appinstalled',()=>{window.__instalar=null;toast('App VOX Lentes instalado')});
+document.addEventListener('click',async e=>{
+  if(!e.target.closest('#btnInstalarPWA'))return;
+  const p=window.__instalar;
+  if(p){p.prompt();try{const r=await p.userChoice;if(r&&r.outcome==='accepted')toast('Instalando o app…')}catch(er){}window.__instalar=null;return}
+  toast('No Chrome, toque nos 3 pontinhos ⋮ e escolha "Instalar app"');
+});
 
 let tT;function toast(t){const el=$('#toast');el.textContent=t;el.hidden=false;clearTimeout(tT);tT=setTimeout(()=>el.hidden=true,2600)}
 $('#limpar').addEventListener('click',()=>{$$('#rx input').forEach(i=>i.value='');$('#cli').value='';$('#idade').value='';exemplo(false);atualiza();$('#odesf').focus()});
