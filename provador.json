@@ -1,0 +1,806 @@
+{
+"oculos-de-sol-vox-stella": {
+"f": "provador/oculos-de-sol-vox-stella.webp",
+"w": 560,
+"h": 239,
+"cx": [
+0.238,
+0.752
+],
+"cy": 0.51,
+"foto": "img/oculos-de-sol-vox-stella-2.webp",
+"nota": 0.249
+},
+"oculos-de-sol-speculum-jagtd": {
+"f": "provador/oculos-de-sol-speculum-jagtd.webp",
+"w": 590,
+"h": 244,
+"cx": [
+0.238,
+0.747
+],
+"cy": 0.504,
+"foto": "img/oculos-de-sol-speculum-jagtd-1.webp",
+"nota": 0.31
+},
+"oculos-de-sol-visio-blue-polarizado-vqkzq": {
+"f": "provador/oculos-de-sol-visio-blue-polarizado-vqkzq.webp",
+"w": 595,
+"h": 211,
+"cx": [
+0.228,
+0.773
+],
+"cy": 0.507,
+"foto": "img/oculos-de-sol-visio-blue-polarizado-vqkzq-2.webp",
+"nota": 0.324
+},
+"oculos-de-sol-luxor-1ltk8": {
+"f": "provador/oculos-de-sol-luxor-1ltk8.webp",
+"w": 589,
+"h": 202,
+"cx": [
+0.219,
+0.803
+],
+"cy": 0.532,
+"foto": "img/oculos-de-sol-luxor-1ltk8-1.webp",
+"nota": 1.332
+},
+"oculos-esportivo-speed-9n941": {
+"f": "provador/oculos-esportivo-speed-9n941.webp",
+"w": 584,
+"h": 277,
+"cx": [
+0.053,
+0.945
+],
+"cy": 0.495,
+"foto": "img/oculos-esportivo-speed-9n941-2.webp",
+"nota": 0.183
+},
+"armacao-visio-1-1v0en": {
+"f": "provador/armacao-visio-1-1v0en.webp",
+"w": 584,
+"h": 214,
+"cx": [
+0.257,
+0.748
+],
+"cy": 0.495,
+"foto": "img/armacao-visio-1-1v0en-1.webp",
+"nota": 1.04
+},
+"armacao-lux-i-1pn0q": {
+"f": "provador/armacao-lux-i-1pn0q.webp",
+"w": 575,
+"h": 221,
+"cx": [
+0.25,
+0.748
+],
+"cy": 0.507,
+"foto": "img/armacao-lux-i-1pn0q-1.webp",
+"nota": 1.0
+},
+"visio-ii-12m13": {
+"f": "provador/visio-ii-12m13.webp",
+"w": 589,
+"h": 211,
+"cx": [
+0.259,
+0.748
+],
+"cy": 0.495,
+"foto": "img/visio-ii-12m13-1.webp",
+"nota": 1.122
+},
+"visio-iii-1viyx": {
+"f": "provador/visio-iii-1viyx.webp",
+"w": 588,
+"h": 206,
+"cx": [
+0.25,
+0.748
+],
+"cy": 0.495,
+"foto": "img/visio-iii-1viyx-1.webp",
+"nota": 1.124
+},
+"visio-iv-uo08z": {
+"f": "provador/visio-iv-uo08z.webp",
+"w": 588,
+"h": 214,
+"cx": [
+0.25,
+0.75
+],
+"cy": 0.495,
+"foto": "img/visio-iv-uo08z-1.webp",
+"nota": 1.235
+},
+"spectra-1s0yg": {
+"f": "provador/spectra-1s0yg.webp",
+"w": 615,
+"h": 222,
+"cx": [
+0.251,
+0.747
+],
+"cy": 0.505,
+"foto": "img/spectra-1s0yg-1.webp",
+"nota": 1.294
+},
+"sublimis-jiiy5": {
+"f": "provador/sublimis-jiiy5.webp",
+"w": 591,
+"h": 215,
+"cx": [
+0.251,
+0.746
+],
+"cy": 0.523,
+"foto": "img/sublimis-jiiy5-1.webp",
+"nota": 1.23
+},
+"selectus-i-1s45k": {
+"f": "provador/selectus-i-1s45k.webp",
+"w": 623,
+"h": 235,
+"cx": [
+0.25,
+0.747
+],
+"cy": 0.517,
+"foto": "img/selectus-i-1s45k-1.webp",
+"nota": 1.295
+},
+"selectus-ii-3zy50": {
+"f": "provador/selectus-ii-3zy50.webp",
+"w": 613,
+"h": 246,
+"cx": [
+0.25,
+0.746
+],
+"cy": 0.535,
+"foto": "img/selectus-ii-3zy50-1.webp",
+"nota": 1.109
+},
+"prestige-1jwf9": {
+"f": "provador/prestige-1jwf9.webp",
+"w": 593,
+"h": 233,
+"cx": [
+0.254,
+0.744
+],
+"cy": 0.539,
+"foto": "img/prestige-1jwf9-1.webp",
+"nota": 1.073
+},
+"escriva-5krgt": {
+"f": "provador/escriva-5krgt.webp",
+"w": 623,
+"h": 212,
+"cx": [
+0.247,
+0.751
+],
+"cy": 0.498,
+"foto": "img/escriva-5krgt-1.webp",
+"nota": 1.155
+},
+"gratia-py537": {
+"f": "provador/gratia-py537.webp",
+"w": 619,
+"h": 219,
+"cx": [
+0.26,
+0.742
+],
+"cy": 0.521,
+"foto": "img/gratia-py537-1.webp",
+"nota": 1.084
+},
+"excelsus-12tm3": {
+"f": "provador/excelsus-12tm3.webp",
+"w": 570,
+"h": 220,
+"cx": [
+0.249,
+0.748
+],
+"cy": 0.514,
+"foto": "img/excelsus-12tm3-1.webp",
+"nota": 1.211
+},
+"verum-clipon-duplo-1ac3a": {
+"f": "provador/verum-clipon-duplo-1ac3a.webp",
+"w": 610,
+"h": 227,
+"cx": [
+0.251,
+0.748
+],
+"cy": 0.502,
+"foto": "img/verum-clipon-duplo-1ac3a-1.webp",
+"nota": 1.193
+},
+"fidelitas-ii-1d98m": {
+"f": "provador/fidelitas-ii-1d98m.webp",
+"w": 586,
+"h": 218,
+"cx": [
+0.249,
+0.75
+],
+"cy": 0.5,
+"foto": "img/fidelitas-ii-1d98m-1.webp",
+"nota": 1.049
+},
+"dominus-13ojs": {
+"f": "provador/dominus-13ojs.webp",
+"w": 621,
+"h": 240,
+"cx": [
+0.255,
+0.742
+],
+"cy": 0.49,
+"foto": "img/dominus-13ojs-1.webp",
+"nota": 1.044
+},
+"luna-tartaruga-c1-j2y8b": {
+"f": "provador/luna-tartaruga-c1-j2y8b.webp",
+"w": 630,
+"h": 220,
+"cx": [
+0.251,
+0.747
+],
+"cy": 0.552,
+"foto": "img/luna-tartaruga-c1-j2y8b-1.webp",
+"nota": 1.031
+},
+"excelsus-preto-copia-1l4js": {
+"f": "provador/excelsus-preto-copia-1l4js.webp",
+"w": 595,
+"h": 219,
+"cx": [
+0.252,
+0.745
+],
+"cy": 0.495,
+"foto": "img/excelsus-preto-copia-1l4js-1.webp",
+"nota": 1.092
+},
+"oculos-de-sol-altus-copia-3z1vb": {
+"f": "provador/oculos-de-sol-altus-copia-3z1vb.webp",
+"w": 621,
+"h": 251,
+"cx": [
+0.272,
+0.811
+],
+"cy": 0.496,
+"foto": "img/oculos-de-sol-altus-copia-3z1vb-1.webp",
+"nota": 1.112
+},
+"oculos-de-sol-vox-invictus-polarizado-copia-giqvz": {
+"f": "provador/oculos-de-sol-vox-invictus-polarizado-copia-giqvz.webp",
+"w": 629,
+"h": 221,
+"cx": [
+0.234,
+0.775
+],
+"cy": 0.527,
+"foto": "img/oculos-de-sol-vox-invictus-polarizado-copia-giqvz-1.webp",
+"nota": 1.291
+},
+"oculos-de-sol-lummi-guhti": {
+"f": "provador/oculos-de-sol-lummi-guhti.webp",
+"w": 618,
+"h": 280,
+"cx": [
+0.248,
+0.77
+],
+"cy": 0.487,
+"foto": "img/oculos-de-sol-lummi-guhti-3.webp",
+"nota": 0.266
+},
+"oculos-de-sol-havana-lente-polarizada-8dsvk": {
+"f": "provador/oculos-de-sol-havana-lente-polarizada-8dsvk.webp",
+"w": 597,
+"h": 219,
+"cx": [
+0.207,
+0.776
+],
+"cy": 0.509,
+"foto": "img/oculos-de-sol-havana-lente-polarizada-8dsvk-1.webp",
+"nota": 0.366
+},
+"oculos-de-sol-vox-boreal-b2ys1": {
+"f": "provador/oculos-de-sol-vox-boreal-b2ys1.webp",
+"w": 609,
+"h": 222,
+"cx": [
+0.235,
+0.765
+],
+"cy": 0.505,
+"foto": "img/oculos-de-sol-vox-boreal-b2ys1-1.webp",
+"nota": 1.328
+},
+"oculos-de-sol-vox-nexus-tartaruga-1wz92": {
+"f": "provador/oculos-de-sol-vox-nexus-tartaruga-1wz92.webp",
+"w": 616,
+"h": 214,
+"cx": [
+0.224,
+0.781
+],
+"cy": 0.502,
+"foto": "img/oculos-de-sol-vox-nexus-tartaruga-1wz92-3.webp",
+"nota": 1.353
+},
+"vox-leona-1n49l": {
+"f": "provador/vox-leona-1n49l.webp",
+"w": 601,
+"h": 187,
+"cx": [
+0.262,
+0.739
+],
+"cy": 0.545,
+"foto": "img/vox-leona-1n49l-1.webp",
+"nota": 0.913
+},
+"vox-dualis-16l83": {
+"f": "provador/vox-dualis-16l83.webp",
+"w": 609,
+"h": 435,
+"cx": [
+0.234,
+0.779
+],
+"cy": 0.5,
+"foto": "img/vox-dualis-16l83-1.webp",
+"nota": 0.33
+},
+"vox-felis-1tr9y": {
+"f": "provador/vox-felis-1tr9y.webp",
+"w": 589,
+"h": 186,
+"cx": [
+0.253,
+0.732
+],
+"cy": 0.511,
+"foto": "img/vox-felis-1tr9y-1.webp",
+"nota": 1.347
+},
+"vox-canaa-1v827": {
+"f": "provador/vox-canaa-1v827.webp",
+"w": 612,
+"h": 246,
+"cx": [
+0.245,
+0.765
+],
+"cy": 0.498,
+"foto": "img/vox-canaa-1v827-1.webp",
+"nota": 1.259
+},
+"vox-sagitta-7bmi7": {
+"f": "provador/vox-sagitta-7bmi7.webp",
+"w": 601,
+"h": 217,
+"cx": [
+0.239,
+0.757
+],
+"cy": 0.505,
+"foto": "img/vox-sagitta-7bmi7-1.webp",
+"nota": 1.332
+},
+"vox-trinitas-2erf9": {
+"f": "provador/vox-trinitas-2erf9.webp",
+"w": 617,
+"h": 211,
+"cx": [
+0.226,
+0.778
+],
+"cy": 0.498,
+"foto": "img/vox-trinitas-2erf9-1.webp",
+"nota": 0.367
+},
+"vox-via-50e72": {
+"f": "provador/vox-via-50e72.webp",
+"w": 627,
+"h": 239,
+"cx": [
+0.243,
+0.762
+],
+"cy": 0.508,
+"foto": "img/vox-via-50e72-1.webp",
+"nota": 1.254
+},
+"vox-veritas-k55kd": {
+"f": "provador/vox-veritas-k55kd.webp",
+"w": 595,
+"h": 219,
+"cx": [
+0.251,
+0.746
+],
+"cy": 0.495,
+"foto": "img/vox-veritas-k55kd-1.webp",
+"nota": 0.99
+},
+"vox-regina-5u3vg": {
+"f": "provador/vox-regina-5u3vg.webp",
+"w": 578,
+"h": 209,
+"cx": [
+0.249,
+0.749
+],
+"cy": 0.498,
+"foto": "img/vox-regina-5u3vg-1.webp",
+"nota": 0.923
+},
+"vox-silentium-9naa7": {
+"f": "provador/vox-silentium-9naa7.webp",
+"w": 622,
+"h": 199,
+"cx": [
+0.247,
+0.749
+],
+"cy": 0.515,
+"foto": "img/vox-silentium-9naa7-1.webp",
+"nota": 1.083
+},
+"vox-sinapis-16cd3": {
+"f": "provador/vox-sinapis-16cd3.webp",
+"w": 578,
+"h": 209,
+"cx": [
+0.249,
+0.75
+],
+"cy": 0.498,
+"foto": "img/vox-sinapis-16cd3-1.webp",
+"nota": 0.964
+},
+"vox-magister-r4zz0": {
+"f": "provador/vox-magister-r4zz0.webp",
+"w": 603,
+"h": 216,
+"cx": [
+0.25,
+0.749
+],
+"cy": 0.516,
+"foto": "img/vox-magister-r4zz0-1.webp",
+"nota": 1.125
+},
+"vox-benedictus-gfluj": {
+"f": "provador/vox-benedictus-gfluj.webp",
+"w": 572,
+"h": 216,
+"cx": [
+0.248,
+0.751
+],
+"cy": 0.5,
+"foto": "img/vox-benedictus-gfluj-1.webp",
+"nota": 0.975
+},
+"vox-amethystus-15mwp": {
+"f": "provador/vox-amethystus-15mwp.webp",
+"w": 615,
+"h": 203,
+"cx": [
+0.255,
+0.743
+],
+"cy": 0.498,
+"foto": "img/vox-amethystus-15mwp-1.webp",
+"nota": 0.706
+},
+"vox-visio-mel-1njwo": {
+"f": "provador/vox-visio-mel-1njwo.webp",
+"w": 578,
+"h": 208,
+"cx": [
+0.251,
+0.749
+],
+"cy": 0.493,
+"foto": "img/vox-visio-mel-1njwo-1.webp",
+"nota": 1.252
+},
+"vox-spes-zdamp": {
+"f": "provador/vox-spes-zdamp.webp",
+"w": 550,
+"h": 201,
+"cx": [
+0.251,
+0.747
+],
+"cy": 0.498,
+"foto": "img/vox-spes-zdamp-1.webp",
+"nota": 1.133
+},
+"vox-caritas-bm0df": {
+"f": "provador/vox-caritas-bm0df.webp",
+"w": 565,
+"h": 210,
+"cx": [
+0.247,
+0.751
+],
+"cy": 0.498,
+"foto": "img/vox-caritas-bm0df-1.webp",
+"nota": 0.954
+},
+"vox-pastor-1p0qg": {
+"f": "provador/vox-pastor-1p0qg.webp",
+"w": 621,
+"h": 232,
+"cx": [
+0.255,
+0.742
+],
+"cy": 0.498,
+"foto": "img/vox-pastor-1p0qg-1.webp",
+"nota": 1.069
+},
+"vox-hosanna-1nzv5": {
+"f": "provador/vox-hosanna-1nzv5.webp",
+"w": 595,
+"h": 216,
+"cx": [
+0.252,
+0.745
+],
+"cy": 0.5,
+"foto": "img/vox-hosanna-1nzv5-1.webp",
+"nota": 1.096
+},
+"vox-fidelis": {
+"f": "provador/vox-fidelis.webp",
+"w": 569,
+"h": 219,
+"cx": [
+0.248,
+0.748
+],
+"cy": 0.509,
+"foto": "img/vox-fidelis-1.webp",
+"nota": 1.197
+},
+"vox-terra-1a03j": {
+"f": "provador/vox-terra-1a03j.webp",
+"w": 568,
+"h": 218,
+"cx": [
+0.248,
+0.748
+],
+"cy": 0.514,
+"foto": "img/vox-terra-1a03j-1.webp",
+"nota": 1.078
+},
+"vox-scriba-1ywq2": {
+"f": "provador/vox-scriba-1ywq2.webp",
+"w": 610,
+"h": 227,
+"cx": [
+0.251,
+0.748
+],
+"cy": 0.502,
+"foto": "img/vox-scriba-1ywq2-1.webp",
+"nota": 1.203
+},
+"vox-doctor-qv797": {
+"f": "provador/vox-doctor-qv797.webp",
+"w": 595,
+"h": 190,
+"cx": [
+0.247,
+0.749
+],
+"cy": 0.503,
+"foto": "img/vox-doctor-qv797-1.webp",
+"nota": 0.817
+},
+"vox-oliva-39cxu": {
+"f": "provador/vox-oliva-39cxu.webp",
+"w": 604,
+"h": 233,
+"cx": [
+0.253,
+0.744
+],
+"cy": 0.53,
+"foto": "img/vox-oliva-39cxu-1.webp",
+"nota": 1.018
+},
+"vox-corona-gke7s": {
+"f": "provador/vox-corona-gke7s.webp",
+"w": 575,
+"h": 220,
+"cx": [
+0.25,
+0.749
+],
+"cy": 0.509,
+"foto": "img/vox-corona-gke7s-1.webp",
+"nota": 1.007
+},
+"vox-duplex-1nxcq": {
+"f": "provador/vox-duplex-1nxcq.webp",
+"w": 570,
+"h": 138,
+"cx": [
+0.246,
+0.781
+],
+"cy": 0.496,
+"foto": "img/vox-duplex-1nxcq-1.webp",
+"nota": 0.295
+},
+"vox-vigilia-vwpzg": {
+"f": "provador/vox-vigilia-vwpzg.webp",
+"w": 623,
+"h": 448,
+"cx": [
+0.193,
+0.771
+],
+"cy": 0.497,
+"foto": "img/vox-vigilia-vwpzg-1.webp",
+"nota": 0.373
+},
+"vox-votum-cristal-dlt5o": {
+"f": "provador/vox-votum-cristal-dlt5o.webp",
+"w": 607,
+"h": 212,
+"cx": [
+0.251,
+0.748
+],
+"cy": 0.538,
+"foto": "img/vox-votum-cristal-dlt5o-1.webp",
+"nota": 0.866
+},
+"vox-votum-marrom-1090d": {
+"f": "provador/vox-votum-marrom-1090d.webp",
+"w": 624,
+"h": 205,
+"cx": [
+0.25,
+0.748
+],
+"cy": 0.5,
+"foto": "img/vox-votum-marrom-1090d-1.webp",
+"nota": 1.022
+},
+"vox-gaudium-1etd0": {
+"f": "provador/vox-gaudium-1etd0.webp",
+"w": 617,
+"h": 204,
+"cx": [
+0.251,
+0.746
+],
+"cy": 0.498,
+"foto": "img/vox-gaudium-1etd0-1.webp",
+"nota": 1.141
+},
+"vox-fortis-ev7mn": {
+"f": "provador/vox-fortis-ev7mn.webp",
+"w": 614,
+"h": 207,
+"cx": [
+0.251,
+0.748
+],
+"cy": 0.498,
+"foto": "img/vox-fortis-ev7mn-1.webp",
+"nota": 1.124
+},
+"vox-petra-13k3r": {
+"f": "provador/vox-petra-13k3r.webp",
+"w": 627,
+"h": 248,
+"cx": [
+0.25,
+0.747
+],
+"cy": 0.552,
+"foto": "img/vox-petra-13k3r-1.webp",
+"nota": 1.198
+},
+"vox-ardens-djt21": {
+"f": "provador/vox-ardens-djt21.webp",
+"w": 617,
+"h": 215,
+"cx": [
+0.254,
+0.745
+],
+"cy": 0.498,
+"foto": "img/vox-ardens-djt21-1.webp",
+"nota": 1.166
+},
+"vox-hortus-1nxr0": {
+"f": "provador/vox-hortus-1nxr0.webp",
+"w": 623,
+"h": 198,
+"cx": [
+0.252,
+0.748
+],
+"cy": 0.497,
+"foto": "img/vox-hortus-1nxr0-1.webp",
+"nota": 1.074
+},
+"vox-columba-dk869": {
+"f": "provador/vox-columba-dk869.webp",
+"w": 622,
+"h": 226,
+"cx": [
+0.255,
+0.743
+],
+"cy": 0.496,
+"foto": "img/vox-columba-dk869-1.webp",
+"nota": 1.019
+},
+"vox-tessera-k4f7l": {
+"f": "provador/vox-tessera-k4f7l.webp",
+"w": 622,
+"h": 211,
+"cx": [
+0.254,
+0.743
+],
+"cy": 0.531,
+"foto": "img/vox-tessera-k4f7l-1.webp",
+"nota": 1.106
+},
+"vox-custos-1q3ev": {
+"f": "provador/vox-custos-1q3ev.webp",
+"w": 613,
+"h": 215,
+"cx": [
+0.254,
+0.744
+],
+"cy": 0.502,
+"foto": "img/vox-custos-1q3ev-1.webp",
+"nota": 1.124
+},
+"oculos-de-sol-venia": {
+"f": "provador/oculos-de-sol-venia.webp",
+"w": 623,
+"h": 235,
+"cx": [
+0.227,
+0.763
+],
+"cy": 0.5,
+"foto": "img/oculos-de-sol-venia-2.webp",
+"nota": 1.22
+}
+}

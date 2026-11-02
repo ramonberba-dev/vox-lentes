@@ -325,6 +325,26 @@ dl.esp dd{margin:0;color:var(--tinta)}
 .rxlido th{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--mudo);font-weight:600}
 .rxlido td:first-child{font-family:var(--disp);font-weight:700;font-size:18px}
 .rxlido td.vz{color:var(--linha2)}
+.esp{position:fixed;inset:0;z-index:35;background:var(--azul);color:var(--creme);display:grid;grid-template-rows:auto minmax(0,1fr) auto;
+  padding:calc(10px + env(safe-area-inset-top,0px)) 0 calc(12px + env(safe-area-inset-bottom,0px))}
+.esp-topo{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 16px 8px}
+.esp-topo .eyebrow{color:var(--ouro2);margin:0}
+.esp-topo h2{margin:0;font-family:var(--disp);font-style:italic;font-weight:500;font-size:clamp(24px,6vw,32px);color:var(--creme)}
+.esp-topo .fechar{border-color:rgba(245,242,236,.35);color:var(--creme)}
+.esp-palco{position:relative;display:grid;place-items:center;min-height:0;padding:0 12px}
+.esp-palco canvas{max-width:100%;max-height:100%;border-radius:18px;background:#121826;display:block}
+.esp-msg{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);background:rgba(18,24,38,.82);color:var(--creme);border-radius:999px;padding:9px 16px;font-size:14.5px;max-width:calc(100% - 48px);text-align:center}
+.esp-base{display:grid;gap:10px;padding:10px 0 0}
+.esp-tira{display:flex;gap:8px;overflow-x:auto;padding:2px 16px 4px;scrollbar-width:none}
+.esp-tira::-webkit-scrollbar{display:none}
+.esp-tira button{flex:0 0 auto;width:86px;border:1.5px solid rgba(245,242,236,.18);background:var(--creme);border-radius:12px;padding:6px 4px 4px;cursor:pointer;display:grid;gap:2px;justify-items:center}
+.esp-tira button[aria-pressed="true"]{border-color:var(--ouro2);box-shadow:0 0 0 2px var(--ouro2)}
+.esp-tira img{width:74px;height:32px;object-fit:contain}
+.esp-tira span{font-size:11px;color:var(--azul);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:78px}
+.esp-acoes{display:flex;gap:10px;padding:0 16px}
+.esp-acoes .btn{flex:1 1 0;min-height:52px}
+.esp-acoes .btn.sec{color:var(--creme);border-color:rgba(245,242,236,.45)}
+.esp-nota{margin:0;padding:0 16px;font-size:12.5px;color:rgba(245,242,236,.7);text-align:center}
 .rx-miniatura{width:100%;max-height:220px;object-fit:contain;border-radius:10px;background:var(--creme)}
 .contou{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:14px;color:var(--mudo)}
 .contou span{border:1px solid var(--linha2);border-radius:999px;padding:4px 12px;background:#fff;color:var(--azul)}
@@ -650,6 +670,16 @@ dl.esp dd{margin:0;color:var(--tinta)}
 </section>
 </main>
 
+<div class="esp" id="espelho" hidden role="dialog" aria-modal="true" aria-labelledby="espTit">
+  <div class="esp-topo"><div><p class="eyebrow">Espelho virtual</p><h2 id="espTit">Prove os óculos</h2></div><button class="fechar" type="button" id="espFechar" aria-label="Fechar">✕</button></div>
+  <div class="esp-palco"><canvas id="espTela" width="720" height="960"></canvas><p class="esp-msg" id="espMsg" aria-live="polite">Abrindo a câmera…</p></div>
+  <div class="esp-base">
+    <div class="esp-tira" id="espTira"></div>
+    <div class="esp-acoes"><button class="btn sec" type="button" id="espFoto">Tirar foto</button><button class="btn ouro" type="button" id="espQuero">Quero este</button></div>
+    <p class="esp-nota">A câmera funciona só no seu celular: nada é gravado nem enviado. Simulação: tamanho e cor podem variar um pouco do real.</p>
+  </div>
+  <input type="file" id="espArq" accept="image/*" capture="user" hidden>
+</div>
 <div class="veu" id="veuIA" hidden><div class="modal ia-modal" role="dialog" aria-modal="true" aria-labelledby="iaTit" id="modalIA"></div></div>
 <div class="veu" id="veu" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mNome" id="modal"></div></div>
 <div class="veu" id="lojaDlg" hidden><div class="folha" role="dialog" aria-modal="true" aria-labelledby="lojaDlgT" style="max-width:380px;width:100%;display:grid;gap:12px">
@@ -1948,6 +1978,115 @@ $('#modalIA').addEventListener('click',e=>{
   exemplo(false);atualiza();iaFecha();RXIA=null;toast('Receita preenchida. Confira os números.');
 });
 ['#rxCam','#rxArq'].forEach(s=>$(s).addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';leReceitaArquivo(f)}));
+
+/* ================= ESPELHO VIRTUAL (grátis, no aparelho) ================= */
+// Câmera frontal + MediaPipe Face Landmarker (mp/ do site) acham os olhos; a foto do óculos sem fundo
+// (provador/<id>.webp) é desenhada no tamanho do rosto e inclinada junto com a cabeça.
+const ESP={lista:null,p:null,img:null,info:null,fl:null,modo:'',video:null,stream:null,raf:0,pose:null,foto:null,ultimo:0};
+const espEl=s=>$(s);
+async function espLista(){if(ESP.lista)return ESP.lista;try{ESP.lista=await (await fetch('provador.json')).json()}catch(e){ESP.lista={}}return ESP.lista}
+function espMsg(t){const m=espEl('#espMsg');m.textContent=t||'';m.hidden=!t}
+async function espModelo(modo){
+  if(ESP.fl&&ESP.modo===modo)return ESP.fl;
+  const base=new URL('mp/',document.baseURI).href;
+  const v=await import(base+'vision_bundle.mjs');
+  const fs=await v.FilesetResolver.forVisionTasks(base+'wasm');
+  const op=d=>({baseOptions:{modelAssetPath:base+'face_landmarker.task',delegate:d},runningMode:modo,numFaces:1});
+  try{ESP.fl=await v.FaceLandmarker.createFromOptions(fs,op('GPU'))}catch(e){ESP.fl=await v.FaceLandmarker.createFromOptions(fs,op('CPU'))}
+  ESP.modo=modo;return ESP.fl;
+}
+function espTira(){
+  const L=ESP.lista,ids=Object.keys(L);
+  espEl('#espTira').innerHTML=ids.map(id=>{const p=CAT.find(x=>x.id===id);if(!p)return'';
+    return`<button type="button" data-esp="${id}" aria-pressed="${ESP.p&&ESP.p.id===id}"><img src="${L[id].f}" alt="" loading="lazy"><span>${esc(p.n)}</span></button>`}).join('');
+  const s=espEl('#espTira [aria-pressed="true"]');if(s)s.scrollIntoView({inline:'center',block:'nearest'});
+}
+function espEscolhe(id){
+  const p=CAT.find(x=>x.id===id),info=ESP.lista[id];if(!p||!info)return;
+  ESP.p=p;ESP.info=info;espEl('#espTit').textContent='VOX '+p.n;
+  const im=new Image();im.onload=()=>{if(ESP.p===p){ESP.img=im;if(ESP.foto)espDesenhaFoto()}};im.src=info.f;
+  $$('#espTira button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.esp===id));
+}
+async function abreProvador(p){
+  const L=await espLista();
+  if(!Object.keys(L).length){toast('O espelho virtual funciona no app VOX Lentes instalado ou no site.');return}
+  espEl('#espelho').hidden=false;document.body.style.overflow='hidden';
+  espTira();
+  const id=p&&L[p.id]?p.id:Object.keys(L)[0];
+  espEscolhe(id);
+  if(p&&!L[p.id])toast(`O VOX ${p.n} ainda não está no espelho. Escolha outro modelo abaixo.`);
+  ESP.foto=null;ESP.pose=null;
+  try{await espCamera()}catch(e){espMsg('');espSemCamera()}
+}
+async function espCamera(){
+  espMsg('Abrindo a câmera…');
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw new Error('sem câmera');
+  ESP.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:720},height:{ideal:960}},audio:false});
+  const v=ESP.video||document.createElement('video');ESP.video=v;v.playsInline=true;v.muted=true;v.srcObject=ESP.stream;await v.play();
+  espMsg('Carregando o espelho…');
+  await espModelo('VIDEO');
+  espMsg('Olhe para a câmera, com o rosto bem iluminado');
+  const c=espEl('#espTela');c.width=v.videoWidth;c.height=v.videoHeight;
+  const loop=()=>{ESP.raf=requestAnimationFrame(loop);if(v.readyState<2)return;
+    const ts=performance.now();let lm=null;
+    try{const r=ESP.fl.detectForVideo(v,ts);lm=r&&r.faceLandmarks&&r.faceLandmarks[0]}catch(e){}
+    espQuadro(v,v.videoWidth,v.videoHeight,lm,true);
+  };loop();
+}
+function espSemCamera(){
+  // app instalado sem permissão de câmera ao vivo, ou navegador sem suporte: usa uma foto
+  const c=espEl('#espTela'),x=c.getContext('2d');x.fillStyle='#121826';x.fillRect(0,0,c.width,c.height);
+  espMsg('Toque em "Tirar foto" para usar uma selfie');
+  espEl('#espFoto').textContent='Escolher selfie';ESP.semCamera=true;
+}
+// desenha o quadro: fundo (vídeo espelhado ou foto) + óculos nos olhos
+function espQuadro(src,w,h,lm,espelhar){
+  const c=espEl('#espTela'),x=c.getContext('2d');
+  x.save();if(espelhar){x.translate(w,0);x.scale(-1,1)}x.drawImage(src,0,0,w,h);x.restore();
+  if(!lm){ESP.pose=null;if(espelhar)espMsg('Não achei o rosto: olhe de frente para a câmera');return}
+  const P=i=>({x:(espelhar?1-lm[i].x:lm[i].x)*w,y:lm[i].y*h});
+  let a=P(468),b=P(473);if(a.x>b.x)[a,b]=[b,a];          // olho da esquerda / da direita na tela
+  const f1=P(234),f2=P(454),largRosto=Math.hypot(f2.x-f1.x,f2.y-f1.y);
+  const alvo={x:(a.x+b.x)/2,y:(a.y+b.y)/2,ang:Math.atan2(b.y-a.y,b.x-a.x),larg:largRosto};
+  const s=ESP.pose,k=.55;ESP.pose=s?{x:s.x+(alvo.x-s.x)*k,y:s.y+(alvo.y-s.y)*k,ang:s.ang+(alvo.ang-s.ang)*k,larg:s.larg+(alvo.larg-s.larg)*k}:alvo;
+  if(espelhar&&espEl('#espMsg').textContent)espMsg('');
+  const im=ESP.img,inf=ESP.info;if(!im||!inf)return;
+  const q=ESP.pose,W=q.larg*(inf.esc||.95),H=W*im.height/im.width;
+  const cx=((inf.cx[0]+inf.cx[1])/2)*W,cy=inf.cy*H;
+  x.save();x.translate(q.x,q.y);x.rotate(q.ang);
+  x.shadowColor='rgba(0,0,0,.28)';x.shadowBlur=W*.02;x.shadowOffsetY=W*.012;
+  x.drawImage(im,-cx,-cy,W,H);x.restore();
+}
+async function espDesenhaFoto(){
+  const f=ESP.foto;if(!f)return;const c=espEl('#espTela');c.width=f.width;c.height=f.height;
+  try{await espModelo('IMAGE');const r=ESP.fl.detect(f);const lm=r&&r.faceLandmarks&&r.faceLandmarks[0];ESP.pose=null;
+    espQuadro(f,f.width,f.height,lm,false);espMsg(lm?'':'Não achei o rosto nessa foto. Tente outra, de frente.')}
+  catch(e){espMsg('O espelho funciona no app VOX Lentes instalado ou no site.')}
+}
+espEl('#espArq').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
+  const im=new Image();im.onload=()=>{const s=Math.min(1,1280/Math.max(im.width,im.height));const c=document.createElement('canvas');
+    c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext('2d').drawImage(im,0,0,c.width,c.height);ESP.foto=c;espDesenhaFoto()};
+  im.src=URL.createObjectURL(f)});
+function espFecha(){
+  cancelAnimationFrame(ESP.raf);if(ESP.stream)ESP.stream.getTracks().forEach(t=>t.stop());ESP.stream=null;
+  if(ESP.fl&&ESP.modo){try{ESP.fl.close()}catch(e){}ESP.fl=null;ESP.modo=''}
+  espEl('#espelho').hidden=true;document.body.style.overflow='';espEl('#espFoto').textContent='Tirar foto';ESP.semCamera=false;ESP.foto=null;
+}
+espEl('#espFechar').addEventListener('click',espFecha);
+espEl('#espTira').addEventListener('click',e=>{const b=e.target.closest('[data-esp]');if(b)espEscolhe(b.dataset.esp)});
+espEl('#espQuero').addEventListener('click',()=>{const p=ESP.p;espFecha();if(p&&!(FR&&FR.id===p.id))escolheArmacao(p,p.t==='g'?'grau':'arm');else ir('oculos')});
+espEl('#espFoto').addEventListener('click',async()=>{
+  if(ESP.semCamera&&!ESP.foto){espEl('#espArq').click();return}
+  if(ESP.semCamera){espEl('#espArq').click();return}
+  const c=espEl('#espTela'),nome=`vox-${(ESP.p?ESP.p.n:'espelho').toLowerCase().replace(/[^a-z0-9]+/g,'-')}.jpg`;
+  c.toBlob(async b=>{const arq=new File([b],nome,{type:'image/jpeg'});
+    const nativo=!!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform());
+    if(navigator.canShare&&navigator.canShare({files:[arq]})){try{await navigator.share({files:[arq],title:'VOX '+(ESP.p?ESP.p.n:'')});return}catch(e){if(e&&e.name==='AbortError')return}}
+    if(nativo||window.parent!==window){mostraImagem(c.toDataURL('image/jpeg',.9));espFecha();return}
+    const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=nome;document.body.appendChild(a);a.click();a.remove();toast('Foto salva');
+  },'image/jpeg',.9);
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!espEl('#espelho').hidden)espFecha()});
 
 let tT;function toast(t){const el=$('#toast');el.textContent=t;el.hidden=false;clearTimeout(tT);tT=setTimeout(()=>el.hidden=true,2600)}
 $('#limpar').addEventListener('click',()=>{$$('#rx input').forEach(i=>i.value='');$('#cli').value='';$('#idade').value='';exemplo(false);atualiza();$('#odesf').focus()});
