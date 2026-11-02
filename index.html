@@ -329,7 +329,7 @@ body:not(.modo-cliente) .bar nav button{font-size:13.5px;min-height:36px;padding
 .rxlido td:first-child{font-family:var(--disp);font-weight:700;font-size:18px}
 .rxlido td.vz{color:var(--linha2)}
 [data-provar],#provarOc{display:none!important} /* 01/11: provador em stand-by a pedido do Ramon; apagar esta linha para voltar */
-.esp{position:fixed;inset:0;z-index:35;background:var(--azul);color:var(--creme);display:grid;grid-template-rows:auto minmax(0,1fr) auto;
+.espv{position:fixed;inset:0;z-index:35;background:var(--azul);color:var(--creme);display:grid;grid-template-rows:auto minmax(0,1fr) auto;
   padding:calc(10px + env(safe-area-inset-top,0px)) 0 calc(12px + env(safe-area-inset-bottom,0px))}
 .esp-topo{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 16px 8px}
 .esp-topo .eyebrow{color:var(--ouro2);margin:0}
@@ -674,7 +674,7 @@ body:not(.modo-cliente) .bar nav button{font-size:13.5px;min-height:36px;padding
 </section>
 </main>
 
-<div class="esp" id="espelho" hidden role="dialog" aria-modal="true" aria-labelledby="espTit">
+<div class="espv" id="espelho" hidden role="dialog" aria-modal="true" aria-labelledby="espTit">
   <div class="esp-topo"><div><p class="eyebrow">Espelho virtual</p><h2 id="espTit">Prove os óculos</h2></div><button class="fechar" type="button" id="espFechar" aria-label="Fechar">✕</button></div>
   <div class="esp-palco"><canvas id="espTela" width="720" height="960"></canvas><p class="esp-msg" id="espMsg" aria-live="polite">Abrindo a câmera…</p></div>
   <div class="esp-base">
