@@ -401,6 +401,7 @@ body:not(.modo-cliente) .bar nav button{font-size:13.5px;min-height:36px;padding
       <button role="tab" data-v="oculos" aria-selected="false">Seu óculos</button>
       <button role="tab" data-v="pedidos" aria-selected="false" id="navPedidos" hidden>Pedidos</button>
       <button role="tab" data-v="precos" aria-selected="false" id="navPrecos" hidden>Preços</button>
+      <button type="button" id="navSairLoja" class="soLoja" hidden style="border-color:#D4AF6A;color:#D4AF6A">Sair da loja</button>
     </nav>
   </div>
   <div class="passos-cli" id="passosCli" hidden>
@@ -1817,7 +1818,7 @@ function ir(v){if(!VIEWS.includes(v))v='inicio';if(!LOJA&&['dnp','opcoes','pedid
   if(v==='dnp')carregaDNP();if(v==='precos')renderPrecos();if(v==='pedidos')carregaPedidos();if(v==='opcoes')renderOpcoes();if(v==='rotina')renderQuiz();if(v==='lente'){renderGrupos('#rxLentes');renderLenteTopo()}if(v==='oculos'){$('#ocCli').value=$('#cli').value;renderOC()}
   window.scrollTo({top:0});
 }
-$$('nav button').forEach(b=>b.addEventListener('click',()=>ir(b.dataset.v)));
+$$('nav button').forEach(b=>{if(b.dataset.v)b.addEventListener('click',()=>ir(b.dataset.v))});
 document.addEventListener('click',e=>{const b=e.target.closest('[data-ir]');if(b)ir(b.dataset.ir)});
 $('#verLentes').addEventListener('click',()=>{QZ.q=0;ir('rotina')});
 $('#rxLentes').addEventListener('click',e=>{const b=e.target.closest('[data-pick]');if(b&&CARDS[b.dataset.pick])usaOpcao(CARDS[b.dataset.pick].o)});
@@ -2097,13 +2098,15 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!espEl('#espelho').
 // Há progresso quando a pessoa já escolheu armação, mexeu na receita ou passou do Início.
 const temProgresso=()=>!!FR||VIEW_ATUAL!=='inicio'||($('#tagEx')&&$('#tagEx').hidden&&[...$$('#rx input')].some(i=>i.value));
 function apagaProgresso(){try{localStorage.removeItem('voxlentes.estado')}catch(e){}}
-function avisoSair(sair){
-  iaAbre(`${iaTopo('Sair do app','Deseja sair?')}
-    <p class="nota" style="font-size:16px">Se você sair agora, <b>o progresso do seu óculos será apagado</b>: armação, receita e lente escolhidas.</p>
-    <div class="acoes"><button class="btn ouro" type="button" data-sair="fica">Continuar montando</button><button class="btn sec" type="button" data-sair="sai">Sair e apagar</button></div>`);
+function avisoSair(aoSair){
+  const loja=typeof aoSair==='function',prog=temProgresso();
+  iaAbre(`${iaTopo(loja?'Área da loja':'Sair do app',loja?'Deseja sair da área da loja?':'Deseja sair?')}
+    <p class="nota" style="font-size:16px">${prog?'Se você sair agora, <b>o progresso do seu óculos será apagado</b>: armação, receita e lente escolhidas.':''}${loja?(prog?' ':'')+'O app volta a abrir como para o cliente; para entrar de novo, use a chave da loja.':''}</p>
+    <div class="acoes"><button class="btn ouro" type="button" data-sair="fica">${prog?'Continuar montando':'Ficar'}</button><button class="btn sec" type="button" data-sair="sai">${prog?'Sair e apagar':'Sair'}</button></div>`);
   $('#modalIA').onclick=e=>{const b=e.target.closest('[data-sair]');if(!b)return;
-    if(b.dataset.sair==='fica'){iaFecha();history.pushState({vox:1},'');return}
+    if(b.dataset.sair==='fica'){iaFecha();if(!loja)history.pushState({vox:1},'');return}
     apagaProgresso();window.__saindo=true;
+    if(loja)return aoSair();
     const app=window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.App;
     if(app&&app.exitApp)app.exitApp();else{iaFecha();history.back()}};
 }
@@ -2118,6 +2121,8 @@ window.addEventListener('popstate',()=>{
   if(temProgresso()){history.pushState({vox:1},'');avisoSair();return}
   window.__saindo=true;history.back();
 });
+// botão "Sair da loja": sai do login e reabre o app como para o cliente
+$('#navSairLoja').addEventListener('click',()=>avisoSair(()=>{LOJA=false;CHAVE='';LS.set('voxlentes.chave','');location.replace(location.pathname)}));
 // fechar a aba ou recarregar: aviso padrão do navegador
 window.addEventListener('beforeunload',e=>{if(!window.__saindo&&temProgresso()){e.preventDefault();e.returnValue=''}});
 
