@@ -747,7 +747,7 @@ function carregaCatalogo(){
     if(window.__frId&&!FR){FR=CAT.find(p=>p.id===window.__frId)||null;window.__frId=null;if(FR){$('#armacao').value=aroDe(FR);atualiza();if(!$('#v-oculos').hidden)renderOC()}}
     const pick=['camp-voxhavana-02.jpg','camp-vox-selectus-i-01.jpg','camp-vox-veritas-03.jpg'];
     const nomes=d.campanhaNomes||CAMP;
-    {const s=CAMP[nomes.findIndex(c=>c.endsWith(pick[0]))];if(s)$('#iniFoto').innerHTML=`<img src="${s}" alt="Campanha VOX">`}
+    {const m=CAT.find(p=>p.id==='vox-magister-r4zz0');const s=m?(m.img[1]||m.img[0]):CAMP[nomes.findIndex(c=>c.endsWith(pick[0]))];if(s)$('#iniFoto').innerHTML=`<img src="${s}" alt="${m?'VOX Magister':'Campanha VOX'}">`}
     $('#heroFotos').innerHTML=pick.map(f=>CAMP[nomes.findIndex(c=>c.endsWith(f))]).filter(Boolean).map(s=>`<img src="${s}" alt="Campanha VOX" loading="lazy">`).join('');
     renderVitrine();renderArmRx();
   }).catch(()=>{$('#vitrine').innerHTML='<div class="vazio">Não consegui carregar o catálogo. Verifique a internet e recarregue a página.</div>'});
