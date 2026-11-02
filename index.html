@@ -2104,22 +2104,29 @@ function avisoSair(aoSair){
     <p class="nota" style="font-size:16px">${prog?'Se você sair agora, <b>o progresso do seu óculos será apagado</b>: armação, receita e lente escolhidas.':''}${loja?(prog?' ':'')+'O app volta a abrir como para o cliente; para entrar de novo, use a chave da loja.':''}</p>
     <div class="acoes"><button class="btn ouro" type="button" data-sair="fica">${prog?'Continuar montando':'Ficar'}</button><button class="btn sec" type="button" data-sair="sai">${prog?'Sair e apagar':'Sair'}</button></div>`);
   $('#modalIA').onclick=e=>{const b=e.target.closest('[data-sair]');if(!b)return;
-    if(b.dataset.sair==='fica'){iaFecha();if(!loja)history.pushState({vox:1},'');return}
+    if(b.dataset.sair==='fica'){iaFecha();return}
     apagaProgresso();window.__saindo=true;
     if(loja)return aoSair();
     const app=window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.App;
-    if(app&&app.exitApp)app.exitApp();else{iaFecha();history.back()}};
+    if(app&&app.exitApp)return app.exitApp();
+    // sem o plugin de app: volta ao começo do histórico e recarrega zerado; o próximo "voltar" fecha o app
+    const n=TRAVA;TRAVA=0;if(n)history.go(-n);setTimeout(()=>location.reload(),350)};
 }
-// "armadilha" no histórico: o voltar do celular/navegador passa por aqui
-history.pushState({vox:1},'');
+// "Trava" no histórico para o voltar do celular/navegador passar por aqui. O Android e o Chrome ignoram
+// entradas criadas sem toque na tela, então a trava é armada no toque, com 10 entradas de reserva.
+let TRAVA=0;
+const armaTrava=()=>{if(window.__saindo)return;while(TRAVA<10){history.pushState({vox:1},'');TRAVA++}};
+['click','touchend','keydown'].forEach(ev=>document.addEventListener(ev,armaTrava,true));
 window.addEventListener('popstate',()=>{
   if(window.__saindo)return;
-  if(!$('#veuIA').hidden){iaFecha();history.pushState({vox:1},'');return}
-  if(!$('#veu').hidden){fechaModal();history.pushState({vox:1},'');return}
+  TRAVA=Math.max(0,TRAVA-1);
+  if(!$('#veuIA').hidden){iaFecha();return}
+  if(!$('#veu').hidden){fechaModal();return}
   const i=PASSOS_CLI.findIndex(e=>e[0]===VIEW_ATUAL);
-  if(VIEW_ATUAL!=='inicio'){history.pushState({vox:1},'');if(VIEW_ATUAL==='rotina'&&QZ.q>0){QZ.q--;renderQuiz()}else ir(i>0?PASSOS_CLI[i-1][0]:'inicio');return}
-  if(temProgresso()){history.pushState({vox:1},'');avisoSair();return}
-  window.__saindo=true;history.back();
+  if(VIEW_ATUAL!=='inicio'){if(VIEW_ATUAL==='rotina'&&QZ.q>0){QZ.q--;renderQuiz()}else ir(i>0?PASSOS_CLI[i-1][0]:'inicio');return}
+  if(temProgresso()){avisoSair();return}
+  // sem nada em andamento: libera a saída (o próximo "voltar" fecha)
+  window.__saindo=true;const n=TRAVA;TRAVA=0;if(n)history.go(-n);setTimeout(()=>{window.__saindo=false},600);
 });
 // botão "Sair da loja": sai do login e reabre o app como para o cliente
 $('#navSairLoja').addEventListener('click',()=>avisoSair(()=>{LOJA=false;CHAVE='';LS.set('voxlentes.chave','');location.replace(location.pathname)}));
