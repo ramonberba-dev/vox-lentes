@@ -269,10 +269,13 @@ dl.esp dd{margin:0;color:var(--tinta)}
 .pc button.atual{color:var(--ouro2)}.pc button.atual::before{background:var(--ouro2)}
 .pc button:disabled{cursor:default}
 .modo-cliente .bar nav{display:none}
-.modo-cliente .view>.head h1,.modo-cliente #rxLentesBox h1{font-size:clamp(34px,7vw,46px);font-style:italic;font-weight:500;line-height:1.02}
-.modo-cliente .folha,.modo-cliente .nivel,.modo-cliente .prod{border-radius:18px}
-.modo-cliente #v-vitrine .hero{display:none}
-@media (max-width:560px){.modo-cliente .vitrine{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.modo-cliente .prod .nm{font-size:19px}.modo-cliente .prod .tx{padding:10px}}
+body:not(.modo-cliente) .bar nav button[data-v="vitrine"],body:not(.modo-cliente) .bar nav button[data-v="receita"],body:not(.modo-cliente) .bar nav button[data-v="oculos"]{display:none}
+body:not(.modo-cliente) .bar nav{order:3;width:100%;overflow-x:auto;justify-content:flex-start;gap:4px;padding-top:2px}
+body:not(.modo-cliente) .bar nav button{font-size:13.5px;min-height:36px;padding:6px 12px;border:1px solid rgba(245,242,236,.25)}
+.view>.head h1,#rxLentesBox h1{font-size:clamp(34px,7vw,46px);font-style:italic;font-weight:500;line-height:1.02}
+.folha,.nivel,.prod{border-radius:18px}
+#v-vitrine .hero{display:none}
+@media (max-width:560px){.vitrine{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.prod .nm{font-size:19px}.prod .tx{padding:10px}}
 .modo-cliente .g-quiz{display:none}
 .ini,.quiz{width:100%;max-width:560px;margin:0 auto;display:grid;gap:22px}
 .ini{padding-top:12px}
@@ -422,7 +425,7 @@ dl.esp dd{margin:0;color:var(--tinta)}
 
 <!-- VITRINE -->
 <section class="view" id="v-vitrine">
-  <div class="head soCliente" hidden><div><p class="eyebrow">Passo 1</p><h1>Escolha a armação</h1><p class="sub">Toque em uma para ver as fotos e escolher.</p></div></div>
+  <div class="head"><div><p class="eyebrow">Passo 1</p><h1>Escolha a armação</h1><p class="sub">Toque em uma para ver as fotos e escolher.</p></div></div>
   <div class="hero">
     <div class="hero-txt">
       <p class="eyebrow" style="color:var(--ouro2)">Coleção VOX</p>
@@ -535,7 +538,7 @@ dl.esp dd{margin:0;color:var(--tinta)}
       <ul class="avisos" id="avisos"></ul>
     </aside>
   </div>
-  <section class="soCliente" id="rxLentesBox" hidden style="display:grid;gap:16px">
+  <section id="rxLentesBox" style="display:grid;gap:16px">
     <div class="head"><div><p class="eyebrow">Sua lente ideal</p><h1>Feita para a sua rotina</h1>
       <p class="sub">Em destaque, a lente Haytek mais indicada para a sua receita e para o que você contou. Logo abaixo, outras opções para comparar.</p></div></div>
     <div id="rxLentes" style="display:grid;gap:32px"></div>
@@ -781,6 +784,9 @@ function carregaCatalogo(){
     {const m=CAT.find(p=>p.id==='vox-magister-r4zz0');const s=m?(m.img[1]||m.img[0]):CAMP[nomes.findIndex(c=>c.endsWith(pick[0]))];if(s)$('#iniFoto').innerHTML=`<img src="${s}" alt="${m?'VOX Magister':'Campanha VOX'}">`}
     $('#heroFotos').innerHTML=pick.map(f=>CAMP[nomes.findIndex(c=>c.endsWith(f))]).filter(Boolean).map(s=>`<img src="${s}" alt="Campanha VOX" loading="lazy">`).join('');
     renderVitrine();renderArmRx();
+    try{const a=new URLSearchParams(location.search).get('armacao');const p=a&&CAT.find(x=>x.id===a);let ja=false;
+     try{ja=!!sessionStorage.getItem('voxlentes.link.'+a);sessionStorage.setItem('voxlentes.link.'+a,'1')}catch(e){}
+     if(p&&!ja)escolheArmacao(p,p.t==='g'?'grau':'arm')}catch(e){}
   }).catch(()=>{$('#vitrine').innerHTML='<div class="vazio">Não consegui carregar o catálogo. Verifique a internet e recarregue a página.</div>'});
 }
 function filtra(){
@@ -1366,7 +1372,7 @@ async function api(acao,extra){
 }
 function aplicaModo(){
   $$('.soLoja').forEach(e=>e.hidden=!LOJA);$$('.soCliente').forEach(e=>e.hidden=LOJA);$('#rxTitulo').textContent=LOJA?'Receita do cliente':'Sua receita';document.body.classList.toggle('modo-cliente',!LOJA);
-  if(!LOJA&&['dnp','opcoes'].includes(VIEW_ATUAL))ir('vitrine');if(LOJA&&['inicio','rotina','lente'].includes(VIEW_ATUAL))ir('vitrine');passos(VIEW_ATUAL);if(!LOJA)renderGrupos('#rxLentes');
+  if(!LOJA&&['dnp','opcoes'].includes(VIEW_ATUAL))ir('vitrine');passos(VIEW_ATUAL);if(!LOJA)renderGrupos('#rxLentes');
   $('#navPrecos').hidden=!LOJA;$('#navPedidos').hidden=!LOJA;$('#pDestBox').hidden=!LOJA;$('#pMedBox').hidden=!LOJA;$('#lojaPin').hidden=LOJA;
   $('#lojaTxt').textContent=LOJA?'Área da loja aberta neste aparelho.':'É da equipe VOX? Abra a área da loja:';
   $('#lojaBtn').textContent=LOJA?'Sair da área da loja':'Entrar';
@@ -1793,10 +1799,10 @@ $('#v-inicio').addEventListener('click',e=>{const b=e.target.closest('[data-ini]
   fCat=b.dataset.ini;$$('#fCat .chip').forEach(c=>c.setAttribute('aria-pressed',c.dataset.c===fCat));renderVitrine();ir('vitrine')});
 const PASSOS_CLI=[['vitrine','Armação'],['receita','Receita'],['rotina','Rotina'],['lente','Lente'],['oculos','Resumo']];
 function passos(v){
-  $('#ocEyebrow').textContent=LOJA?'Passo 4':'Resumo';
-  const box=$('#passosCli'),on=!LOJA&&v!=='inicio';box.hidden=!on;if(!on)return;
+  $('#ocEyebrow').textContent='Resumo';
+  const box=$('#passosCli'),on=v!=='inicio';box.hidden=!on;if(!on)return;
   const i=PASSOS_CLI.findIndex(e=>e[0]===v);
-  $('#pc').innerHTML=PASSOS_CLI.map(([k,n],j)=>`<button type="button" data-etapa="${k}" class="${j<i?'feito':j===i?'atual':''}" ${j>i?'disabled':''}>${n}</button>`).join('');
+  $('#pc').innerHTML=PASSOS_CLI.map(([k,n],j)=>`<button type="button" data-etapa="${k}" class="${j<i?'feito':j===i?'atual':''}" ${i>=0&&j>i?'disabled':''}>${n}</button>`).join('');
 }
 $('#pc').addEventListener('click',e=>{const b=e.target.closest('[data-etapa]');if(b&&!b.disabled)ir(b.dataset.etapa)});
 $('#voltar').addEventListener('click',()=>{
@@ -1807,7 +1813,7 @@ $('#fotoRx').addEventListener('click',()=>{const R=leRx();
   $('#fotoRx').href='https://wa.me/552126041377?text='+encodeURIComponent(`Olá! ${R.cli?'Sou '+R.cli+'. ':''}Estou fazendo meu orçamento no app da VOX${FR?' com a armação VOX '+FR.n:''}. Vou mandar a foto da minha receita para vocês me ajudarem a preencher.`)});
 $('#v-lente').appendChild($('#rxLentesBox'));$('#rxLentesBox .head').after($('#lenteTopo'));
 const VIEWS=['inicio','vitrine','receita','rotina','lente','dnp','opcoes','oculos','pedidos','precos'];
-function ir(v){if(!VIEWS.includes(v))v=LOJA?'vitrine':'inicio';if(!LOJA&&['dnp','opcoes','pedidos','precos'].includes(v))v=v==='opcoes'?'lente':'vitrine';if(LOJA&&['inicio','rotina','lente'].includes(v))v={inicio:'vitrine',rotina:'receita',lente:'opcoes'}[v];VIEW_ATUAL=v;salvaEstado();passos(v);
+function ir(v){if(!VIEWS.includes(v))v='inicio';if(!LOJA&&['dnp','opcoes','pedidos','precos'].includes(v))v=v==='opcoes'?'lente':'vitrine';VIEW_ATUAL=v;salvaEstado();passos(v);
   $$('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.v===v));
   VIEWS.forEach(k=>$('#v-'+k).hidden=k!==v);
   if(v==='dnp')carregaDNP();if(v==='precos')renderPrecos();if(v==='pedidos')carregaPedidos();if(v==='opcoes')renderOpcoes();if(v==='rotina')renderQuiz();if(v==='lente'){renderGrupos('#rxLentes');renderLenteTopo()}if(v==='oculos'){$('#ocCli').value=$('#cli').value;renderOC()}
@@ -1815,7 +1821,7 @@ function ir(v){if(!VIEWS.includes(v))v=LOJA?'vitrine':'inicio';if(!LOJA&&['dnp',
 }
 $$('nav button').forEach(b=>b.addEventListener('click',()=>ir(b.dataset.v)));
 document.addEventListener('click',e=>{const b=e.target.closest('[data-ir]');if(b)ir(b.dataset.ir)});
-$('#verLentes').addEventListener('click',()=>{if(LOJA)ir('opcoes');else{QZ.q=0;ir('rotina')}});
+$('#verLentes').addEventListener('click',()=>{QZ.q=0;ir('rotina')});
 $('#rxLentes').addEventListener('click',e=>{const b=e.target.closest('[data-pick]');if(b&&CARDS[b.dataset.pick])usaOpcao(CARDS[b.dataset.pick].o)});
 let dnpOk=false;
 function carregaDNP(){if(dnpOk)return;dnpOk=true;const fr=$('#dnpFrame');
@@ -2097,7 +2103,7 @@ if(EST)restauraEstado(EST);else{for(const[id,v]of Object.entries(EX))$('#'+id).v
 $('#idade').value='34';exemplo(true)}
 atualiza();carregaCatalogo();aplicaModo();enviaFila();
 const h0=(location.hash||'').slice(1);if(h0==='loja')setTimeout(abreLoja,300);
-ir(h0&&h0!=='loja'?h0:(EST&&EST.view)||(LOJA?'vitrine':'inicio'));
+ir(h0&&h0!=='loja'?h0:(EST&&EST.view)||'inicio');
 </script>
 
 <script>
