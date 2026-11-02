@@ -115,6 +115,7 @@ h1{font-size:34px} h2{font-size:26px} h3{font-size:21px}
 .rx .olho{font-family:var(--disp);font-size:26px;font-weight:700;text-align:center;align-self:center}
 .rx .olho.od{color:var(--od)} .rx .olho.oe{color:var(--oe)}
 .cel{display:grid;gap:4px}
+.cel input.falta-rx{border-color:var(--erro);box-shadow:0 0 0 3px var(--errobg)}
 .cel input{width:100%;text-align:center;font-size:21px;font-weight:500;padding:9px 4px;border:1px solid var(--linha2);border-radius:10px;background:#fff;font-variant-numeric:tabular-nums}
 .cel input:focus{border-color:var(--ouro)}
 .cel .st{display:grid;grid-template-columns:1fr 1fr;gap:4px}
@@ -1812,7 +1813,7 @@ $('#fotoRx').addEventListener('click',()=>{const R=leRx();
   $('#fotoRx').href='https://wa.me/552126041377?text='+encodeURIComponent(`Olá! ${R.cli?'Sou '+R.cli+'. ':''}Estou fazendo meu orçamento no app da VOX${FR?' com a armação VOX '+FR.n:''}. Vou mandar a foto da minha receita para vocês me ajudarem a preencher.`)});
 $('#v-lente').appendChild($('#rxLentesBox'));$('#rxLentesBox .head').after($('#lenteTopo'));
 const VIEWS=['inicio','vitrine','receita','rotina','lente','dnp','opcoes','oculos','pedidos','precos'];
-function ir(v){if(!VIEWS.includes(v))v='inicio';if(!LOJA&&['dnp','opcoes','pedidos','precos'].includes(v))v=v==='opcoes'?'lente':'vitrine';VIEW_ATUAL=v;salvaEstado();passos(v);
+function ir(v){if(!VIEWS.includes(v))v='inicio';if(precisaRx(v)&&!rxPreenchida()){avisoRx();v='receita'}if(!LOJA&&['dnp','opcoes','pedidos','precos'].includes(v))v=v==='opcoes'?'lente':'vitrine';VIEW_ATUAL=v;salvaEstado();passos(v);
   $$('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.v===v));
   VIEWS.forEach(k=>$('#v-'+k).hidden=k!==v);
   if(v==='dnp')carregaDNP();if(v==='precos')renderPrecos();if(v==='pedidos')carregaPedidos();if(v==='opcoes')renderOpcoes();if(v==='rotina')renderQuiz();if(v==='lente'){renderGrupos('#rxLentes');renderLenteTopo()}if(v==='oculos'){$('#ocCli').value=$('#cli').value;renderOC()}
@@ -2143,12 +2144,24 @@ document.addEventListener('click',async e=>{
   toast('No Chrome, toque nos 3 pontinhos ⋮ e escolha "Instalar app"');
 });
 
+/* ================= RECEITA OBRIGATÓRIA ================= */
+// Cada olho precisa de pelo menos o esférico ou o cilíndrico (0 vale: digite 0 se a receita disser "plano").
+const rxOlhoOk=e=>['esf','cil'].some(k=>{const i=$('#'+e+k);return i&&i.value.trim()!==''&&num(i.value)!=null});
+const rxPreenchida=()=>rxOlhoOk('od')&&rxOlhoOk('oe');
+const precisaRx=v=>['rotina','lente','opcoes'].includes(v)||(v==='oculos'&&!(FR&&(OC.modo==='arm'||OC.modo==='plana')));
+function avisoRx(){
+  ['od','oe'].forEach(e=>{const ok=rxOlhoOk(e);['esf','cil'].forEach(k=>{const i=$('#'+e+k);if(i)i.classList.toggle('falta-rx',!ok)})});
+  const falta=['od','oe'].filter(e=>!rxOlhoOk(e)).map(e=>e.toUpperCase()).join(' e ');
+  toast(`Preencha a receita antes de ver as lentes (falta ${falta}). Ou toque em "Tirar foto da receita".`);
+  setTimeout(()=>{const c=$('#iaRx')||$('#rx');if(c)c.scrollIntoView({behavior:'smooth',block:'start'})},120);
+}
+$('#rx').addEventListener('input',e=>{const i=e.target;if(i.tagName==='INPUT'){const ol=i.id.slice(0,2);if(rxOlhoOk(ol))['esf','cil'].forEach(k=>{const x=$('#'+ol+k);if(x)x.classList.remove('falta-rx')})}});
+
 let tT;function toast(t){const el=$('#toast');el.textContent=t;el.hidden=false;clearTimeout(tT);tT=setTimeout(()=>el.hidden=true,2600)}
 $('#limpar').addEventListener('click',()=>{$$('#rx input').forEach(i=>i.value='');$('#cli').value='';$('#idade').value='';exemplo(false);atualiza();$('#odesf').focus()});
 const EX={odesf:-2.5,odcil:-1,odeixo:180,oddnp:31.5,odalt:19,oeesf:-2.25,oecil:-0.75,oeeixo:170,oednp:31,oealt:19};
 try{localStorage.removeItem('voxlentes.estado')}catch(e){}const EST=null;
-if(EST)restauraEstado(EST);else{for(const[id,v]of Object.entries(EX))$('#'+id).value=fmtField(id.slice(2),v);
-$('#idade').value='34';exemplo(true)}
+if(EST)restauraEstado(EST);else exemplo(false);
 atualiza();carregaCatalogo();aplicaModo();enviaFila();
 const h0=(location.hash||'').slice(1);if(h0==='loja')setTimeout(abreLoja,300);
 ir(h0&&h0!=='loja'?h0:(EST&&EST.view)||'inicio');
