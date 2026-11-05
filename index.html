@@ -1722,7 +1722,39 @@ $('#lojaChave').addEventListener('keydown',e=>{if(e.key==='Enter')$('#lojaEntrar
 
 // orçamento em imagem (PNG) com a marca VOX
 function quebraTexto(g,txt,max){const ps=String(txt).split(' '),L=[];let l='';for(const p of ps){const n=l?l+' '+p:p;if(g.measureText(n).width>max&&l){L.push(l);l=p}else l=n}if(l)L.push(l);return L}
+async function geraOrcamentoMultiPNG(){
+  const itens=[...SAC,...(FR&&ITEM_ATUAL&&ITEM_ATUAL.ok?[ITEM_ATUAL]:[])];
+  const R=leRx();const rowH=190;const W=1080;
+  const H=Math.max(1350,250+(R.cli?100:0)+itens.length*rowH+420+150);
+  const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
+  const carrega=src=>new Promise(r=>{if(!src)return r(null);const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src});
+  try{await document.fonts.ready}catch(e){}
+  g.fillStyle='#F5F2EC';g.fillRect(0,0,W,H);g.fillStyle='#1E2A44';g.fillRect(0,0,W,190);
+  const logo=await carrega($('.marca .logo')&&$('.marca .logo').src);if(logo){const h=64,w=logo.width*h/logo.height;g.drawImage(logo,70,63,w,h)}
+  g.textAlign='right';g.fillStyle='#D4AF6A';g.font='600 30px Jost, sans-serif';g.fillText('ORÇAMENTO',W-70,92);
+  g.fillStyle='#C9CEDB';g.font='26px Jost, sans-serif';g.fillText(new Date().toLocaleDateString('pt-BR'),W-70,136);g.textAlign='left';
+  let y=250;
+  if(R.cli){g.fillStyle='#5E6476';g.font='26px Jost, sans-serif';g.fillText('Para',70,y);g.fillStyle='#1E2A44';g.font='600 48px "Cormorant Garamond", Georgia, serif';g.fillText(R.cli,70,y+52);y+=100}
+  g.fillStyle='#A8843F';g.font='600 24px Jost, sans-serif';g.fillText(`${itens.length} ÓCULOS NO PEDIDO`,70,y);y+=30;
+  for(const [k,it] of itens.entries()){
+    const im=await carrega(it.img);const bw=200,bh=150;
+    if(im){g.save();g.beginPath();g.roundRect?g.roundRect(70,y,bw,bh,14):g.rect(70,y,bw,bh);g.clip();const s=Math.max(bw/im.width,bh/im.height);g.drawImage(im,70+(bw-im.width*s)/2,y+(bh-im.height*s)/2,im.width*s,im.height*s);g.restore()}
+    g.fillStyle='#A8843F';g.font='600 20px Jost, sans-serif';g.fillText(`ÓCULOS ${k+1}`,300,y+34);
+    g.fillStyle='#1E2A44';g.font='600 42px "Cormorant Garamond", Georgia, serif';g.fillText(it.nome,300,y+80);
+    g.fillStyle='#5E6476';g.font='24px Jost, sans-serif';quebraTexto(g,it.lente,500).slice(0,2).forEach((l,j)=>g.fillText(l,300,y+114+j*30));
+    g.textAlign='right';g.fillStyle='#1E2A44';g.font='600 32px Jost, sans-serif';g.fillText(brl(it.tot),W-70,y+80);g.textAlign='left';
+    y+=bh+20;g.strokeStyle='#E2DCCF';g.lineWidth=2;g.beginPath();g.moveTo(70,y);g.lineTo(W-70,y);g.stroke();y+=20}
+  const soma=itens.reduce((a,s)=>a+s.tot,0),desc=itens.length>=2?soma*.2:0;
+  y+=30;g.font='30px Jost, sans-serif';g.fillStyle='#1E2A44';g.fillText(`Soma dos ${itens.length} óculos`,70,y);g.textAlign='right';g.fillText(brl(soma),W-70,y);g.textAlign='left';
+  if(desc){y+=50;g.fillStyle='#A8843F';g.fillText('Desconto de 20% (2 ou mais óculos)',70,y);g.textAlign='right';g.fillText('− '+brl(desc),W-70,y);g.textAlign='left'}
+  y+=40;g.strokeStyle='#1E2A44';g.lineWidth=3;g.beginPath();g.moveTo(70,y);g.lineTo(W-70,y);g.stroke();y+=80;
+  g.fillStyle='#1E2A44';g.font='30px Jost, sans-serif';g.fillText('Total',70,y);g.textAlign='right';g.font='600 84px "Cormorant Garamond", Georgia, serif';g.fillText(brl(soma-desc),W-70,y+6);g.textAlign='left';
+  g.fillStyle='#1E2A44';g.fillRect(0,H-150,W,150);g.fillStyle='#F5F2EC';g.font='28px Jost, sans-serif';g.fillText('usevox.com.br  ·  WhatsApp (21) 2604-1377',70,H-88);
+  g.fillStyle='#C9CEDB';g.font='22px Jost, sans-serif';g.fillText('Valores sujeitos à confirmação da receita e da disponibilidade da lente.',70,H-50);
+  return c;
+}
 async function geraOrcamentoPNG(){
+  if(SAC.length)return geraOrcamentoMultiPNG();
   const W=1080,H=1350,c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
   const carrega=src=>new Promise(r=>{if(!src)return r(null);const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src});
   try{await document.fonts.ready}catch(e){}
@@ -1754,7 +1786,7 @@ function mostraImagem(url){
   $('#veu').hidden=false;$('#modal').onclick=e=>{if(e.target.closest('[data-fecha]'))fechaModal()};
 }
 $('#baixarOrc').addEventListener('click',async()=>{
-  const c=await geraOrcamentoPNG();const nome=`orcamento-vox${FR?'-'+FR.n.toLowerCase().replace(/[^a-z0-9]+/g,'-'):''}.png`;
+  const c=await geraOrcamentoPNG();const nome=SAC.length?`orcamento-vox-${SAC.length+(FR?1:0)}-oculos.png`:`orcamento-vox${FR?'-'+FR.n.toLowerCase().replace(/[^a-z0-9]+/g,'-'):''}.png`;
   const nativo=!!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform());
   c.toBlob(async b=>{
     const arq=new File([b],nome,{type:'image/png'});
