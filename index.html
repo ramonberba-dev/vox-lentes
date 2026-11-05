@@ -81,6 +81,15 @@ h1{font-size:34px} h2{font-size:26px} h3{font-size:21px}
 .prod{background:var(--papel);border:1px solid var(--linha);border-radius:14px;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;text-align:left;padding:0}
 .prod:hover{border-color:var(--linha2)}
 .prod.sel{border:2px solid var(--ouro)}
+.prod.na-fila{border:2px solid var(--ouro);box-shadow:0 0 0 3px rgba(212,175,106,.25)}
+.prod .ph{position:relative}
+.fila-ok{position:absolute;top:8px;left:8px;background:#1E2A44;color:#F5F2EC;border-radius:999px;font-size:12px;font-weight:600;padding:4px 10px}
+.filaBar{position:sticky;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:30;margin-top:14px;background:#1E2A44;color:#F5F2EC;border:1px solid var(--ouro);border-radius:16px;padding:12px 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;box-shadow:0 18px 40px -18px rgba(0,0,0,.5)}
+.filaBar .txt{flex:1;min-width:180px;font-size:14px;line-height:1.35}
+.filaBar .txt b{color:#D4AF6A}
+.filaBar .btn{min-height:42px;padding:8px 16px;font-size:14px}
+.filaBar .btn.sec{background:transparent;color:#F5F2EC;border-color:rgba(245,242,236,.5)}
+.multiDica{border:1px dashed var(--ouro);border-radius:12px;padding:10px 14px;margin:0 0 12px;font-size:14px;background:#FBF7EE}
 .prod .ph{aspect-ratio:4/3;background:var(--foto);overflow:hidden;max-width:100%}
 .prod .ph img{width:100%;height:100%;object-fit:cover;display:block}
 .prod .tx{padding:10px 12px 12px;display:grid;gap:4px}
@@ -457,8 +466,10 @@ body:not(.modo-cliente) .bar nav button{font-size:13.5px;min-height:36px;padding
     </div>
     <input class="busca" id="busca" type="search" placeholder="Buscar pelo nome" autocomplete="off" aria-label="Buscar armação pelo nome">
   </div>
+  <p class="multiDica">Quer mais de um óculos? Abra cada modelo e toque em <b>"+ Escolher mais de uma"</b>. Com 2 ou mais óculos, <b>20% de desconto no total</b>.</p>
   <p class="nota" id="vitCont"></p>
   <div class="vitrine" id="vitrine"><div class="vazio">Carregando o catálogo VOX…</div></div>
+  <div class="filaBar" id="filaBar" hidden></div>
 </section>
 
 <!-- RECEITA -->
@@ -792,7 +803,7 @@ const PRECOS={"PS":{"vs":{"1.56":[[359.9,489.9,509.9,389.9,519.9,539.9],[389.9,5
 /* ================= CONFIGURAÇÃO ================= */
 
 /* ================= CATÁLOGO VOX ================= */
-let CAT=[],CAMP=[],FR=null,fCat='g',SAC=[],ITEM_ATUAL=null;
+let CAT=[],CAMP=[],FR=null,fCat='g',SAC=[],ITEM_ATUAL=null,FILA=[],PROX=[],MESMA=false;
 const AROFIX=LS.get('voxlentes.aro',{});
 const aroDe=p=>AROFIX[p.id]||p.aro;
 function carregaCatalogo(){
@@ -817,9 +828,10 @@ function tagsHTML(p){const a=aroDe(p);return`<span class="mini ${p.t==='s'?'s':'
 function renderVitrine(){
   const L=filtra();
   $('#vitCont').textContent=`${L.length} ${L.length===1?'modelo':'modelos'} · preço da armação ou do óculos de sol, sem lente de grau.`;
-  $('#vitrine').innerHTML=L.map(p=>`<button class="prod ${FR&&FR.id===p.id?'sel':''}" type="button" data-p="${p.id}">
-    <div class="ph"><img src="${p.img[0]}" alt="VOX ${esc(p.n)}" loading="lazy"></div>
+  $('#vitrine').innerHTML=L.map(p=>`<button class="prod ${FR&&FR.id===p.id?'sel':''}${FILA.some(f=>f.id===p.id)?' na-fila':''}" type="button" data-p="${p.id}">
+    <div class="ph"><img src="${p.img[0]}" alt="VOX ${esc(p.n)}" loading="lazy">${FILA.some(f=>f.id===p.id)?'<span class="fila-ok">✓ Escolhida</span>':''}</div>
     <div class="tx"><span class="nm">${esc(p.n)}</span><span class="pr">${brl(p.p)}</span><span class="tg">${tagsHTML(p)}</span></div></button>`).join('')||'<div class="vazio">Nenhum modelo com esse nome.</div>';
+  renderFila();
 }
 $('#fCat').addEventListener('click',e=>{const b=e.target.closest('[data-c]');if(!b)return;fCat=b.dataset.c;$$('#fCat .chip').forEach(c=>c.setAttribute('aria-pressed',c===b));renderVitrine()});
 $('#busca').addEventListener('input',renderVitrine);
@@ -838,12 +850,15 @@ function abreProduto(p){
       </div><div class="mact">
         ${p.t==='g'?`<button class="btn ouro" type="button" data-esc="grau">Escolher e colocar grau</button><button class="btn sec" type="button" data-esc="arm">Só a armação</button>`
           :`${p.esp?'':'<button class="btn ouro" type="button" data-esc="grau">Trocar por lente de grau</button>'}<button class="btn sec" type="button" data-esc="plana">Trocar por lente plana</button><button class="btn sec" type="button" data-esc="arm">Como está</button>`}
+        <button class="btn sec" type="button" data-fila>${FILA.some(f=>f.id===p.id)?'✓ Escolhida · tirar da seleção':'+ Escolher mais de uma'}</button>
         <button class="btn sec" type="button" data-provar>Provar no rosto</button>
       </div>`;
   $('#veu').hidden=false;$('#mFechar').focus();
   $('#modal').onclick=e=>{
     const t=e.target.closest('[data-img]');if(t){$('#mBig').src=t.dataset.img;$$('#modal .th button').forEach(b=>b.setAttribute('aria-pressed',b===t));return}
     const c=e.target.closest('[data-esc]');if(c){escolheArmacao(p,c.dataset.esc);fechaModal()}
+    if(e.target.closest('[data-fila]')){const i=FILA.findIndex(f=>f.id===p.id);if(i>=0)FILA.splice(i,1);else FILA.push(p);fechaModal();renderVitrine();
+      toast(i>=0?`VOX ${p.n} saiu da seleção`:FILA.length>1?`${FILA.length} armações escolhidas. Escolha outra ou toque em Continuar.`:`VOX ${p.n} escolhida. Escolha a próxima armação.`);return}
     if(e.target.closest('[data-provar]')){fechaModal();abreProvador(p);return}
     if(e.target.closest('#mFechar'))fechaModal();
   };
@@ -2131,7 +2146,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!espEl('#espelho').
 
 /* ================= SAIR SEM SALVAR ================= */
 // Há progresso quando a pessoa já escolheu armação, mexeu na receita ou passou do Início.
-const temProgresso=()=>SAC.length>0||!!FR||VIEW_ATUAL!=='inicio'||($('#tagEx')&&$('#tagEx').hidden&&[...$$('#rx input')].some(i=>i.value));
+const temProgresso=()=>SAC.length>0||FILA.length>0||PROX.length>0||!!FR||VIEW_ATUAL!=='inicio'||($('#tagEx')&&$('#tagEx').hidden&&[...$$('#rx input')].some(i=>i.value));
 function apagaProgresso(){try{localStorage.removeItem('voxlentes.estado')}catch(e){}}
 function avisoSair(aoSair){
   const loja=typeof aoSair==='function',prog=temProgresso();
@@ -2202,10 +2217,15 @@ function renderSac(){
   const st=$('#sacTotal'),n=SAC.length+(FR?1:0),soma=sacSoma()+(FR&&ITEM_ATUAL?ITEM_ATUAL.tot:0);st.hidden=!SAC.length||LOJA;
   if(!st.hidden)st.innerHTML=n>=2?`<b>Pedido com ${n} óculos</b><br>Soma ${brl(soma)} · com 20% de desconto: <b>${brl(soma*.8)}</b>`:`<b>Pedido com ${n} óculos</b> · ${brl(soma)}`;
   const m=$('#mais20');m.hidden=!(FR&&ITEM_ATUAL&&ITEM_ATUAL.ok);
-  if(!m.hidden){m.querySelector('b.big').textContent=LOJA?'Adicionar mais um óculos ao pedido':SAC.length?'Quer levar mais um? Os 20% continuam valendo no total':'Leve mais um óculos e ganhe 20% no total da compra';
+  if(!m.hidden&&PROX.length){const nx=PROX.map(f=>'VOX '+f.n).join(', ');
+    m.querySelector('b.big').textContent=MESMA?`Aplicar esta lente nas outras ${PROX.length} ${PROX.length>1?'armações':'armação'}`:`Próxima armação: VOX ${PROX[0].n}`;
+    m.querySelector('p').textContent=(MESMA?`Vai para: ${nx}.`:`Depois dela: ${PROX.length>1?PROX.slice(1).map(f=>'VOX '+f.n).join(', '):'fim do pedido'}.`)+(LOJA?'':' Com 2 ou mais óculos, 20% de desconto no total da compra.');
+    $('#maisOculos').textContent=MESMA?'Aplicar a mesma lente →':`Montar a VOX ${PROX[0].n} →`}
+  else if(!m.hidden){$('#maisOculos').textContent='+ Adicionar outro óculos';m.querySelector('b.big').textContent=LOJA?'Adicionar mais um óculos ao pedido':SAC.length?'Quer levar mais um? Os 20% continuam valendo no total':'Leve mais um óculos e ganhe 20% no total da compra';
     m.querySelector('p').textContent=LOJA?'Guarda este óculos e volta para a vitrine para montar o próximo. Tudo vai na mesma mensagem.':SAC.length?'Você já tem o desconto de 20% no pedido inteiro. Pode escolher outra armação e outra lente.':'Escolhendo mais um produto, o desconto de 20% vale para o pedido inteiro. Você escolhe a armação e a lente do próximo e envia tudo junto.'}
 }
 $('#maisOculos').addEventListener('click',()=>{
+  if(proximaDaFila())return;
   if(!ITEM_ATUAL||!ITEM_ATUAL.ok){toast('Termine de montar este óculos primeiro');return}
   SAC.push(ITEM_ATUAL);ITEM_ATUAL=null;
   FR=null;OC.modo='grau';OC.cor='';OC.foto='';OC.fa=false;OC.line=null;OC.idx=null;OC.ar=2;FRM=null;
@@ -2214,6 +2234,52 @@ $('#maisOculos').addEventListener('click',()=>{
   toast(LOJA?`Óculos ${SAC.length} guardado. Escolha a armação do próximo.`:`Óculos ${SAC.length} guardado! Escolha a armação do próximo: 20% de desconto no total.`);
 });
 $('#sacola').addEventListener('click',e=>{const b=e.target.closest('[data-tira]');if(!b)return;SAC.splice(+b.dataset.tira,1);renderSac();renderOC()});
+
+/* ================= VÁRIAS ARMAÇÕES DE UMA VEZ ================= */
+function renderFila(){
+  const b=$('#filaBar');if(!b)return;b.hidden=!FILA.length;if(!FILA.length){b.innerHTML='';return}
+  b.innerHTML=`<div class="txt"><b>${FILA.length} ${FILA.length>1?'armações escolhidas':'armação escolhida'}</b><br>${FILA.map(f=>'VOX '+esc(f.n)).join(' · ')}${FILA.length>1&&!LOJA?'<br>20% de desconto no total':''}</div>
+    <button class="btn sec" type="button" data-fl="limpa">Limpar</button><button class="btn ouro" type="button" data-fl="vai">Continuar →</button>`;
+}
+function comecaFila(mesma){
+  const L=FILA.slice();FILA=[];MESMA=mesma;PROX=L.slice(1);iaFecha();renderVitrine();
+  const p=L[0];escolheArmacao(p,p.t==='g'?'grau':'arm',true);
+  if(p.t==='g'){ir('receita');toast(mesma?`Monte a lente da VOX ${p.n}: ela vai para as ${L.length} armações.`:`Comece pela VOX ${p.n}: preencha a receita.`)}
+  else{ajustaOC(true);ir('oculos')}
+}
+$('#filaBar').addEventListener('click',e=>{const b=e.target.closest('[data-fl]');if(!b)return;
+  if(b.dataset.fl==='limpa'){FILA=[];renderVitrine();return}
+  if(FILA.length===1){const p=FILA[0];FILA=[];renderVitrine();escolheArmacao(p,p.t==='g'?'grau':'arm');return}
+  iaAbre(`${iaTopo(`${FILA.length} armações`,'A lente é a mesma em todas?')}
+    <p class="nota" style="font-size:16px">${FILA.map(f=>'VOX '+esc(f.n)).join(' · ')}</p>
+    <div style="display:grid;gap:10px">
+      <button class="btn ouro" type="button" data-mesma="1" style="width:100%">Sim, a mesma lente em todas</button>
+      <small class="nota" style="margin:-4px 0 4px">Você monta a lente uma vez e ela vai para todas as armações.</small>
+      <button class="btn sec" type="button" data-mesma="0" style="width:100%">Não, uma lente diferente para cada</button>
+      <small class="nota" style="margin:-4px 0 0">Você escolhe a lente de cada armação, uma de cada vez.</small>
+    </div>`);
+  $('#modalIA').onclick=ev=>{if(ev.target.closest('[data-iafecha]')){iaFecha();return}const m=ev.target.closest('[data-mesma]');if(m)comecaFila(m.dataset.mesma==='1')};
+});
+function proximaDaFila(){
+  if(!PROX.length)return false;
+  if(!ITEM_ATUAL||!ITEM_ATUAL.ok){toast('Termine de montar este óculos primeiro');return true}
+  SAC.push(ITEM_ATUAL);ITEM_ATUAL=null;
+  if(MESMA){
+    const oc={...OC};let pulou=0;
+    while(PROX.length){const p=PROX.shift();FR=p;$('#armacao').value=aroDe(p);Object.assign(OC,oc);
+      if(p.t==='s'&&oc.modo==='grau'&&p.esp)OC.modo='arm';
+      atualiza();renderOC();
+      if(PROX.length){if(ITEM_ATUAL&&ITEM_ATUAL.ok){SAC.push(ITEM_ATUAL);ITEM_ATUAL=null}else pulou++}}
+    renderVitrine();renderArmRx();renderSac();ir('oculos');scrollTo({top:0,behavior:'smooth'});
+    toast(pulou?'Algumas armações não aceitam essa lente: confira o pedido.':`Mesma lente aplicada em ${SAC.length+1} armações. Confira o pedido.`);
+    return true;
+  }
+  const p=PROX.shift();
+  FR=null;OC.modo='grau';OC.cor='';OC.foto='';OC.fa=false;OC.line=null;OC.idx=null;OC.ar=2;FRM=null;
+  escolheArmacao(p,p.t==='g'?'grau':'arm',true);renderSac();
+  if(p.t==='g'){ir('receita');toast(`Agora a VOX ${p.n}: confira a receita e escolha a lente.`)}else{ajustaOC(true);ir('oculos')}
+  return true;
+}
 
 let tT;function toast(t){const el=$('#toast');el.textContent=t;el.hidden=false;clearTimeout(tT);tT=setTimeout(()=>el.hidden=true,2600)}
 $('#limpar').addEventListener('click',()=>{$$('#rx input').forEach(i=>i.value='');$('#cli').value='';$('#idade').value='';exemplo(false);atualiza();$('#odesf').focus()});
