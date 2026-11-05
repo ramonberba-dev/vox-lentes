@@ -134,6 +134,7 @@ h1{font-size:34px} h2{font-size:26px} h3{font-size:21px}
 .mais20 p{margin:0;font-size:14px;color:#E2DCD0}
 .mais20 .btn{justify-self:start}
 .vitSac{border:1px solid var(--ouro);background:#FBF7EE;border-radius:12px;padding:10px 14px;margin:0 0 12px;font-size:14px}
+body.modo-cliente #v-receita .grid2{grid-template-columns:1fr}
 .cel input.falta-rx{border-color:var(--erro);box-shadow:0 0 0 3px var(--errobg)}
 .cel input{width:100%;text-align:center;font-size:21px;font-weight:500;padding:9px 4px;border:1px solid var(--linha2);border-radius:10px;background:#fff;font-variant-numeric:tabular-nums}
 .cel input:focus{border-color:var(--ouro)}
@@ -488,7 +489,7 @@ body:not(.modo-cliente) .bar nav button{font-size:13.5px;min-height:36px;padding
     </div>
     <p class="nota soCliente" hidden>Prefere ajuda de uma pessoa? <a id="fotoRx" href="https://wa.me/552126041377" target="_blank" rel="noopener">Envie a foto pelo WhatsApp</a> e a equipe VOX preenche com você.</p>
   </div>
-  <div class="folha guia soCliente">
+  <div class="folha guia" hidden style="display:none">
     <h2>Como preencher, em 4 passos</h2>
     <ol class="passos">
       <li><b>Pegue a sua receita.</b> Ela tem uma linha para o olho direito (<b>OD</b>) e outra para o olho esquerdo (<b>OE</b>).</li>
@@ -554,7 +555,7 @@ body:not(.modo-cliente) .bar nav button{font-size:13.5px;min-height:36px;padding
         </div></div>
       <div class="acoes"><button class="btn btn-grande" type="button" id="verLentes">Ver lentes indicadas <span aria-hidden="true">→</span></button></div>
     </div>
-    <aside class="folha leitura" aria-live="polite">
+    <aside class="folha leitura soLoja" aria-live="polite" hidden>
       <div><p class="eyebrow">Leitura técnica</p><h2>O que a receita pede</h2></div>
       <div class="armbox" id="rxArm" hidden></div>
       <div class="indice" id="indiceBox"></div>
