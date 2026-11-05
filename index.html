@@ -1489,7 +1489,7 @@ function renderPedido(P,temLente,det){
   const med={A:num($('#pmA').value),B:num($('#pmB').value),DBL:num($('#pmDBL').value),ED:num($('#pmED').value)};
   if(HAY&&temLente&&(med.A==null||med.B==null||med.DBL==null||med.ED==null))falta.push('Faltam medidas da armação (calibre, altura, ponte e diagonal maior). Meça em Medir DNP ou digite acima.');
   $('#pFalta').innerHTML=falta.map(f=>`<li class="al">${f}</li>`).join('');
-  if(HAY){renderPedidoHaytek(P,temLente,R,med);return}
+  if(HAY){ITEM_ATUAL=FR?{nome:'VOX '+FR.n,img:FR.img[0],tot:(FR?FR.p:0)+(temLente&&P?venda(P.o,P.XX,OC.cor).preco:0),txt:'',lente:temLente&&P?`${nomeOpt(P.o)}${P.o.solar?'':' '+P.o.idx}`:'Sem troca de lente',ok:!temLente||!!P}:null;renderPedidoHaytek(P,temLente,R,med);return}
   const L=[];
   L.push(`*PEDIDO VOX* · nº ${PID()}`,`Data: ${new Date().toLocaleDateString('pt-BR')}`,`Cliente: ${R.cli||'—'}`,'');
   const H0=L.length;
@@ -1723,7 +1723,7 @@ $('#lojaChave').addEventListener('keydown',e=>{if(e.key==='Enter')$('#lojaEntrar
 // orçamento em imagem (PNG) com a marca VOX
 function quebraTexto(g,txt,max){const ps=String(txt).split(' '),L=[];let l='';for(const p of ps){const n=l?l+' '+p:p;if(g.measureText(n).width>max&&l){L.push(l);l=p}else l=n}if(l)L.push(l);return L}
 async function geraOrcamentoMultiPNG(){
-  const itens=[...SAC,...(FR&&ITEM_ATUAL&&ITEM_ATUAL.ok?[ITEM_ATUAL]:[])];
+  const itens=[...SAC,...(FR&&ITEM_ATUAL&&ITEM_ATUAL.ok?[ITEM_ATUAL]:[]),...PROX.map(p=>({nome:'VOX '+p.n,img:p.img[0],tot:p.p,lente:'Lente ainda não escolhida (valor só da armação)'}))];
   const R=leRx();const rowH=190;const W=1080;
   const H=Math.max(1350,250+(R.cli?100:0)+itens.length*rowH+420+150);
   const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
@@ -1754,7 +1754,8 @@ async function geraOrcamentoMultiPNG(){
   return c;
 }
 async function geraOrcamentoPNG(){
-  if(SAC.length)return geraOrcamentoMultiPNG();
+  if(PROX.length&&MESMA&&ITEM_ATUAL&&ITEM_ATUAL.ok)proximaDaFila();
+  if(SAC.length||PROX.length)return geraOrcamentoMultiPNG();
   const W=1080,H=1350,c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
   const carrega=src=>new Promise(r=>{if(!src)return r(null);const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src});
   try{await document.fonts.ready}catch(e){}
@@ -1786,7 +1787,7 @@ function mostraImagem(url){
   $('#veu').hidden=false;$('#modal').onclick=e=>{if(e.target.closest('[data-fecha]'))fechaModal()};
 }
 $('#baixarOrc').addEventListener('click',async()=>{
-  const c=await geraOrcamentoPNG();const nome=SAC.length?`orcamento-vox-${SAC.length+(FR?1:0)}-oculos.png`:`orcamento-vox${FR?'-'+FR.n.toLowerCase().replace(/[^a-z0-9]+/g,'-'):''}.png`;
+  const c=await geraOrcamentoPNG();const nome=(SAC.length||PROX.length)?`orcamento-vox-${SAC.length+PROX.length+(FR?1:0)}-oculos.png`:`orcamento-vox${FR?'-'+FR.n.toLowerCase().replace(/[^a-z0-9]+/g,'-'):''}.png`;
   const nativo=!!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform());
   c.toBlob(async b=>{
     const arq=new File([b],nome,{type:'image/png'});
