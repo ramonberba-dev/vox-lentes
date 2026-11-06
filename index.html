@@ -1490,8 +1490,9 @@ function renderPedido(P,temLente,det){
   }
   if(!R.cli)falta.push('Falta o nome do cliente.');
   const HAY=LOJA&&['552140404840','552140402412'].includes(numDestino());
-  $('#pSite').hidden=!HAY;window.__HAYCTX=HAY?{P,temLente,R,med,falta}:null;window.__DNPP=temLente&&P?P:null;$('#pDnpPadrao').hidden=!LOJA;
+  $('#pSite').hidden=!HAY;window.__DNPP=temLente&&P?P:null;$('#pDnpPadrao').hidden=!LOJA;
   const med={A:num($('#pmA').value),B:num($('#pmB').value),DBL:num($('#pmDBL').value),ED:num($('#pmED').value)};
+  window.__HAYCTX=HAY?{P,temLente,R,med,falta}:null;
   if(HAY&&temLente&&(med.A==null||med.B==null||med.DBL==null||med.ED==null))falta.push('Faltam medidas da armação (calibre, altura, ponte e diagonal maior). Meça em Medir DNP ou digite acima.');
   $('#pFalta').innerHTML=falta.map(f=>`<li class="al">${f}</li>`).join('');
   if(HAY){ITEM_ATUAL=FR?{nome:'VOX '+FR.n,img:FR.img[0],tot:(FR?FR.p:0)+(temLente&&P?venda(P.o,P.XX,OC.cor).preco:0),txt:'',lente:temLente&&P?`${nomeOpt(P.o)}${P.o.solar?'':' '+P.o.idx}`:'Sem troca de lente',ok:!temLente||!!P}:null;renderPedidoHaytek(P,temLente,R,med);return}
