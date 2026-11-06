@@ -1490,7 +1490,7 @@ function renderPedido(P,temLente,det){
   }
   if(!R.cli)falta.push('Falta o nome do cliente.');
   const HAY=LOJA&&['552140404840','552140402412'].includes(numDestino());
-  $('#pSite').hidden=!HAY;window.__DNPP=temLente&&P?P:null;$('#pDnpPadrao').hidden=!LOJA;
+  $('#pSite').hidden=!(HAY&&CHAVE&&document.documentElement.dataset.voxHaytek==='1');window.__DNPP=temLente&&P?P:null;$('#pDnpPadrao').hidden=!LOJA;
   const med={A:num($('#pmA').value),B:num($('#pmB').value),DBL:num($('#pmDBL').value),ED:num($('#pmED').value)};
   window.__HAYCTX=HAY?{P,temLente,R,med,falta}:null;
   if(HAY&&temLente&&(med.A==null||med.B==null||med.DBL==null||med.ED==null))falta.push('Faltam medidas da armação (calibre, altura, ponte e diagonal maior). Meça em Medir DNP ou digite acima.');
@@ -1728,7 +1728,12 @@ function hayConferir(){
     d.remove();toast('Autorizado: preenchendo na Haytek');
   };
 }
-$('#pSite').addEventListener('click',hayConferir);
+$('#pSite').addEventListener('click',async()=>{
+  if(!LOJA||!CHAVE){toast('Entre na área da loja para pedir na Haytek');return}
+  const b=$('#pSite');b.disabled=true;
+  try{const j=await api('teste');if(!j.ok)throw 0}catch(e){b.disabled=false;toast('Chave da loja não confirmada. Entre de novo na área da loja.');return}
+  b.disabled=false;hayConferir();
+});
 function hayJanela(html){let d=document.getElementById('hayFim');if(d)d.remove();d=document.createElement('div');d.id='hayFim';
   d.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(30,42,68,.6);display:flex;align-items:center;justify-content:center;padding:16px';
   d.innerHTML=`<div style="background:#F5F2EC;color:#1E2A44;border-radius:14px;padding:22px;max-width:460px;width:100%">${html}</div>`;document.body.appendChild(d);return d}
