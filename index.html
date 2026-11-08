@@ -1885,7 +1885,8 @@ function haySit(p){
   if(/entreg/.test(st))return{c:'ok',t:'Entregue',grupo:'entregue'};
   if(!p.previsao)return{c:'',t:'Sem previsão',grupo:'andamento'};
   const v=String(p.previsao),prev=new Date(v.length>10?v:v+'T12:00:00'),d0=new Date();d0.setHours(0,0,0,0);const p0=new Date(prev);p0.setHours(0,0,0,0);
-  if(p0<d0){const n=uteisEntre(p0,d0);return{c:'at',t:`Atrasado · ${n} dia${n>1?'s':''} út${n>1?'eis':'il'}`,grupo:'atraso'}}
+  if(p0<d0){if(/envi/.test(st)&&(d0-p0)/864e5>15)return{c:'ok',t:'Entrega presumida',grupo:'entregue',presumido:true}; // enviado há mais de 15 dias da previsão: a Haytek não atualizou
+    const n=uteisEntre(p0,d0);return{c:'at',t:`Atrasado · ${n} dia${n>1?'s':''} út${n>1?'eis':'il'}`,grupo:'atraso'}}
   const n=uteisEntre(d0,p0);
   if(n===0)return{c:'al',t:'Chega hoje',grupo:'andamento'};
   return{c:n<=1?'al':'',t:`Falta${n>1?'m':''} ${n} dia${n>1?'s':''} út${n>1?'eis':'il'}`,grupo:'andamento'};
@@ -1936,7 +1937,7 @@ function renderHaytek(){
     const et=(d.etapas||[]);
     return`<article class="ped ${s.c==='ok'?'pr':s.c}" data-id="${esc(p.id)}">
       <div class="ped-top"><div><p class="eyebrow">${esc(p.id)} · ${dataLonga(p.criado)}</p><h3>${esc(p.cliente||d.os||'Paciente não informado')}</h3>
-        <p class="nota">${esc([p.lente,d.cod].filter(Boolean).join(' · '))}</p></div><span class="sit ${s.c}">${esc(hayStatus(p.status))}</span></div>
+        <p class="nota">${esc([p.lente,d.cod].filter(Boolean).join(' · '))}</p></div><span class="sit ${s.c}">${s.presumido?'Entregue (presumido)':esc(hayStatus(p.status))}</span></div>
       ${et.length?`<div class="hay-etapas">${et.map(e=>`<div class="hay-etapa ${e.d?'feita':''}">${esc(e.n)}<small>${esc(e.d||'aguardando')}</small></div>`).join('')}</div>`:''}
       <dl class="hay-info">
         <div><dt>Previsão de entrega</dt><dd>${esc(dataLonga(p.previsao)||'Não informada')}${s.grupo==='cancelado'||s.grupo==='entregue'?'':` · ${esc(s.t)}`}</dd></div>
@@ -1987,7 +1988,7 @@ async function hayBuscar(silencioso){
   if(document.documentElement.dataset.voxHaytek!=='1'){toast('A busca é feita no computador com a extensão');return}
   if(!extSync()){toast('Recarregue a extensão VOX Lentes (↻ em chrome://extensions) e tente de novo');return}
   haySyncando=true;const b=$('#haySync');b.disabled=true;b.textContent='Buscando na Haytek…';
-  const pular=PEDS.filter(p=>ehHay(p)&&/entreg|cancel/i.test(p.status||'')).map(p=>p.id);
+  const pular=PEDS.filter(p=>ehHay(p)&&(/entreg|cancel/i.test(p.status||'')||haySit(p).presumido)).map(p=>p.id);
   window.postMessage({tipo:'VOX_HAYTEK_SYNC',pular},location.origin);
   hayTimer=setTimeout(()=>{hayFimBotao();if(!silencioso)toast('A Haytek não respondeu. Confira se está logado nela neste Chrome.')},180000);
 }
