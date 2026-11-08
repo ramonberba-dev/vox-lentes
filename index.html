@@ -237,6 +237,7 @@ tr.click:hover td{background:#FBF7EE}
 .total{display:flex;justify-content:space-between;align-items:baseline;border-top:2px solid var(--azul);padding-top:12px;margin-top:6px}
 .total b{font-family:var(--disp);font-size:40px;font-weight:600}
 pre.txt{white-space:pre-wrap;background:var(--creme);border-radius:10px;padding:12px;font-family:var(--corpo);font-size:14px;margin:0;max-height:300px;overflow:auto}
+.vres{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:12px}.vres div{border:1px solid var(--linha);border-radius:12px;background:var(--papel);padding:12px}.vres small{display:block;color:var(--mudo)}.vres b{font-size:20px}.vcusto small{display:block;color:var(--alerta);font-size:12px}
 .vazio{padding:28px;text-align:center;color:var(--mudo);border:1px dashed var(--linha2);border-radius:14px}
 iframe#dnpFrame{width:100%;height:min(1400px,calc(100vh - 140px));min-height:640px;border:1px solid var(--linha);border-radius:14px;background:var(--creme)}
 .argv{margin:0;font-family:var(--disp);font-size:18px;font-style:italic;color:var(--azul)}
@@ -386,6 +387,18 @@ body:not(.modo-cliente) .bar nav button{font-size:13.5px;min-height:36px;padding
 #v-lente .nivel.rec .add{background:var(--ouro2);border-color:var(--ouro2);color:var(--azul);font-weight:600}
 /* pedidos */
 .peds{display:grid;gap:12px}
+.ped-head-acoes{display:flex;gap:8px;flex-wrap:wrap}
+.ped-modo{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--creme);border:1px solid var(--linha);border-radius:14px;padding:5px;margin:0 0 12px;max-width:620px}
+.ped-modo button{border:0;background:none;color:var(--mudo);font:inherit;font-weight:600;padding:11px 10px;border-radius:10px;cursor:pointer;min-height:44px}
+.ped-modo button[aria-selected="true"]{background:var(--azul,#1E2A44);color:#F5F2EC}
+.hay-etapas{display:flex;flex-wrap:wrap;gap:6px}
+.hay-etapa{flex:1 1 110px;border:1px solid var(--linha);border-radius:10px;padding:8px 10px;font-size:13px;font-weight:600;color:var(--mudo)}
+.hay-etapa.feita{background:var(--okbg);border-color:transparent;color:var(--ok)}
+.hay-etapa small{display:block;font-weight:400;margin-top:2px}
+.hay-info{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:0}
+.hay-info dt{font-size:12px;color:var(--mudo)}
+.hay-info dd{margin:2px 0 0;font-weight:600;overflow-wrap:anywhere}
+.ped-tag{display:inline-block;font-size:12px;font-weight:600;color:var(--ok);background:var(--okbg);border-radius:999px;padding:3px 10px;margin-top:6px}
 .ped{background:var(--papel);border:1px solid var(--linha);border-radius:14px;padding:16px;display:grid;gap:12px;min-width:0}
 .ped.at{border-color:var(--erro);box-shadow:inset 4px 0 0 var(--erro)}
 .ped.al{box-shadow:inset 4px 0 0 var(--alerta)}
@@ -421,6 +434,7 @@ body:not(.modo-cliente) .bar nav button{font-size:13.5px;min-height:36px;padding
       <button role="tab" data-v="opcoes" aria-selected="false" class="soLoja" hidden>Lentes</button>
       <button role="tab" data-v="oculos" aria-selected="false">Seu óculos</button>
       <button role="tab" data-v="pedidos" aria-selected="false" id="navPedidos" hidden>Pedidos</button>
+      <button role="tab" data-v="vendas" aria-selected="false" id="navVendas" hidden>Vendas</button>
       <button role="tab" data-v="precos" aria-selected="false" id="navPrecos" hidden>Preços</button>
       <button type="button" id="navSairLoja" class="soLoja" hidden style="border-color:#D4AF6A;color:#D4AF6A">Sair da loja</button>
     </nav>
@@ -622,6 +636,7 @@ body:not(.modo-cliente) .bar nav button{font-size:13.5px;min-height:36px;padding
       <div class="linhas" id="ocLinhas"></div>
       <div class="total"><span>Total</span><b class="num" id="ocTotal"></b></div>
       <div class="vitSac" id="sacTotal" hidden style="margin:0"></div>
+      <p class="nota soCliente" hidden>Este orçamento fica registrado para a equipe VOX poder atender você.</p>
       <label class="campo"><span>Cliente</span><input id="ocCli" type="text" autocomplete="off" placeholder="Nome do cliente"></label>
       <pre class="txt soLoja" id="ocTxt" hidden></pre>
       <div class="acoes" style="margin-top:0">
@@ -688,13 +703,30 @@ body:not(.modo-cliente) .bar nav button{font-size:13.5px;min-height:36px;padding
 <!-- PEDIDOS -->
 <section class="view" id="v-pedidos" hidden>
   <div class="head"><div><p class="eyebrow">Área da loja</p><h1>Pedidos</h1>
-    <p class="sub">Acompanhe cada óculos do pedido ao laboratório até a entrega. Prazo: 7 dias úteis para lente pronta e 14 para surfaçada, contados do pedido. Toque numa etapa para marcar a data.</p></div>
-    <button class="btn sec" type="button" id="pedAtualizar">Atualizar</button></div>
+    <p class="sub" id="pedSub"></p></div>
+    <div class="ped-head-acoes"><button class="btn ouro" type="button" id="haySync" hidden>Buscar status na Haytek</button><button class="btn sec" type="button" id="pedAtualizar">Atualizar</button></div></div>
+  <div class="ped-modo" id="pedModo" role="tablist" aria-label="Tipo de pedido"></div>
+  <p class="nota" id="hayNota" hidden></p>
   <div class="ferr">
     <div class="chips" id="pedFiltro"></div>
     <input class="busca" id="pedBusca" type="search" placeholder="Buscar cliente, armação ou nº" autocomplete="off" aria-label="Buscar pedido">
   </div>
   <div id="pedLista" class="peds"><div class="vazio">Carregando pedidos…</div></div>
+</section>
+
+<!-- VENDAS -->
+<section class="view" id="v-vendas" hidden>
+  <div class="head"><div><p class="eyebrow">Área da loja</p><h1>Vendas</h1>
+    <p class="sub">Pedidos realizados com venda e custo, orçamentos que os clientes fizeram e não fecharam, e quantas vezes o app foi aberto por dia.</p></div>
+    <button class="btn sec" type="button" id="vdAtualizar">Atualizar</button></div>
+  <div class="ferr">
+    <div class="chips" id="vdFiltro"></div>
+    <select id="vdMes" aria-label="Mês"></select>
+    <input class="busca" id="vdBusca" type="search" placeholder="Buscar cliente, armação ou nº" autocomplete="off" aria-label="Buscar venda">
+  </div>
+  <div class="vres" id="vdResumo"></div>
+  <div id="vdLista"><div class="vazio">Carregando…</div></div>
+  <p class="nota" id="vdNota" style="margin-top:8px"></p>
 </section>
 
 <!-- PREÇOS -->
@@ -1394,6 +1426,7 @@ function renderOC(){
     ...(temLente&&OC.modo==='grau'?['Receita',rxl('OD',R.od),rxl('OE',R.oe),'']:[]),
     ...L.map(([n,v])=>`${n}: ${brl(v)}`),...(det?[det]:[]),'',`Total: ${brl(tot)}`].join('\n');
   $('#ocTxt').textContent=txt;atualizaPedeDNP();$('#wpp').href='https://wa.me/?text='+encodeURIComponent(txt);
+  agendaOrc(R,P,temLente,tot);
   renderPedido(P,temLente,det);
   if(typeof renderSac==='function')renderSac();
 }
@@ -1414,13 +1447,13 @@ async function api(acao,extra){
 function aplicaModo(){
   $$('.soLoja').forEach(e=>e.hidden=!LOJA);$$('.soCliente').forEach(e=>e.hidden=LOJA);$('#rxTitulo').textContent=LOJA?'Receita do cliente':'Sua receita';document.body.classList.toggle('modo-cliente',!LOJA);
   if(!LOJA&&['dnp','opcoes'].includes(VIEW_ATUAL))ir('vitrine');passos(VIEW_ATUAL);if(!LOJA)renderGrupos('#rxLentes');
-  $('#navPrecos').hidden=!LOJA;$('#navPedidos').hidden=!LOJA;$('#pDestBox').hidden=!LOJA;$('#pMedBox').hidden=!LOJA;$('#lojaPin').hidden=LOJA;
+  $('#navPrecos').hidden=!LOJA;$('#navPedidos').hidden=!LOJA;$('#navVendas').hidden=!LOJA;$('#pDestBox').hidden=!LOJA;$('#pMedBox').hidden=!LOJA;$('#lojaPin').hidden=LOJA;
   $('#lojaTxt').textContent=LOJA?'Área da loja aberta neste aparelho.':'É da equipe VOX? Abra a área da loja:';
   $('#lojaBtn').textContent=LOJA?'Sair da área da loja':'Entrar';
   $('#pTelLab').textContent=LOJA?'WhatsApp do cliente':'Seu WhatsApp';
   $('#pTelDica').textContent=LOJA?'Para avisar o cliente quando o óculos estiver pronto (aba Pedidos).':'Para avisarmos quando o óculos estiver pronto.';
   $('#pIntro').textContent=LOJA?'Monta a mensagem para o laboratório (sem preços) e abre o WhatsApp com o texto pronto. O pedido também fica registrado na aba Pedidos.':'Monta a mensagem com o óculos, a lente e a receita, e abre o WhatsApp da VOX com o texto pronto. No celular abre direto o aplicativo; é só conferir e tocar em enviar.';
-  if(!LOJA&&(!$('#v-precos').hidden||!$('#v-pedidos').hidden))ir('vitrine');
+  if(!LOJA&&(!$('#v-precos').hidden||!$('#v-pedidos').hidden||!$('#v-vendas').hidden))ir('vitrine');
 }
 $('#lojaBtn').addEventListener('click',async()=>{
   if(LOJA){LOJA=false;CHAVE='';LS.set('voxlentes.chave','');aplicaModo();renderOC();toast('Área da loja fechada');return}
@@ -1435,6 +1468,27 @@ function PID(){if(!PID_ATUAL){const d=new Date(),z=n=>String(n).padStart(2,'0');
 function addUteis(d,n){d=new Date(d);while(n>0){d.setDate(d.getDate()+1);const w=d.getDay();if(w!==0&&w!==6)n--}return d}
 function uteisEntre(a,b){a=new Date(a);a.setHours(0,0,0,0);b=new Date(b);b.setHours(0,0,0,0);let n=0;while(a<b){a.setDate(a.getDate()+1);const w=a.getDay();if(w!==0&&w!==6)n++}return n}
 let PED_ATUAL=null; // dados do pedido montado na tela, para registrar
+// O app público não tem custos: manda só qual lente foi escolhida e o servidor calcula o custo.
+function refLente(P,temLente){if(!temLente||!P)return null;const o=P.o;return{kind:o.kind,tipo:o.tipo||'',line:o.line?o.line.id:'',idx:o.idx,v:o.v,col:o.col,tier:o.tier||0,solar:o.solar?1:0,ar:o.arTxt||'',arm:(P.XX&&P.XX.arm)||'fechado',cor:OC.cor||''}}
+// Orçamento do cliente: guardado ao ver o preço em "Seu óculos"; vira "realizado" quando o pedido é enviado.
+const ORC={sig:'',t:0};
+const servidorReal=()=>SCRIPT_URL.startsWith('https')&&!/^(localhost|127\.)/.test(location.hostname);
+function agendaOrc(R,P,temLente,tot){
+  if(LOJA||VIEW_ATUAL!=='oculos'||!FR||!(tot>0))return;
+  const feito=LS.get('voxlentes.orcfeito','');
+  if(feito===FR.id)return; // este óculos acabou de virar pedido
+  if(feito)LS.set('voxlentes.orcfeito','');
+  const n=SAC.length+1,soma=sacSoma()+tot;
+  const dados={cliente:R.cli,armacao:[...SAC.map(s=>s.nome),'VOX '+FR.n].join(' + '),
+    lente:[...SAC.map(s=>s.lente),temLente&&P?`${nomeOpt(P.o)}${P.o.solar?'':' '+P.o.idx}`:'Sem troca de lente'].join(' + '),
+    valor:Math.round((n>=2?soma*.8:soma)*100)/100,lente_ref:JSON.stringify([...SAC.map(s=>s.ref),refLente(P,temLente)].filter(Boolean))};
+  const sig=JSON.stringify(dados);if(sig===ORC.sig)return;
+  ORC.sig=sig;clearTimeout(ORC.t);
+  ORC.t=setTimeout(()=>{
+    let id=LS.get('voxlentes.orcid','');if(!id){id='ORC-'+Date.now().toString(36)+Math.floor(Math.random()*1296).toString(36);LS.set('voxlentes.orcid',id)}
+    if(servidorReal())fetch(SCRIPT_URL,{method:'POST',keepalive:true,headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({acao:'orcamento',orcamento:{...dados,id}})}).catch(()=>{});
+  },5000);
+}
 function telCliente(){let d=$('#pTel').value.replace(/\D/g,'');if(d.length===10||d.length===11)d='55'+d;return d.length>=12?d:''}
 function montaRegistro(P,temLente,R,txt,HAY){
   const agora=new Date();const pronta=temLente&&P&&P.o.kind==='stk';const prazo=!temLente?0:pronta?7:14;
@@ -1452,6 +1506,8 @@ function montaRegistro(P,temLente,R,txt,HAY){
     PED_ATUAL.lente=[...SAC.map(s=>s.lente),...(FR?[PED_ATUAL.lente]:[])].join(' + ');
     PED_ATUAL.valor=Math.round((n>=2?soma*.8:soma)*100)/100;
     PED_ATUAL.obs=[`${n} óculos${n>=2?' · 20% de desconto':''}`,PED_ATUAL.obs].filter(Boolean).join(' · ')}
+  PED_ATUAL.lente_ref=JSON.stringify([...(HAY?[]:SAC.map(s=>s.ref)),refLente(P,temLente)].filter(Boolean));
+  PED_ATUAL.orc_id=LOJA?'':LS.get('voxlentes.orcid','');
 }
 function filaPedidos(){return LS.get('voxlentes.fila',[])}
 async function enviaFila(){
@@ -1464,6 +1520,7 @@ function registraPedido(){
   if(!PED_ATUAL)return;
   const f=filaPedidos();if(!f.some(p=>p.id===PED_ATUAL.id))f.push(PED_ATUAL);LS.set('voxlentes.fila',f);
   enviaFila();
+  if(!LOJA){clearTimeout(ORC.t);ORC.sig='';LS.set('voxlentes.orcid','');if(FR)LS.set('voxlentes.orcfeito',FR.id)}
   setTimeout(()=>{PID_ATUAL='';SAC=[];renderSac();renderOC()},4000);
 }
 $('#pEnviar').addEventListener('click',()=>{registraPedido();toast(LOJA?'Pedido registrado na aba Pedidos':'Pedido enviado para o WhatsApp da VOX')});
@@ -1495,7 +1552,7 @@ function renderPedido(P,temLente,det){
   window.__HAYCTX=HAY?{P,temLente,R,med,falta}:null;
   if(HAY&&temLente&&(med.A==null||med.B==null||med.DBL==null||med.ED==null))falta.push('Faltam medidas da armação (calibre, altura, ponte e diagonal maior). Meça em Medir DNP ou digite acima.');
   $('#pFalta').innerHTML=falta.map(f=>`<li class="al">${f}</li>`).join('');
-  if(HAY){ITEM_ATUAL=FR?{nome:'VOX '+FR.n,img:FR.img[0],tot:(FR?FR.p:0)+(temLente&&P?venda(P.o,P.XX,OC.cor).preco:0),txt:'',lente:temLente&&P?`${nomeOpt(P.o)}${P.o.solar?'':' '+P.o.idx}`:'Sem troca de lente',ok:!temLente||!!P}:null;renderPedidoHaytek(P,temLente,R,med);return}
+  if(HAY){ITEM_ATUAL=FR?{nome:'VOX '+FR.n,img:FR.img[0],tot:(FR?FR.p:0)+(temLente&&P?venda(P.o,P.XX,OC.cor).preco:0),txt:'',lente:temLente&&P?`${nomeOpt(P.o)}${P.o.solar?'':' '+P.o.idx}`:'Sem troca de lente',ok:!temLente||!!P,ref:refLente(P,temLente)}:null;renderPedidoHaytek(P,temLente,R,med);return}
   const L=[];
   L.push(`*PEDIDO VOX* · nº ${PID()}`,`Data: ${new Date().toLocaleDateString('pt-BR')}`,`Cliente: ${R.cli||'—'}`,'');
   const H0=L.length;
@@ -1530,7 +1587,7 @@ function renderPedido(P,temLente,det){
   }
   const tot=(FR?FR.p:0)+(temLente&&P?venda(P.o,P.XX,OC.cor).preco:0);
   const atual=L.splice(H0);
-  ITEM_ATUAL=FR?{nome:'VOX '+FR.n,img:FR.img[0],tot,txt:atual.join('\n').trim(),lente:temLente&&P?`${nomeOpt(P.o)}${P.o.solar?'':' '+P.o.idx}`:'Sem troca de lente',ok:!temLente||!!P}:null;
+  ITEM_ATUAL=FR?{nome:'VOX '+FR.n,img:FR.img[0],tot,txt:atual.join('\n').trim(),lente:temLente&&P?`${nomeOpt(P.o)}${P.o.solar?'':' '+P.o.idx}`:'Sem troca de lente',ok:!temLente||!!P,ref:refLente(P,temLente)}:null;
   if(SAC.length){
     SAC.forEach((s,i)=>L.push(`*ÓCULOS ${i+1}* · ${s.nome}`,s.txt,...(LOJA?[]:[`Subtotal: ${brl(s.tot)}`]),''));
     if(FR){L.push(`*ÓCULOS ${SAC.length+1}* · VOX ${FR.n}`,...atual);if(!LOJA)L.push(`Subtotal: ${brl(tot)}`,'')}
@@ -1745,7 +1802,7 @@ window.addEventListener('message',e=>{if(e.source!==window||!e.data||e.data.tipo
     d.querySelector('#hayDesiste').onclick=()=>{manda('cancelar');toast('Cancelando')};
     return;
   }
-  if(m.numero){const d=hayJanela(`<h3 style="margin:0 0 10px">Pedido concluído</h3><p style="margin:0 0 6px"><b>${esc(m.nome)}</b> · R$ ${esc(m.total)}</p><p style="margin:0 0 14px;font-size:20px"><b>${esc(m.numero)}</b></p><button type="button" class="btn ouro" id="hayOk">Fechar</button>`);d.querySelector('#hayOk').onclick=()=>d.remove();return}
+  if(m.numero){setTimeout(()=>{pedModo='hay';hayBuscar(true)},4000);const d=hayJanela(`<h3 style="margin:0 0 10px">Pedido concluído</h3><p style="margin:0 0 6px"><b>${esc(m.nome)}</b> · R$ ${esc(m.total)}</p><p style="margin:0 0 14px;font-size:20px"><b>${esc(m.numero)}</b></p><button type="button" class="btn ouro" id="hayOk">Fechar</button>`);d.querySelector('#hayOk').onclick=()=>d.remove();return}
   if(m.ok===false){const d=hayJanela(`<h3 style="margin:0 0 10px">O pedido parou</h3><p style="margin:0 0 14px">${esc(m.texto)}</p><button type="button" class="btn" id="hayOk">Fechar</button>`);d.querySelector('#hayOk').onclick=()=>d.remove();return}
   toast(m.texto)});
 const DNP_PADRAO={"oculos-de-sol-vox-nexus-castanho-e-preto":31.5,"oculos-de-sol-vox-stella":30.5,"oculos-de-sol-venia":32.0,"oculos-de-sol-vox-core":31.5,"oculos-esportivos-vox-st-jhon":31.5,"oculos-de-sol-ortus-dn0pa":31.5,"oculos-de-sol-speculum-jagtd":30.5,"oculos-de-sol-visio-blue-polarizado-vqkzq":33,"oculos-de-sol-luxor-1ltk8":31.5,"oculos-esportivo-speed-9n941":31.5,"armacao-visio-1-1v0en":31.0,"armacao-lux-i-1pn0q":31.5,"visio-ii-12m13":31.0,"visio-iii-1viyx":31.5,"visio-iv-uo08z":31.5,"spectra-1s0yg":31.5,"sublimis-jiiy5":31.5,"selectus-i-1s45k":31.5,"selectus-ii-3zy50":31.5,"prestige-1jwf9":31.0,"escriva-5krgt":32.0,"gratia-py537":30.5,"excelsus-12tm3":31.5,"verum-clipon-duplo-1ac3a":31.5,"fidelitas-ii-1d98m":32.0,"dominus-13ojs":31.0,"luna-tartaruga-c1-j2y8b":31.5,"excelsus-preto-copia-1l4js":31.0,"oculos-de-sol-lumin-copia-rzx6g":31.5,"oculos-de-sol-mater-copia-1g0ja":31.5,"oculos-de-sol-altus-copia-3z1vb":32.5,"oculos-de-sol-vox-invictus-polarizado-copia-giqvz":32.5,"oculos-de-sol-lummi-guhti":31.0,"oculos-de-sol-vox-invictus-polarizado-copia-1jirm":31.5,"oculos-de-sol-havana-lente-polarizada-8dsvk":31.5,"oculos-de-sol-aurora-wohrj":31.5,"oculos-de-sol-vox-boreal-b2ys1":32.0,"oculos-de-sol-vox-nexus-tartaruga-1wz92":33,"vox-leona-1n49l":30,"vox-dualis-16l83":33,"vox-felis-1tr9y":30,"vox-canaa-1v827":31.0,"vox-stella-maris-1112f":31.5,"vox-candor-typ92":31.5,"vox-sagitta-7bmi7":31.0,"vox-trinitas-2erf9":33,"vox-via-50e72":31.0,"vox-cedrus-kpmis":31.5,"vox-nexus-preto-14sai":31.5,"vox-veritas-k55kd":31.5,"vox-regina-5u3vg":31.5,"vox-candida-108l4":31.5,"vox-silentium-9naa7":32.0,"vox-sinapis-16cd3":32.0,"vox-matutina-48hue":31.5,"vox-magister-r4zz0":31.5,"vox-benedictus-gfluj":32.0,"vox-amethystus-15mwp":31.0,"vox-visio-mel-1njwo":31.5,"vox-spes-zdamp":31.5,"vox-caritas-bm0df":32.0,"vox-pastor-1p0qg":31.0,"vox-hosanna-1nzv5":31.0,"vox-fidelis":31.5,"vox-terra-1a03j":31.5,"vox-scriba-1ywq2":31.5,"vox-doctor-qv797":32.0,"vox-oliva-39cxu":31.0,"vox-corona-gke7s":31.5,"vox-duplex-1nxcq":33,"vox-vigilia-vwpzg":31.5,"vox-votum-cristal-dlt5o":31.5,"vox-votum-marrom-1090d":31.5,"vox-gaudium-1etd0":31.5,"vox-serenus-1q9ok":31.5,"vox-fortis-ev7mn":31.5,"vox-petra-13k3r":31.5,"vox-ardens-djt21":31.0,"vox-hortus-1nxr0":31.5,"vox-laudes-930s8":31.5,"vox-lector-1wme2":31.5,"vox-columba-dk869":31.0,"vox-tessera-k4f7l":31.0,"vox-custos-1q3ev":31.0};
@@ -1814,7 +1871,25 @@ $('#filtroLinha').addEventListener('click',e=>{const b=e.target.closest('[data-f
 
 /* ================= NAVEGAÇÃO, DNP, EXEMPLO ================= */
 /* ================= PEDIDOS (acompanhamento) ================= */
-let PEDS=[],fPed='aberto';
+let PEDS=[],fPed='aberto',pedModo='orc',fHay='andamento',haySyncando=false,hayTimer=null;
+const ehHay=p=>p.origem==='haytek';
+const extSync=()=>document.documentElement.dataset.voxHaytekSync==='1';
+const nomeNorm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ').trim();
+const hayDados=p=>{try{return JSON.parse(p.texto||'{}')}catch(e){return{}}};
+const hayStatus=s=>{const x=String(s||'').toLowerCase().replace('separacao','separação').replace('producao','produção').replace('analise','análise').replace('nao ','não ');return x?x[0].toUpperCase()+x.slice(1):'Sem status'};
+const dataLonga=s=>{if(!s)return'';const v=String(s),d=new Date(v.length>10?v:v+'T12:00:00');return isNaN(d)?v:d.toLocaleDateString('pt-BR')};
+function hayBr(s){const m=String(s||'').match(/(\d{2})\/(\d{2})\/(\d{4})/);return m?`${m[3]}-${m[2]}-${m[1]}`:''}
+function haySit(p){
+  const st=String(p.status||'').toLowerCase();
+  if(/cancel/.test(st))return{c:'can',t:'Cancelado',grupo:'cancelado'};
+  if(/entreg/.test(st))return{c:'ok',t:'Entregue',grupo:'entregue'};
+  if(!p.previsao)return{c:'',t:'Sem previsão',grupo:'andamento'};
+  const v=String(p.previsao),prev=new Date(v.length>10?v:v+'T12:00:00'),d0=new Date();d0.setHours(0,0,0,0);const p0=new Date(prev);p0.setHours(0,0,0,0);
+  if(p0<d0){const n=uteisEntre(p0,d0);return{c:'at',t:`Atrasado · ${n} dia${n>1?'s':''} út${n>1?'eis':'il'}`,grupo:'atraso'}}
+  const n=uteisEntre(d0,p0);
+  if(n===0)return{c:'al',t:'Chega hoje',grupo:'andamento'};
+  return{c:n<=1?'al':'',t:`Falta${n>1?'m':''} ${n} dia${n>1?'s':''} út${n>1?'eis':'il'}`,grupo:'andamento'};
+}
 const ETAPAS=[['enviado_lab','Laboratório'],['em_producao','Em produção'],['enviado_montagem','Montagem'],['pronto','Pronto'],['entregue','Entregue']];
 const dtc=s=>{if(!s)return'';const d=new Date(s);return isNaN(d)?String(s):d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})};
 function situacao(p){
@@ -1838,11 +1913,44 @@ function msgPronto(p){
 async function carregaPedidos(){
   $('#pedLista').innerHTML='<div class="vazio">Carregando pedidos…</div>';
   await enviaFila();
-  try{const j=await api('listar');if(!j.ok)throw j.erro;PEDS=j.pedidos.reverse();renderPedidos()}
+  try{const j=await api('listar');if(!j.ok)throw j.erro;PEDS=j.pedidos.reverse();renderPedidos();hayAuto()}
   catch(e){$('#pedLista').innerHTML=`<div class="vazio">${e==='chave'?'A chave da loja não confere. Saia e entre de novo na área da loja.':'Não consegui carregar os pedidos. Verifique a internet e toque em Atualizar.'}</div>`}
 }
+function pedTopo(){
+  const orc=PEDS.filter(p=>!ehHay(p)).length,hay=PEDS.filter(ehHay).length;
+  $('#pedModo').innerHTML=[['orc',`Orçamentos (${orc})`],['hay',`Comprados na Haytek (${hay})`]].map(([k,n])=>`<button type="button" role="tab" data-m="${k}" aria-selected="${k===pedModo}">${n}</button>`).join('');
+  $('#pedSub').textContent=pedModo==='hay'?'O que foi realmente comprado no site da Haytek, com o status da produção e a previsão de entrega.':'Pedidos e orçamentos feitos no app. Toque numa etapa para marcar a data. Prazo: 7 dias úteis para lente pronta e 14 para surfaçada.';
+  $('#haySync').hidden=!(pedModo==='hay'&&document.documentElement.dataset.voxHaytek==='1');
+  const nota=$('#hayNota');nota.hidden=pedModo!=='hay';
+  if(pedModo==='hay'){const u=LS.get('voxlentes.haysync','');
+    nota.textContent=(u?`Status buscado na Haytek em ${new Date(Number(u)).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}. `:'Os status ainda não foram buscados. ')+(document.documentElement.dataset.voxHaytek==='1'?'':'A busca é feita no computador com a extensão; aqui você vê o último resultado.');}
+}
+function renderHaytek(){
+  const L0=PEDS.filter(ehHay).map(p=>({p,s:haySit(p),d:hayDados(p)})).sort((a,b)=>(new Date(b.p.criado)-new Date(a.p.criado))||String(b.p.id).localeCompare(String(a.p.id),'pt',{numeric:true}));
+  const F={andamento:['Em andamento',x=>x.s.grupo==='andamento'||x.s.grupo==='atraso'],atraso:['Atrasados',x=>x.s.grupo==='atraso'],entregue:['Entregues',x=>x.s.grupo==='entregue'],todos:['Todos',()=>true]};
+  $('#pedFiltro').innerHTML=Object.entries(F).map(([k,[n,f]])=>`<button class="chip" type="button" data-fh="${k}" aria-pressed="${k===fHay}">${n} (${L0.filter(f).length})</button>`).join('');
+  const q=nomeNorm($('#pedBusca').value);
+  const L=L0.filter(F[fHay][1]).filter(x=>!q||nomeNorm([x.p.id,x.p.cliente,x.p.lente,x.d.os].join(' ')).includes(q));
+  const vazio=L0.length?'Nenhum pedido aqui.':(document.documentElement.dataset.voxHaytek==='1'?'Toque em “Buscar status na Haytek” para trazer os pedidos.':'Abra o app no computador com a extensão para trazer os pedidos da Haytek.');
+  $('#pedLista').innerHTML=L.map(({p,s,d})=>{
+    const et=(d.etapas||[]);
+    return`<article class="ped ${s.c==='ok'?'pr':s.c}" data-id="${esc(p.id)}">
+      <div class="ped-top"><div><p class="eyebrow">${esc(p.id)} · ${dataLonga(p.criado)}</p><h3>${esc(p.cliente||d.os||'Paciente não informado')}</h3>
+        <p class="nota">${esc([p.lente,d.cod].filter(Boolean).join(' · '))}</p></div><span class="sit ${s.c}">${esc(hayStatus(p.status))}</span></div>
+      ${et.length?`<div class="hay-etapas">${et.map(e=>`<div class="hay-etapa ${e.d?'feita':''}">${esc(e.n)}<small>${esc(e.d||'aguardando')}</small></div>`).join('')}</div>`:''}
+      <dl class="hay-info">
+        <div><dt>Previsão de entrega</dt><dd>${esc(dataLonga(p.previsao)||'Não informada')}${s.grupo==='cancelado'||s.grupo==='entregue'?'':` · ${esc(s.t)}`}</dd></div>
+        <div><dt>Transportadora</dt><dd>${esc(d.transp||'Não informada')}</dd></div>
+        <div><dt>Custo na Haytek</dt><dd>${d.valor?'R$ '+esc(d.valor):'Não informado'}</dd></div>
+        ${d.receita?`<div><dt>Receita</dt><dd>${esc(d.receita)}</dd></div>`:''}
+      </dl>
+      <div class="ped-acoes"><a class="btn sec" href="https://www.haytek.com.br/track/order/${encodeURIComponent(p.id)}" target="_blank" rel="noopener">Rastrear na Haytek</a></div></article>`}).join('')||`<div class="vazio">${vazio}</div>`;
+}
 function renderPedidos(){
-  const S=PEDS.map(p=>({p,s:situacao(p)}));
+  pedTopo();
+  if(pedModo==='hay'){renderHaytek();return}
+  const compradoPor={};PEDS.filter(ehHay).forEach(p=>{const n=nomeNorm(p.cliente);if(n&&!compradoPor[n])compradoPor[n]=p.id});
+  const S=PEDS.filter(p=>!ehHay(p)).map(p=>({p,s:situacao(p)}));
   const F={aberto:['Em aberto',x=>!x.p.entregue&&!x.p.cancelado],atraso:['Atrasados',x=>x.s.c==='at'],pronto:['Prontos para entregar',x=>x.p.pronto&&!x.p.entregue&&!x.p.cancelado],entregue:['Entregues',x=>!!x.p.entregue],todos:['Todos',()=>true]};
   $('#pedFiltro').innerHTML=Object.entries(F).map(([k,[n,f]])=>`<button class="chip" type="button" data-fp="${k}" aria-pressed="${k===fPed}">${n} (${S.filter(f).length})</button>`).join('');
   const q=$('#pedBusca').value.trim().toLowerCase();
@@ -1851,7 +1959,7 @@ function renderPedidos(){
     const tel=String(p.telefone||'').replace(/\D/g,'');
     return`<article class="ped ${s.c}" data-id="${esc(p.id)}">
       <div class="ped-top"><div><p class="eyebrow">${esc(p.id)} · ${dtc(p.criado)}${p.origem==='cliente'?' · pedido do cliente':''}</p><h3>${esc(p.cliente||'Cliente sem nome')}</h3>
-        <p class="nota">${esc([p.armacao,p.lente,p.producao].filter(Boolean).join(' · '))}</p></div><span class="sit ${s.c}">${s.t}</span></div>
+        <p class="nota">${esc([p.armacao,p.lente,p.producao].filter(Boolean).join(' · '))}</p>${compradoPor[nomeNorm(p.cliente)]?`<span class="ped-tag">Comprado na Haytek · ${esc(compradoPor[nomeNorm(p.cliente)])}</span>`:''}</div><span class="sit ${s.c}">${s.t}</span></div>
       <div class="etapas">${ETAPAS.map(([k,n])=>`<button class="etapa ${p[k]?'feita':''}" type="button" data-etapa="${k}" aria-pressed="${!!p[k]}">${n}${p[k]?`<small>${dtc(p[k])}</small>`:''}</button>`).join('')}</div>
       <div class="ped-acoes">
         ${tel.length>=12?`<a class="btn ${p.pronto&&!p.avisado?'ouro':'sec'}" data-avisar href="https://wa.me/${tel}?text=${encodeURIComponent(msgPronto(p))}" target="_blank" rel="noopener">${p.avisado?'Avisar de novo':'Avisar cliente: está pronto'}</a>`
@@ -1865,7 +1973,47 @@ async function salvaPed(p,campos){
   Object.assign(p,campos);renderPedidos();
   try{const j=await api('atualizar',{id:p.id,campos});if(!j.ok)throw 0}catch(e){toast('Não consegui salvar. Verifique a internet.')}
 }
-$('#pedFiltro').addEventListener('click',e=>{const b=e.target.closest('[data-fp]');if(b){fPed=b.dataset.fp;renderPedidos()}});
+$('#pedFiltro').addEventListener('click',e=>{const b=e.target.closest('[data-fp]');if(b){fPed=b.dataset.fp;renderPedidos()}const h=e.target.closest('[data-fh]');if(h){fHay=h.dataset.fh;renderPedidos()}});
+$('#pedModo').addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(!b)return;pedModo=b.dataset.m;$('#pedBusca').value='';renderPedidos();hayAuto()});
+$('#haySync').addEventListener('click',()=>hayBuscar(false));
+function hayAuto(){ // busca sozinho na aba Haytek, no computador, no máximo a cada 30 minutos
+  if(pedModo!=='hay'||!extSync()||haySyncando)return;
+  const u=Number(LS.get('voxlentes.haysync','0'));if(Date.now()-u>30*60*1000)hayBuscar(true);
+}
+function hayFimBotao(){haySyncando=false;clearTimeout(hayTimer);const b=$('#haySync');b.disabled=false;b.textContent='Buscar status na Haytek'}
+async function hayBuscar(silencioso){
+  if(haySyncando)return;
+  if(!PEDS.length){try{const j=await api('listar');if(j.ok)PEDS=j.pedidos.reverse()}catch(e){}}
+  if(document.documentElement.dataset.voxHaytek!=='1'){toast('A busca é feita no computador com a extensão');return}
+  if(!extSync()){toast('Recarregue a extensão VOX Lentes (↻ em chrome://extensions) e tente de novo');return}
+  haySyncando=true;const b=$('#haySync');b.disabled=true;b.textContent='Buscando na Haytek…';
+  const pular=PEDS.filter(p=>ehHay(p)&&/entreg|cancel/i.test(p.status||'')).map(p=>p.id);
+  window.postMessage({tipo:'VOX_HAYTEK_SYNC',pular},location.origin);
+  hayTimer=setTimeout(()=>{hayFimBotao();if(!silencioso)toast('A Haytek não respondeu. Confira se está logado nela neste Chrome.')},180000);
+}
+const diaIgual=(a,b)=>dataLonga(a)===dataLonga(b);
+async function hayGrava(lista){
+  let novos=0,mudou=0;
+  for(const r of lista){
+    const atual=PEDS.find(p=>p.id===r.numero);
+    const antigo=atual?hayDados(atual):{};
+    const dados={os:r.os||antigo.os||'',valor:r.valor||antigo.valor||'',qtd:r.qtd||antigo.qtd||'',transp:r.transp||antigo.transp||'',cod:r.cod||antigo.cod||'',receita:r.receita||antigo.receita||'',etapas:(r.etapas&&r.etapas.length)?r.etapas:(antigo.etapas||[])};
+    const campos={status:r.status||'',previsao:hayBr(r.previsao),cliente:r.paciente||(atual&&atual.cliente)||'',lente:r.lente||(atual&&atual.lente)||'',texto:JSON.stringify(dados)};
+    try{
+      if(!atual){const p={id:r.numero,criado:hayBr(r.data),origem:'haytek',destino:'Haytek',...campos};const j=await api('criar',{pedido:p});if(!j.ok)throw 0;PEDS.push(p);novos++}
+      else if(campos.status!==atual.status||!diaIgual(campos.previsao,atual.previsao)||campos.cliente!==atual.cliente||campos.lente!==atual.lente||campos.texto!==atual.texto){const j=await api('atualizar',{id:r.numero,campos});if(!j.ok)throw 0;Object.assign(atual,campos);mudou++}
+    }catch(e){toast('Não consegui salvar '+r.numero+'. Verifique a internet.')}
+  }
+  return{novos,mudou};
+}
+window.addEventListener('message',async e=>{if(e.source!==window||!e.data||e.data.tipo!=='VOX_HAYTEK_SYNC_RES')return;
+  clearTimeout(hayTimer);
+  if(e.data.erro){hayFimBotao();toast(e.data.erro);return}
+  const b=$('#haySync');b.textContent='Salvando…';
+  const {novos,mudou}=await hayGrava(e.data.pedidos||[]);
+  LS.set('voxlentes.haysync',String(Date.now()));hayFimBotao();renderPedidos();
+  toast(novos||mudou?`Haytek atualizada: ${novos} novo${novos===1?'':'s'}, ${mudou} alterado${mudou===1?'':'s'}`:'Haytek conferida: nada mudou');
+});
 $('#pedBusca').addEventListener('input',renderPedidos);
 $('#pedAtualizar').addEventListener('click',carregaPedidos);
 $('#pedLista').addEventListener('click',e=>{
@@ -1883,6 +2031,69 @@ $('#pedLista').addEventListener('click',e=>{
   if(e.target.closest('[data-cancelar]')){const b=e.target.closest('[data-cancelar]');if(b.dataset.ok){salvaPed(p,{cancelado:new Date().toISOString(),status:'Cancelado'})}else{b.dataset.ok=1;b.textContent='Toque de novo para cancelar';setTimeout(()=>{if(b.isConnected){delete b.dataset.ok;b.textContent='Cancelar'}},4000)}}
 });
 
+
+/* ================= VENDAS (área da loja) ================= */
+let VD={pedidos:[],orcamentos:[],acessos:[]},fVd='pedidos',mVd='';
+const z2=n=>String(n).padStart(2,'0');
+const vdData=s=>{if(/^\d{4}-\d{2}-\d{2}$/.test(String(s))){const[a,m,d]=String(s).split('-');return`${d}/${m}/${a}`}const d=new Date(s);return isNaN(d)?String(s||''):d.toLocaleDateString('pt-BR')};
+const vdMesDe=s=>{if(/^\d{4}-\d{2}-\d{2}$/.test(String(s)))return String(s).slice(0,7);const d=new Date(s);return isNaN(d)?'':`${d.getFullYear()}-${z2(d.getMonth()+1)}`};
+const vdCusto=x=>x.custo_lente==null||x.custo_armacao==null?null:Number(x.custo_lente)+Number(x.custo_armacao);
+const vdBrl=v=>v==null||v===''?'—':brl(Number(v));
+function vdCustoHTML(x){
+  const c=vdCusto(x);if(c!=null)return vdBrl(c);
+  if(x.custo_lente==null)return'—<small>custo não registrado</small>';
+  return`${vdBrl(x.custo_lente)}<small>só a lente; falta a armação</small>`;
+}
+async function carregaVendas(){
+  $('#vdLista').innerHTML='<div class="vazio">Carregando…</div>';$('#vdResumo').innerHTML='';$('#vdNota').textContent='';
+  await enviaFila();
+  try{const j=await api('painel');if(!j.ok)throw j.erro;j.pedidos=(j.pedidos||[]).filter(p=>p.origem!=='haytek');VD=j;renderVendas()}
+  catch(e){$('#vdLista').innerHTML=`<div class="vazio">${e==='chave'?'A chave da loja não confere. Saia e entre de novo na área da loja.':'Não consegui carregar as vendas. Verifique a internet e toque em Atualizar.'}</div>`}
+}
+function renderVendas(){
+  const meses=[...new Set([...VD.pedidos,...VD.orcamentos].map(x=>vdMesDe(x.criado)).concat(VD.acessos.map(x=>vdMesDe(x.data))).filter(Boolean))].sort().reverse();
+  if(mVd&&!meses.includes(mVd))mVd='';
+  const nomeMes=m=>{const[a,b]=m.split('-');return new Date(+a,+b-1,1).toLocaleDateString('pt-BR',{month:'long',year:'numeric'})};
+  $('#vdMes').innerHTML='<option value="">Todos os meses</option>'+meses.map(m=>`<option value="${m}" ${m===mVd?'selected':''}>${nomeMes(m)}</option>`).join('');
+  const noMes=(l,c)=>l.filter(x=>!mVd||vdMesDe(x[c])===mVd);
+  const q=$('#vdBusca').value.trim().toLowerCase();
+  const busca=l=>l.filter(x=>!q||[x.id,x.cliente,x.armacao,x.lente].join(' ').toLowerCase().includes(q));
+  const peds=busca(noMes(VD.pedidos,'criado')).slice().reverse(),orcs=busca(noMes(VD.orcamentos,'criado')).slice().reverse(),aces=noMes(VD.acessos,'data').slice().sort((a,b)=>a.data<b.data?1:-1);
+  const F=[['pedidos',`Pedidos realizados (${peds.filter(p=>!p.cancelado).length})`],['orcamentos',`Orçados não realizados (${orcs.length})`],['acessos','Uso do app']];
+  $('#vdFiltro').innerHTML=F.map(([k,n])=>`<button class="chip" type="button" data-fv="${k}" aria-pressed="${k===fVd}">${n}</button>`).join('');
+  $('#vdBusca').hidden=fVd==='acessos';
+  const card=(n,v)=>`<div><small>${n}</small><b class="num">${v}</b></div>`;
+  const itens=x=>esc([x.armacao,x.lente].filter(Boolean).join(' · '));
+  const cli=x=>esc(x.cliente||'Cliente sem nome');
+  let nota='';
+  if(fVd==='pedidos'){
+    const val=peds.filter(p=>!p.cancelado),comp=val.filter(p=>vdCusto(p)!=null);
+    const venda=val.reduce((s,p)=>s+(Number(p.valor)||0),0),custo=comp.reduce((s,p)=>s+vdCusto(p),0),vc=comp.reduce((s,p)=>s+(Number(p.valor)||0),0);
+    $('#vdResumo').innerHTML=card('Pedidos',val.length)+card('Valor de venda',brl(venda))+card('Valor de custo',comp.length?brl(custo):'—')+card('Margem',comp.length?brl(vc-custo):'—');
+    if(val.length>comp.length)nota=`${val.length-comp.length} pedido${val.length-comp.length>1?'s':''} sem custo completo fica${val.length-comp.length>1?'m':''} fora do custo e da margem.`;
+    $('#vdLista').innerHTML=peds.length?`<div class="tab"><table><thead><tr><th>Data</th><th>Pedido</th><th>Cliente</th><th>Armação e lente</th><th class="r">Venda</th><th class="r">Custo</th><th class="r">Margem</th></tr></thead><tbody>${peds.map(p=>{const c=vdCusto(p);return`<tr><td>${vdData(p.criado)}</td><td>${esc(p.id)}${p.cancelado?'<br><small>Cancelado</small>':''}</td><td>${cli(p)}</td><td>${itens(p)}</td><td class="r">${vdBrl(p.valor)}</td><td class="r vcusto">${vdCustoHTML(p)}</td><td class="r">${c!=null&&!p.cancelado?brl((Number(p.valor)||0)-c):'—'}</td></tr>`}).join('')}</tbody></table></div>`:'<div class="vazio">Nenhum pedido aqui.</div>';
+  }else if(fVd==='orcamentos'){
+    const comp=orcs.filter(o=>vdCusto(o)!=null);
+    $('#vdResumo').innerHTML=card('Orçamentos',orcs.length)+card('Valor orçado',brl(orcs.reduce((s,o)=>s+(Number(o.valor)||0),0)))+card('Valor de custo',comp.length?brl(comp.reduce((s,o)=>s+vdCusto(o),0)):'—');
+    if(orcs.length>comp.length)nota=`${orcs.length-comp.length} orçamento${orcs.length-comp.length>1?'s':''} sem custo completo fica${orcs.length-comp.length>1?'m':''} fora do custo.`;
+    $('#vdLista').innerHTML=orcs.length?`<div class="tab"><table><thead><tr><th>Data</th><th>Cliente</th><th>Armação e lente</th><th class="r">Valor orçado</th><th class="r">Custo</th></tr></thead><tbody>${orcs.map(o=>`<tr><td>${vdData(o.criado)}</td><td>${cli(o)}</td><td>${itens(o)}</td><td class="r">${vdBrl(o.valor)}</td><td class="r vcusto">${vdCustoHTML(o)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="vazio">Nenhum orçamento em aberto.</div>';
+  }else{
+    const tc=aces.reduce((s,a)=>s+a.cliente,0),tl=aces.reduce((s,a)=>s+a.loja,0);
+    $('#vdResumo').innerHTML=card('Aberturas',tc+tl)+card('Por clientes',tc)+card('Pela loja',tl)+card('Dias com uso',aces.length);
+    $('#vdLista').innerHTML=aces.length?`<div class="tab"><table><thead><tr><th>Data</th><th class="r">Clientes</th><th class="r">Loja</th><th class="r">Total</th></tr></thead><tbody>${aces.map(a=>`<tr><td>${vdData(a.data)}</td><td class="r">${a.cliente}</td><td class="r">${a.loja}</td><td class="r"><b>${a.cliente+a.loja}</b></td></tr>`).join('')}</tbody></table></div>`:'<div class="vazio">Ainda não há acessos registrados.</div>';
+    nota='Cada abertura do app conta uma vez, mesmo que a pessoa recarregue a página.';
+  }
+  $('#vdNota').textContent=nota;
+}
+$('#vdFiltro').addEventListener('click',e=>{const b=e.target.closest('[data-fv]');if(b){fVd=b.dataset.fv;renderVendas()}});
+$('#vdMes').addEventListener('change',e=>{mVd=e.target.value;renderVendas()});
+$('#vdBusca').addEventListener('input',renderVendas);
+$('#vdAtualizar').addEventListener('click',carregaVendas);
+// conta uma abertura do app por sessão
+(function(){
+  try{if(sessionStorage.getItem('vox.acesso'))return;sessionStorage.setItem('vox.acesso','1')}catch(e){}
+  if(servidorReal())fetch(SCRIPT_URL,{method:'POST',keepalive:true,headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({acao:'acesso',origem:LOJA?'loja':'cliente'})}).catch(()=>{});
+})();
 
 /* ================= ESTADO SALVO, ÁREA DA LOJA, BAIXAR ORÇAMENTO ================= */
 // tudo o que o cliente preencheu fica salvo neste aparelho e volta ao abrir o app de novo
@@ -2085,11 +2296,11 @@ $('#voltar').addEventListener('click',()=>{
 $('#fotoRx').addEventListener('click',()=>{const R=leRx();
   $('#fotoRx').href='https://wa.me/552126041377?text='+encodeURIComponent(`Olá! ${R.cli?'Sou '+R.cli+'. ':''}Estou fazendo meu orçamento no app da VOX${FR?' com a armação VOX '+FR.n:''}. Vou mandar a foto da minha receita para vocês me ajudarem a preencher.`)});
 $('#v-lente').appendChild($('#rxLentesBox'));$('#rxLentesBox .head').after($('#lenteTopo'));
-const VIEWS=['inicio','vitrine','receita','rotina','lente','dnp','opcoes','oculos','pedidos','precos'];
-function ir(v){if(!VIEWS.includes(v))v='inicio';if(precisaRx(v)&&!rxPreenchida()){avisoRx();v='receita'}if(!LOJA&&['dnp','opcoes','pedidos','precos'].includes(v))v=v==='opcoes'?'lente':'vitrine';VIEW_ATUAL=v;salvaEstado();passos(v);
+const VIEWS=['inicio','vitrine','receita','rotina','lente','dnp','opcoes','oculos','pedidos','vendas','precos'];
+function ir(v){if(!VIEWS.includes(v))v='inicio';if(precisaRx(v)&&!rxPreenchida()){avisoRx();v='receita'}if(!LOJA&&['dnp','opcoes','pedidos','vendas','precos'].includes(v))v=v==='opcoes'?'lente':'vitrine';VIEW_ATUAL=v;salvaEstado();passos(v);
   $$('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.v===v));
   VIEWS.forEach(k=>$('#v-'+k).hidden=k!==v);
-  if(v==='dnp')carregaDNP();if(v==='precos')renderPrecos();if(v==='pedidos')carregaPedidos();if(v==='opcoes')renderOpcoes();if(v==='rotina')renderQuiz();if(v==='lente'){renderGrupos('#rxLentes');renderLenteTopo()}if(v==='oculos'){$('#ocCli').value=$('#cli').value;renderOC()}
+  if(v==='dnp')carregaDNP();if(v==='precos')renderPrecos();if(v==='pedidos')carregaPedidos();if(v==='vendas')carregaVendas();if(v==='opcoes')renderOpcoes();if(v==='rotina')renderQuiz();if(v==='lente'){renderGrupos('#rxLentes');renderLenteTopo()}if(v==='oculos'){$('#ocCli').value=$('#cli').value;renderOC()}
   window.scrollTo({top:0});
 }
 $$('nav button').forEach(b=>{if(b.dataset.v)b.addEventListener('click',()=>ir(b.dataset.v))});
