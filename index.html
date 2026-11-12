@@ -2513,10 +2513,16 @@ async function abreProvador(p){
 async function espCamera(){
   espMsg('Abrindo a câmera…');
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw new Error('sem câmera');
-  ESP.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:720},height:{ideal:960}},audio:false});
-  const v=ESP.video||document.createElement('video');ESP.video=v;v.playsInline=true;v.muted=true;v.srcObject=ESP.stream;await v.play();
+  const vez=ESP.vez=(ESP.vez||0)+1,fechou=()=>vez!==ESP.vez||espEl('#espelho').hidden;
+  const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:720},height:{ideal:960}},audio:false});
+  // o espelho foi fechado enquanto a câmera abria: desliga na hora
+  if(fechou()){st.getTracks().forEach(t=>t.stop());return}
+  ESP.stream=st;
+  const v=ESP.video||document.createElement('video');ESP.video=v;v.playsInline=true;v.muted=true;v.srcObject=st;await v.play();
+  if(fechou())return;
   espMsg('Carregando o espelho…');
   await espModelo('VIDEO');
+  if(fechou())return;
   espMsg('Olhe para a câmera, com o rosto bem iluminado');
   const c=espEl('#espTela');c.width=v.videoWidth;c.height=v.videoHeight;
   const loop=()=>{ESP.raf=requestAnimationFrame(loop);if(v.readyState<2)return;
@@ -2560,7 +2566,7 @@ espEl('#espArq').addEventListener('change',e=>{const f=e.target.files[0];e.targe
     c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext('2d').drawImage(im,0,0,c.width,c.height);ESP.foto=c;espDesenhaFoto()};
   im.src=URL.createObjectURL(f)});
 function espFecha(){
-  cancelAnimationFrame(ESP.raf);if(ESP.stream)ESP.stream.getTracks().forEach(t=>t.stop());ESP.stream=null;
+  espDesligaCamera();
   if(ESP.fl&&ESP.modo){try{ESP.fl.close()}catch(e){}ESP.fl=null;ESP.modo=''}
   espEl('#espelho').hidden=true;document.body.style.overflow='';espEl('#espFoto').textContent='Tirar foto';ESP.semCamera=false;ESP.foto=null;
 }
@@ -2579,6 +2585,13 @@ espEl('#espFoto').addEventListener('click',async()=>{
   },'image/jpeg',.9);
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!espEl('#espelho').hidden)espFecha()});
+// app minimizado, tela bloqueada ou troca de aba: desliga a câmera; ao voltar, religa se o espelho ainda estiver aberto
+function espDesligaCamera(){ESP.vez=(ESP.vez||0)+1;cancelAnimationFrame(ESP.raf);
+  if(ESP.stream)ESP.stream.getTracks().forEach(t=>t.stop());ESP.stream=null;
+  if(ESP.video){try{ESP.video.pause();ESP.video.srcObject=null}catch(e){}}}
+document.addEventListener('visibilitychange',()=>{if(espEl('#espelho').hidden)return;
+  if(document.hidden){if(ESP.stream)espDesligaCamera();return}
+  if(!ESP.stream&&!ESP.semCamera&&!ESP.foto)espCamera().catch(()=>{espMsg('');espSemCamera()})});
 
 /* ================= SAIR SEM SALVAR ================= */
 // Há progresso quando a pessoa já escolheu armação, mexeu na receita ou passou do Início.
@@ -2606,6 +2619,7 @@ const armaTrava=()=>{if(window.__saindo)return;while(TRAVA<10){history.pushState
 window.addEventListener('popstate',()=>{
   if(window.__saindo)return;
   TRAVA=Math.max(0,TRAVA-1);
+  if(!espEl('#espelho').hidden){espFecha();return}
   if(!$('#veuIA').hidden){iaFecha();return}
   if(!$('#veu').hidden){fechaModal();return}
   const i=PASSOS_CLI.findIndex(e=>e[0]===VIEW_ATUAL);
