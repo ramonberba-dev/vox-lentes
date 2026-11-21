@@ -1365,6 +1365,9 @@ const TRATS=[
  {k:'trans',lab:'Transitions Gen S',desc:'A fotossensível mais rápida: escurece em cerca de 25 segundos. Cinza ou marrom.',on:c=>c.foto.startsWith('Trans'),set:(c,on)=>{c.foto=on?'Trans Cinza':'';if(on){c.cor='';c.fa=false}}},
  {k:'cor',lab:'Lente colorida de sol',desc:'Coloração total ou degradê. A lente sai com antirrisco tingível, sem antirreflexo.',on:c=>!!c.cor,set:(c,on)=>{c.cor=on?'T|Cinza|80':'';if(on){c.foto='';c.ar=1}else if(c.ar<2)c.ar=2}},
 ];
+// Coleção Ciclo: a landing do Ciclo abre o app com ?ciclo=<cor>. A cor vai para o pedido; preço da lente Ciclo é confirmado pela VOX.
+const CICLO_CORES={azul:'Azul · filtro de luz azul (telas)',amarela:'Amarela · conforto ao volante (dia)',laranja:'Laranja · noite',vermelha:'Vermelha · antes do sono'};
+const CICLO=(()=>{try{const c=(new URLSearchParams(location.search).get('ciclo')||'').toLowerCase();return CICLO_CORES[c]?{cor:c,txt:CICLO_CORES[c]}:null}catch(e){return null}})();
 const CORES=[['T|Cinza|80','Total cinza 80%'],['T|Cinza|50','Total cinza 50%'],['T|Cinza|25','Total cinza 25%'],['T|Marrom|80','Total marrom 80%'],['T|Marrom|50','Total marrom 50%'],['T|Verde|80','Total verde 80%'],['D|Cinza|80','Degradê cinza 80%'],['D|Cinza|50','Degradê cinza 50%'],['D|Marrom|80','Degradê marrom 80%'],['D|Marrom|50','Degradê marrom 50%'],['D|Verde|50','Degradê verde 50%']];
 const corTxt=c=>(CORES.find(x=>x[0]===c)||[0,''])[1].toLowerCase();
 function renderOC(){
@@ -1482,6 +1485,7 @@ function agendaOrc(R,P,temLente,tot){
   const dados={cliente:R.cli,armacao:[...SAC.map(s=>s.nome),'VOX '+FR.n].join(' + '),
     lente:[...SAC.map(s=>s.lente),temLente&&P?`${nomeOpt(P.o)}${P.o.solar?'':' '+P.o.idx}`:'Sem troca de lente'].join(' + '),
     valor:Math.round((n>=2?soma*.8:soma)*100)/100,lente_ref:JSON.stringify([...SAC.map(s=>s.ref),refLente(P,temLente)].filter(Boolean))};
+  if(CICLO)dados.lente+=` · Coleção Ciclo: ${CICLO.txt}`;
   const sig=JSON.stringify(dados);if(sig===ORC.sig)return;
   ORC.sig=sig;clearTimeout(ORC.t);
   ORC.t=setTimeout(()=>{
@@ -1508,6 +1512,7 @@ function montaRegistro(P,temLente,R,txt,HAY){
     PED_ATUAL.obs=[`${n} óculos${n>=2?' · 20% de desconto':''}`,PED_ATUAL.obs].filter(Boolean).join(' · ')}
   PED_ATUAL.lente_ref=JSON.stringify([...(HAY?[]:SAC.map(s=>s.ref)),refLente(P,temLente)].filter(Boolean));
   PED_ATUAL.orc_id=LOJA?'':LS.get('voxlentes.orcid','');
+  if(CICLO){PED_ATUAL.origem_campanha='ciclo';PED_ATUAL.obs=[`Coleção Ciclo · lente ${CICLO.txt}`,PED_ATUAL.obs].filter(Boolean).join(' · ')}
 }
 function filaPedidos(){return LS.get('voxlentes.fila',[])}
 async function enviaFila(){
@@ -1555,6 +1560,7 @@ function renderPedido(P,temLente,det){
   if(HAY){ITEM_ATUAL=FR?{nome:'VOX '+FR.n,img:FR.img[0],tot:(FR?FR.p:0)+(temLente&&P?venda(P.o,P.XX,OC.cor).preco:0),txt:'',lente:temLente&&P?`${nomeOpt(P.o)}${P.o.solar?'':' '+P.o.idx}`:'Sem troca de lente',ok:!temLente||!!P,ref:refLente(P,temLente)}:null;renderPedidoHaytek(P,temLente,R,med);return}
   const L=[];
   L.push(`*PEDIDO VOX* · nº ${PID()}`,`Data: ${new Date().toLocaleDateString('pt-BR')}`,`Cliente: ${R.cli||'—'}`,'');
+  if(CICLO)L.push('*COLEÇÃO CICLO*',`Lente: ${CICLO.txt}`,'Valor da lente Ciclo: a VOX confirma por aqui.','');
   const H0=L.length;
   if(temLente&&P){
     const o=P.o;
