@@ -639,6 +639,9 @@ input[type=checkbox],input[type=radio]{accent-color:var(--tinta)}
 #cicloAviso{border-left:2px solid var(--tinta);padding:8px 12px;margin:0 0 12px}
 #cicloAviso.erro{border-color:var(--erro);color:var(--erro)}
 #ocLenteDesc .btn{margin-top:10px}
+#v-receita .acoes label.btn{flex:1 1 220px;justify-content:center;text-align:center;min-height:56px;font-size:15px;padding:14px 22px}
+.btn.btn-anexo{background:#E3C24E;border:1px solid #E3C24E;color:#1B1916}
+.btn.btn-anexo:hover{background:#D8B43C}
 /* /JORNADA V2 */
 /* LENTE COR */
 .bol{display:flex;gap:10px;justify-content:center;align-items:center;padding:8px 0 2px}
@@ -750,7 +753,7 @@ input[type=checkbox],input[type=radio]{accent-color:var(--tinta)}
       <p class="nota">Tire uma foto da receita ou anexe a imagem ou o PDF. A inteligência artificial copia os números como estão escritos, com o mesmo sinal de + ou −, e você confere antes de usar.</p></div>
     <div class="acoes">
       <label class="btn ouro">Tirar foto da receita<input type="file" id="rxCam" accept="image/*" capture="environment" hidden></label>
-      <label class="btn sec">Anexar foto ou PDF<input type="file" id="rxArq" accept="image/*,application/pdf" hidden></label>
+      <label class="btn btn-anexo">Anexar foto ou PDF<input type="file" id="rxArq" accept="image/*,application/pdf" hidden></label>
     </div>
     <p class="nota soCliente" hidden>Prefere ajuda de uma pessoa? <a id="fotoRx" href="https://wa.me/552126041377" target="_blank" rel="noopener">Envie a foto pelo WhatsApp</a> e a equipe VOX preenche com você.</p>
   </div>
@@ -1651,7 +1654,7 @@ function renderOC(){
     if(P){
       $('#ocLenteNome').textContent=`${nomeOpt(P.o)} ${P.o.solar?'':IDXN[P.o.idx]}`;
       $('#ocLenteDesc').textContent=(P.o.kind==='stk'?(P.o.solar?'Lente solar pronta, sem grau, com proteção UV.':'Lente pronta do estoque Haytek, tratamento de fábrica: '+P.o.arTxt+'.'):P.o.line.desc)+(XX.plana?' Sem grau.':'');
-    }else if(OC.ciclo){$('#ocLenteNome').textContent='Linha Ciclo: só até 3,00 de grau';$('#ocLenteDesc').innerHTML=cicloAlerta()}else{$('#ocLenteNome').textContent='Combinação fora da faixa do laboratório';$('#ocLenteDesc').textContent='Desmarque algum tratamento ou troque a linha. Se a receita for muito alta, consulte a Haytek.'}
+    }else if(OC.ciclo){$('#ocLenteNome').textContent=cicloMulti()?'Linha Ciclo: só visão simples':'Linha Ciclo: só até 3,00 de grau';$('#ocLenteDesc').innerHTML=cicloAlerta()}else{$('#ocLenteNome').textContent='Combinação fora da faixa do laboratório';$('#ocLenteDesc').textContent='Desmarque algum tratamento ou troque a linha. Se a receita for muito alta, consulte a Haytek.'}
     const base=P?P.preco:null;
     $('#trats').innerHTML=TRATS.map(t=>{
       const on=t.on(OC);const c2={...OC};t.set(c2,!on);const p2=precoDe(c2);
@@ -1801,7 +1804,7 @@ function renderPedido(P,temLente,det){
   const R=leRx();const falta=[];
   if(!FR)falta.push('Escolha a armação na vitrine.');
   if(!temLente)falta.push('Este óculos está sem troca de lente: não há pedido de lente para o laboratório.');
-  else if(!P)falta.push(OC.ciclo?'A linha Ciclo só é feita até 3,00 de grau (esférico). Troque para lente transparente ou fale com a VOX.':'A lente escolhida está fora da faixa do laboratório.');
+  else if(!P)falta.push(OC.ciclo?(cicloMulti()?'A linha Ciclo é só de visão simples e esta receita tem adição (multifocal). Troque para lente transparente.':'A linha Ciclo só é feita até 3,00 de grau (esférico). Troque para lente transparente ou fale com a VOX.'):'A lente escolhida está fora da faixa do laboratório.');
   const grau=temLente&&OC.modo==='grau';
   if(grau){
     for(const[k,e]of[['OD',R.od],['OE',R.oe]]){
@@ -3072,10 +3075,12 @@ if(CICLO_URL)OC.ciclo=CICLO_URL.cor;
 const CICLO_HEX={azul:'#7FA6CF',amarela:'#E3C24E',laranja:'#E0832F',vermelha:'#B8332A'};
 const CICLO_MAX=3,CICLO_BASE=179,CICLO_PASSO=35;
 function cicloSet(cor){OC.ciclo=cor||'';if(typeof renderArmRx==='function'&&FR)setTimeout(renderArmRx);CICLO=cor?{cor,txt:CICLO_CORES[cor]}:null;if(cor){OC.fa=false;OC.cor='';OC.foto=''}if(window.__cicloRefaz)window.__cicloRefaz()}
+function cicloMulti(){const R=leRx();return R.para!=='perto'&&((R.od.add||0)>0||(R.oe.add||0)>0)}
 function cicloGrau(){const R=leRx();return Math.max(Math.abs(R.od.s||0),Math.abs(R.oe.s||0))}
 const grauTxt=g=>g.toFixed(2).replace('.',',');
 function cicloPreco(c){
   const plana=c.modo==='plana',g=plana?0:cicloGrau();
+  if(!plana&&cicloMulti())return null;   // linha Ciclo é só visão simples: receita com adição (multifocal) não pode
   if(g>CICLO_MAX+1e-9)return null;
   const deg=Math.ceil(g/.5-1e-9),preco=CICLO_BASE+CICLO_PASSO*deg;
   return{o:{kind:'ciclo',cor:c.ciclo,preco,idx:'1.50',v:'',col:1,tipo:'vs',line:{id:'ciclo',nome:'Ciclo',alt:0,
@@ -3089,7 +3094,7 @@ function cicloNota(P){
   return a.join(' ');
 }
 function cicloAlerta(){
-  return`A linha Ciclo é só de visão simples e é feita até 3,00 de grau (esférico, para mais ou para menos). Esta receita tem ${grauTxt(cicloGrau())}.<br>
+  return(cicloMulti()?'A linha Ciclo é só de visão simples. Esta receita tem adição (é para lente multifocal), então não dá para fazer a lente colorida.':`A linha Ciclo é só de visão simples e é feita até 3,00 de grau (esférico, para mais ou para menos). Esta receita tem ${grauTxt(cicloGrau())}.`)+`<br>
     <button class="btn sec" type="button" data-tipo="trans">Trocar para lente transparente</button> ou fale com a VOX pelo WhatsApp.`;
 }
 function cicloTipoChips(){
@@ -3114,12 +3119,19 @@ function cicloAvisoRx(){
   const P=cicloPreco(OC);el.hidden=false;el.classList.toggle('erro',!P);
   const R=leRx(),ad=(R.od.add||0)>0||(R.oe.add||0)>0;if(P&&ad)el.classList.add('erro');
   el.innerHTML=P?`Lente Ciclo ${OC.ciclo}: ${brl(P.preco)} o par, para esta receita. A linha Ciclo é só de visão simples e vai até 3,00 de grau.${ad?' Esta receita tem adição (perto): a lente Ciclo não é multifocal, então vai corrigir só a visão de longe.':''}`
-    :`Atenção: a linha Ciclo só é feita até 3,00 de grau. Esta receita tem ${grauTxt(cicloGrau())}. Você pode seguir com lente transparente ou falar com a VOX. <button class="btn sec" type="button" data-tipo="trans">Usar lente transparente</button>`;
+    :`Atenção: ${cicloMulti()?'a linha Ciclo é só de visão simples, e esta receita tem adição (multifocal).':'a linha Ciclo só é feita até 3,00 de grau. Esta receita tem '+grauTxt(cicloGrau())+'.'} Você pode seguir com lente transparente ou falar com a VOX. <button class="btn sec" type="button" data-tipo="trans">Usar lente transparente</button>`;
 }
 $('#v-receita').addEventListener('input',()=>cicloAvisoRx());
 function verLentesV2(){
   QZ.q=0;QZ.novo=0;
-  if(OC.ciclo){OC.modo='grau';ir('oculos');return}
+  if(OC.ciclo){OC.modo='grau';
+    if(!cicloPreco(OC)){
+      $('#modal').innerHTML=`<div style="display:grid;gap:14px;padding:6px"><p class="eyebrow" style="margin:0;color:var(--erro)">Atenção</p><h2 style="margin:0">Esta receita não pode ter lente colorida</h2>
+        <p style="margin:0">${cicloMulti()?'A lente colorida da Coleção Ciclo é feita só em <b>visão simples</b>. A sua receita tem <b>adição</b>, que é para lente multifocal.':'A lente colorida da Coleção Ciclo é feita só com grau de <b>até +3,00 ou −3,00</b>. A sua receita tem '+grauTxt(cicloGrau())+'.'}</p>
+        <p style="margin:0">Você pode seguir com a lente transparente com filtro de luz azul, ou falar com a VOX pelo WhatsApp.</p>
+        <div class="acoes" style="margin:0"><button class="btn ouro" type="button" data-tipo="trans">Usar lente transparente</button><button class="btn sec" type="button" id="mFechar">Voltar à receita</button></div></div>`;
+      $('#veu').hidden=false;$('#modal').onclick=e=>{if(e.target.closest('#mFechar')||e.target.closest('[data-tipo]'))fechaModal()};return}
+    ir('oculos');return}
   ligaFA(true);atualiza();ir('lente');
 }
 // início em 2 ou 3 passos
