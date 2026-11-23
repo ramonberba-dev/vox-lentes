@@ -638,6 +638,13 @@ input[type=checkbox],input[type=radio]{accent-color:var(--tinta)}
 .ini-volta{margin-top:14px}
 #cicloAviso{border-left:2px solid var(--tinta);padding:8px 12px;margin:0 0 12px}
 #cicloAviso.erro{border-color:var(--erro);color:var(--erro)}
+#cicloAviso.ok{border-color:#3E6B4E}
+#cicloAviso.ok .regras-t{color:#3E6B4E}
+.regras-t{margin:0 0 6px;font-weight:500}
+.regras{margin:0 0 8px;padding-left:18px;display:grid;gap:3px;font-size:14.5px;color:var(--tinta)}
+.regras-n{margin:0 0 8px;font-size:14px}
+.regras-box{border-left:2px solid var(--tinta);padding:10px 14px;margin:16px 0 4px;background:rgba(255,255,255,.35)}
+#cicloAviso.erro .regras{color:var(--tinta)}
 #ocLenteDesc .btn{margin-top:10px}
 #v-receita .acoes label.btn{flex:1 1 220px;justify-content:center;text-align:center;min-height:56px;font-size:15px;padding:14px 22px}
 .btn.btn-anexo{background:#E3C24E;border:1px solid #E3C24E;color:#1B1916}
@@ -3133,13 +3140,21 @@ document.addEventListener('click',e=>{
   else cicloSet(k);
   renderOC();cicloAvisoRx();
 });
+const CICLO_REGRAS=`<p class="regras-t">A lente colorida (Coleção Ciclo) é feita para receitas com:</p><ul class="regras">
+  <li>Visão simples: <b>sem adição</b> (não serve para multifocal)</li>
+  <li>Grau de <b>até +3,00 ou −3,00</b>, somando o esférico e o cilíndrico</li>
+  <li>Astigmatismo (cilíndrico) de <b>até −2,00</b></li>
+  <li>Diferença de grau entre os olhos de <b>até 2,00</b></li>
+  <li><b>Sem prisma</b> (Δ) na receita</li></ul>`;
 function cicloAvisoRx(){
   const el=$('#cicloAviso');if(!el)return;
   if(!(OC.ciclo&&OC.modo==='grau')){el.hidden=true;return}
-  const P=cicloPreco(OC);el.hidden=false;el.classList.toggle('erro',!P);
-  const R=leRx(),ad=(R.od.add||0)>0||(R.oe.add||0)>0;if(P&&ad)el.classList.add('erro');
-  el.innerHTML=P?`Lente Ciclo ${OC.ciclo}: ${brl(P.preco)} o par, para esta receita. A linha Ciclo é só de visão simples, até 3,00 de grau (somando esférico e cilíndrico), cilíndrico até −2,00 e sem prisma (Δ).${ad?' Esta receita tem adição (perto): a lente Ciclo não é multifocal, então vai corrigir só a visão de longe.':''}`
-    :`Atenção: ${cicloMsg()} Você pode seguir com lente transparente ou falar com a VOX. <button class="btn sec" type="button" data-tipo="trans">Usar lente transparente</button>`;
+  el.hidden=false;
+  const R=leRx(),vazia=[R.od,R.oe].every(e=>e.esfVazio&&!e.c&&!e.add);
+  if(vazia){el.classList.remove('erro','ok');el.innerHTML=CICLO_REGRAS;return}
+  const P=cicloPreco(OC);el.classList.toggle('erro',!P);el.classList.toggle('ok',!!P);
+  el.innerHTML=P?`<p class="regras-t">✓ Esta receita pode ter a lente colorida ${OC.ciclo}: ${brl(P.preco)} o par.</p><p class="regras-n">Se a sua receita tiver prisma (Δ), avise a VOX: aí a lente colorida não pode.</p>`
+    :`<p class="regras-t">Atenção: esta receita não pode ter lente colorida.</p><p class="regras-n">${cicloMsg()}</p>${CICLO_REGRAS}<button class="btn sec" type="button" data-tipo="trans">Usar lente transparente</button>`;
 }
 $('#v-receita').addEventListener('input',()=>cicloAvisoRx());
 function verLentesV2(){
@@ -3165,7 +3180,7 @@ function renderIni(){
   else if(!INI.tipo)h='<p class="ini-q">02 · Que lente você quer?</p>'
     +op('t:cor','Colorida','Coleção Ciclo: azul, amarela, laranja ou vermelha · '+(INI.grau==='sim'?`só visão simples, grau até 3,00 · a partir de ${brl(CICLO_BASE+CICLO_PASSO)}`:brl(CICLO_BASE)))
     +op('t:trans','Transparente','Com filtro de luz azul, para telas')+volta;
-  else h='<p class="ini-q">03 · A cor da sua lente</p>'+Object.keys(CICLO_CORES).map(k=>op('c:'+k,k[0].toUpperCase()+k.slice(1),CICLO_CORES[k].split(' · ')[1]||'',CICLO_HEX[k])).join('')+volta;
+  else h='<p class="ini-q">03 · A cor da sua lente</p>'+Object.keys(CICLO_CORES).map(k=>op('c:'+k,k[0].toUpperCase()+k.slice(1),CICLO_CORES[k].split(' · ')[1]||'',CICLO_HEX[k])).join('')+(INI.grau==='sim'?`<div class="regras-box">${CICLO_REGRAS}<p class="regras-n">Depois, na receita, o app confere para você.</p></div>`:'')+volta;
   el.innerHTML=h;
 }
 function fimIni(){
