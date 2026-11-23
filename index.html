@@ -3189,7 +3189,14 @@ fetch('estoque.json?'+Date.now()).then(r=>{if(!r.ok)throw 0;return r.json()}).th
   if(esgotado(p)){b.classList.add('esgot');const ph=b.querySelector('.ph');if(ph&&!ph.querySelector('.esg-tag'))ph.insertAdjacentHTML('beforeend','<span class="esg-tag">Esgotada</span>')}})}}
 {const a0=abreProduto;abreProduto=function(p){a0(p);if(!esgotado(p))return;
   $$('#modal [data-esc],#modal [data-fila]').forEach(b=>{b.disabled=true;b.style.opacity=.45});
-  const m=$('#modal .mact');if(m)m.insertAdjacentHTML('afterbegin','<p class="esg-nota">Esta armação está esgotada no momento. Fale com a VOX pelo WhatsApp para saber quando chega.</p>')}}
+  const m=$('#modal .mact');if(!m)return;
+  const txt=`Olá! Vi no app da VOX que a armação VOX ${p.n} está esgotada. Quero ser avisado(a) quando chegar.`;
+  m.insertAdjacentHTML('afterbegin',`<p class="esg-nota">Esta armação está esgotada no momento.</p><a class="btn ouro" id="aviseMe" href="https://wa.me/552126041377?text=${encodeURIComponent(txt)}" target="_blank" rel="noopener">Avise-me quando chegar</a>`);
+  $('#aviseMe').addEventListener('click',()=>{ // registra o interesse na aba Orçamentos da planilha, para a VOX saber quem quer
+    try{const id='AVISE-'+Date.now().toString(36);
+      if(typeof servidorReal==='function'&&servidorReal())fetch(SCRIPT_URL,{method:'POST',keepalive:true,headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body:JSON.stringify({acao:'orcamento',orcamento:{id,cliente:($('#cli')&&$('#cli').value.trim())||'',armacao:'VOX '+p.n,lente:'AVISE-ME QUANDO CHEGAR (armação esgotada)',valor:0,lente_ref:'[]'}})}).catch(()=>{})}catch(e){}
+  })}}
 /* /ESTOQUE APP */
 
 /* DNP FOTO */
