@@ -649,6 +649,12 @@ input[type=checkbox],input[type=radio]{accent-color:var(--tinta)}
 .gal>.bol i{width:26px;height:26px}
 .bol-leg{font-size:12px;color:var(--tinta-2);text-align:center;margin:2px 0 0}
 /* /LENTE COR */
+/* ESTOQUE APP */
+#vitrine .prod.esgot .ph img{opacity:.45;filter:grayscale(.6)}
+.esg-tag{position:absolute;left:8px;top:8px;background:var(--tinta);color:var(--papel);font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:999px}
+#vitrine .prod .ph{position:relative}
+.esg-nota{color:var(--erro);font-size:14px;margin:6px 0 0}
+/* /ESTOQUE APP */
 </style>
 
 <header class="bar">
@@ -3147,6 +3153,18 @@ $('#vitrine').addEventListener('keydown',e=>{const d=e.target.closest('[data-vc]
 $('#modal').addEventListener('click',e=>{const d=e.target.closest('[data-mc]');if(!d)return;
   e.stopImmediatePropagation();trocaCor(d,'data-mc',()=>$('#mBig'));$$('#modal .th button').forEach(b=>b.setAttribute('aria-pressed','false'))},true);
 /* /LENTE COR */
+
+/* ESTOQUE APP */
+let ESTQ={};
+const esgotado=p=>p&&ESTQ[p.id]===0;
+fetch('estoque.json?'+Date.now()).then(r=>{if(!r.ok)throw 0;return r.json()}).then(j=>{ESTQ=j||{};if(CAT.length)renderVitrine()}).catch(()=>{});
+{const f0=filtra;filtra=function(){const L=f0();return L.filter(p=>!esgotado(p)).concat(L.filter(esgotado))}}
+{const r0=renderVitrine;renderVitrine=function(){r0();$$('#vitrine .prod[data-p]').forEach(b=>{const p=CAT.find(x=>x.id===b.dataset.p);
+  if(esgotado(p)){b.classList.add('esgot');const ph=b.querySelector('.ph');if(ph&&!ph.querySelector('.esg-tag'))ph.insertAdjacentHTML('beforeend','<span class="esg-tag">Esgotada</span>')}})}}
+{const a0=abreProduto;abreProduto=function(p){a0(p);if(!esgotado(p))return;
+  $$('#modal [data-esc],#modal [data-fila]').forEach(b=>{b.disabled=true;b.style.opacity=.45});
+  const m=$('#modal .mact');if(m)m.insertAdjacentHTML('afterbegin','<p class="esg-nota">Esta armação está esgotada no momento. Fale com a VOX pelo WhatsApp para saber quando chega.</p>')}}
+/* /ESTOQUE APP */
 </script>
 
 <script>
