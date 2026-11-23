@@ -640,6 +640,15 @@ input[type=checkbox],input[type=radio]{accent-color:var(--tinta)}
 #cicloAviso.erro{border-color:var(--erro);color:var(--erro)}
 #ocLenteDesc .btn{margin-top:10px}
 /* /JORNADA V2 */
+/* LENTE COR */
+.bol{display:flex;gap:10px;justify-content:center;align-items:center;padding:8px 0 2px}
+.bol i{display:block;width:18px;height:18px;border-radius:50%;background:var(--c);box-shadow:0 0 0 1px var(--linha2);cursor:pointer;flex:none}
+.bol i.sem{background:linear-gradient(135deg,#fff 44%,var(--linha2) 45% 55%,#fff 56%)}
+.bol i[aria-pressed="true"]{box-shadow:0 0 0 2px var(--bg),0 0 0 3px var(--tinta)}
+.gal>.bol{gap:14px;padding:12px 0 4px}
+.gal>.bol i{width:26px;height:26px}
+.bol-leg{font-size:12px;color:var(--tinta-2);text-align:center;margin:2px 0 0}
+/* /LENTE COR */
 </style>
 
 <header class="bar">
@@ -1082,7 +1091,7 @@ function renderVitrine(){
   const L=filtra();
   $('#vitCont').textContent=`${L.length} ${L.length===1?'modelo':'modelos'} · preço da armação ou do óculos de sol, sem lente de grau.`;
   $('#vitrine').innerHTML=L.map(p=>`<button class="prod ${FR&&FR.id===p.id?'sel':''}${FILA.some(f=>f.id===p.id)?' na-fila':''}" type="button" data-p="${p.id}">
-    <div class="ph"><img src="${p.img[0]}" alt="VOX ${esc(p.n)}" loading="lazy">${FILA.some(f=>f.id===p.id)?'<span class="fila-ok">✓ Escolhida</span>':''}</div>
+    <div class="ph"><img src="${fotoCor(p,corVit(p))}" alt="VOX ${esc(p.n)}" loading="lazy">${FILA.some(f=>f.id===p.id)?'<span class="fila-ok">✓ Escolhida</span>':''}</div>${bolinhas(p,corVit(p),'data-vc')}
     <div class="tx"><span class="nm">${esc(p.n)}</span><span class="pr">${brl(p.p)}</span><span class="tg">${tagsHTML(p)}</span></div></button>`).join('')||'<div class="vazio">Nenhum modelo com esse nome.</div>';
   renderFila();
 }
@@ -1091,7 +1100,7 @@ $('#busca').addEventListener('input',renderVitrine);
 $('#vitrine').addEventListener('click',e=>{const b=e.target.closest('[data-p]');if(b)abreProduto(CAT.find(p=>p.id===b.dataset.p))});
 function abreProduto(p){
   const a=aroDe(p);
-  $('#modal').innerHTML=`<div class="gal"><div class="big"><img id="mBig" src="${p.img[0]}" alt="VOX ${esc(p.n)}"></div>
+  $('#modal').innerHTML=`<div class="gal"><div class="big"><img id="mBig" src="${fotoCor(p,corVit(p))}" alt="VOX ${esc(p.n)}"></div>${bolinhas(p,corVit(p),'data-mc')}
     ${p.img.length>1?`<div class="th">${p.img.map((s,i)=>`<button type="button" data-img="${s}" aria-pressed="${i===0}" aria-label="Foto ${i+1}"><img src="${s}" alt=""></button>`).join('')}</div>`:''}</div>
     <div class="mtx"><button class="fechar" type="button" id="mFechar" aria-label="Fechar">✕</button>
       <div><p class="eyebrow">${p.t==='s'?'Óculos de sol':'Armação de grau'}${p.pol?' · polarizado':''}${p.clip?' · com clip-on':''}</p><h2 id="mNome">VOX ${esc(p.n)}</h2></div>
@@ -1133,7 +1142,7 @@ function escolheArmacao(p,modo,quieto){
 }
 function renderArmRx(){
   const b=$('#rxArm');if(!FR){b.hidden=true;$('#armOrig').textContent='';return}
-  b.hidden=false;b.innerHTML=`<img src="${FR.img[0]}" alt=""><div><small>Armação escolhida</small><b>VOX ${esc(FR.n)}</b><small>${ARO[aroDe(FR)]} · ${brl(FR.p)}</small></div>`;
+  b.hidden=false;b.innerHTML=`<img src="${fotoCor(FR,OC.ciclo)}" alt=""><div><small>Armação escolhida</small><b>VOX ${esc(FR.n)}</b><small>${ARO[aroDe(FR)]} · ${brl(FR.p)}</small></div>`;
   $('#armOrig').textContent=`Definido pela armação VOX ${FR.n}.`;
 }
 
@@ -1592,7 +1601,7 @@ const corTxt=c=>(CORES.find(x=>x[0]===c)||[0,''])[1].toLowerCase();
 function renderOC(){
   const semFR=!FR;
   $('#ocArm').innerHTML=semFR?`<div class="vazio" style="grid-column:1/-1">Nenhuma armação escolhida. <button class="btn sec" type="button" data-ir="vitrine" style="margin-left:8px">Abrir a vitrine</button></div>`
-   :`<img src="${FR.img[0]}" alt="VOX ${esc(FR.n)}"><div style="display:grid;gap:6px;min-width:0"><p class="eyebrow" style="margin:0">${FR.t==='s'?'Óculos de sol':'Armação'}</p><h2>VOX ${esc(FR.n)}</h2>
+   :`<img src="${fotoCor(FR,OC.modo!=='arm'?OC.ciclo:'')}" alt="VOX ${esc(FR.n)}"><div style="display:grid;gap:6px;min-width:0"><p class="eyebrow" style="margin:0">${FR.t==='s'?'Óculos de sol':'Armação'}</p><h2>VOX ${esc(FR.n)}</h2>
      <div class="tg" style="display:flex;gap:4px;flex-wrap:wrap">${tagsHTML(FR)}<span class="mini">${ARO[aroDe(FR)]}</span></div><b class="num" style="font-size:18px">${brl(FR.p)}</b></div>`;
   const modos=FR&&FR.t==='s'?[['arm','Lente original do óculos'],...(FR.esp?[]:[['grau','Trocar por lente de grau']]),['plana','Trocar por lente plana']]:[['grau','Com lente de grau'],['plana','Lente sem grau (plana)'],['arm','Só a armação']];
   if(!modos.some(m=>m[0]===OC.modo))OC.modo=modos[0][0];
@@ -3030,7 +3039,7 @@ if(CICLO_URL)OC.ciclo=CICLO_URL.cor;
 {const v0=venda;venda=function(o,X,cor){return o&&o.kind==='ciclo'?{preco:o.preco,custo:0}:v0(o,X,cor)}} // o app público troca a venda()
 const CICLO_HEX={azul:'#7FA6CF',amarela:'#E3C24E',laranja:'#E0832F',vermelha:'#B8332A'};
 const CICLO_MAX=3,CICLO_BASE=179,CICLO_PASSO=35;
-function cicloSet(cor){OC.ciclo=cor||'';CICLO=cor?{cor,txt:CICLO_CORES[cor]}:null;if(cor){OC.fa=false;OC.cor='';OC.foto=''}if(window.__cicloRefaz)window.__cicloRefaz()}
+function cicloSet(cor){OC.ciclo=cor||'';if(typeof renderArmRx==='function'&&FR)setTimeout(renderArmRx);CICLO=cor?{cor,txt:CICLO_CORES[cor]}:null;if(cor){OC.fa=false;OC.cor='';OC.foto=''}if(window.__cicloRefaz)window.__cicloRefaz()}
 function cicloGrau(){const R=leRx();return Math.max(Math.abs(R.od.s||0),Math.abs(R.oe.s||0))}
 const grauTxt=g=>g.toFixed(2).replace('.',',');
 function cicloPreco(c){
@@ -3113,6 +3122,30 @@ renderIni();
 {const ir1=ir;ir=function(v){if(v==='inicio'){INI={grau:'',tipo:'',cor:''};renderIni()}if(v==='rotina')v='lente';ir1(v);
   if(VIEW_ATUAL==='receita'){cicloAvisoRx();const b=$('#verLentes');if(b&&b.firstChild)b.firstChild.textContent=OC.ciclo?'Ver o meu óculos ':'Ver lentes indicadas '}}}
 /* /JORNADA V2 */
+
+/* LENTE COR */
+let LCOR=new Set();const VCOR={};
+fetch('lentes-cor.json').then(r=>{if(!r.ok)throw 0;return r.json()}).then(a=>{LCOR=new Set(a);if(CAT.length)renderVitrine();if(FR){renderArmRx();if(VIEW_ATUAL==='oculos')renderOC()}}).catch(()=>{});
+function fotoCor(p,cor){return p&&cor&&LCOR.has(p.id)?`lentes-cor/${p.id}-${cor}.webp`:p.img[0]}
+function corVit(p){return VCOR[p.id]!=null?VCOR[p.id]:(OC.ciclo||'')}
+function bolinhas(p,atual,attr){
+  if(!LCOR.has(p.id))return'';
+  return`<span class="bol" role="group" aria-label="Ver com a lente colorida">${['',...Object.keys(CICLO_HEX)].map(k=>
+    `<i role="button" tabindex="0" ${attr}="${p.id}|${k}" aria-pressed="${(atual||'')===k}" title="${k?'Lente '+k:'Lente transparente'}" aria-label="${k?'Lente '+k:'Lente transparente'}" class="${k?'':'sem'}" style="--c:${k?CICLO_HEX[k]:'#fff'}"></i>`).join('')}</span>`;
+}
+function marcaBol(box,k){box.querySelectorAll('i').forEach(i=>i.setAttribute('aria-pressed',i.getAttribute('data-vc')?.endsWith('|'+k)||i.getAttribute('data-mc')?.endsWith('|'+k)?'true':'false'))}
+function trocaCor(el,attr,cardImg){
+  const[id,k]=el.getAttribute(attr).split('|');const p=CAT.find(x=>x.id===id);if(!p)return;
+  VCOR[id]=k;marcaBol(el.parentElement,k);
+  const im=cardImg(el);if(im)im.src=fotoCor(p,k);
+}
+$('#vitrine').addEventListener('click',e=>{const d=e.target.closest('[data-vc]');if(!d)return;
+  e.stopImmediatePropagation();e.preventDefault();trocaCor(d,'data-vc',x=>x.closest('.prod').querySelector('.ph img'))},true);
+$('#vitrine').addEventListener('keydown',e=>{const d=e.target.closest('[data-vc]');if(!d||!['Enter',' '].includes(e.key))return;
+  e.preventDefault();e.stopPropagation();trocaCor(d,'data-vc',x=>x.closest('.prod').querySelector('.ph img'))},true);
+$('#modal').addEventListener('click',e=>{const d=e.target.closest('[data-mc]');if(!d)return;
+  e.stopImmediatePropagation();trocaCor(d,'data-mc',()=>$('#mBig'));$$('#modal .th button').forEach(b=>b.setAttribute('aria-pressed','false'))},true);
+/* /LENTE COR */
 </script>
 
 <script>
