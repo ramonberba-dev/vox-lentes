@@ -1649,7 +1649,7 @@ function renderOC(){
     L.push([`Lentes ${nomeOpt(P.o)}${P.o.solar?'':' '+P.o.idx}`,P.preco]);
   }
   const tot=L.reduce((s,l)=>s+l[1],0);
-  const det=temLente&&P&&P.o.kind==='ciclo'?[OC.modo==='plana'?'Sem grau':'Com grau','cor '+P.o.cor,'resina 1.50'].join(' · '):temLente&&P?[OC.modo==='plana'?'Sem grau':null,P.o.solar?corTxt(OC.cor):VARN[P.o.v],P.o.solar?null:(OC.cor?'coloração '+corTxt(OC.cor):P.o.kind==='stk'?P.o.arTxt:ARN[P.o.col])].filter(Boolean).join(' · '):'';
+  const det=temLente&&P&&P.o.kind==='ciclo'?[OC.modo==='plana'?'Sem grau':'Com grau · visão simples','cor '+P.o.cor,'resina 1.50'].join(' · '):temLente&&P?[OC.modo==='plana'?'Sem grau':null,P.o.solar?corTxt(OC.cor):VARN[P.o.v],P.o.solar?null:(OC.cor?'coloração '+corTxt(OC.cor):P.o.kind==='stk'?P.o.arTxt:ARN[P.o.col])].filter(Boolean).join(' · '):'';
   $('#ocLinhas').innerHTML=(L.map(([n,v])=>`<div class="lin"><span>${esc(n)}</span><span>${brl(v)}</span></div>`).join('')||'<div class="lin det"><span>Escolha uma armação na vitrine.</span><span></span></div>')+(det?`<div class="lin det"><span>${det}</span><span></span></div>`:'')+(OC.modo==='arm'&&FR?`<div class="lin det"><span>${FR.t==='s'?'Com a lente original':'Sem lentes'}</span><span></span></div>`:'');
   $('#ocTotal').textContent=brl(tot);
   const R=leRx();
@@ -1790,7 +1790,7 @@ function renderPedido(P,temLente,det){
   if(HAY){ITEM_ATUAL=FR?{nome:'VOX '+FR.n,img:FR.img[0],tot:(FR?FR.p:0)+(temLente&&P?venda(P.o,P.XX,OC.cor).preco:0),txt:'',lente:temLente&&P?`${nomeOpt(P.o)}${P.o.solar?'':' '+P.o.idx}`:'Sem troca de lente',ok:!temLente||!!P,ref:refLente(P,temLente)}:null;renderPedidoHaytek(P,temLente,R,med);return}
   const L=[];
   L.push(`*PEDIDO VOX* · nº ${PID()}`,`Data: ${new Date().toLocaleDateString('pt-BR')}`,`Cliente: ${R.cli||'—'}`,'');
-  if(temLente&&P&&P.o.kind==='ciclo')L.push('*COLEÇÃO CICLO*',`Lente: ${CICLO_CORES[P.o.cor]}`,`Resina 1.50 · ${OC.modo==='plana'?'sem grau':'com grau (até 3,00)'} · feita pela VOX`,`Valor da lente: ${brl(P.preco)}`,'');
+  if(temLente&&P&&P.o.kind==='ciclo')L.push('*COLEÇÃO CICLO*',`Lente: ${CICLO_CORES[P.o.cor]}`,`${OC.modo==='plana'?'Sem grau':'Visão simples, com grau (até 3,00)'} · resina 1.50 · feita pela VOX`,`Valor da lente: ${brl(P.preco)}`,'');
   const H0=L.length;
   if(temLente&&P&&P.o.kind!=='ciclo'){
     const o=P.o;
@@ -3047,17 +3047,17 @@ function cicloPreco(c){
   if(g>CICLO_MAX+1e-9)return null;
   const deg=Math.ceil(g/.5-1e-9),preco=CICLO_BASE+CICLO_PASSO*deg;
   return{o:{kind:'ciclo',cor:c.ciclo,preco,idx:'1.50',v:'',col:1,tipo:'vs',line:{id:'ciclo',nome:'Ciclo',alt:0,
-    desc:`Lente de resina 1.50 na cor ${c.ciclo}, da Coleção Ciclo. Feita pela VOX${plana?'':', para graus até 3,00'}.`}},
+    desc:`Lente de visão simples, em resina 1.50, na cor ${c.ciclo}, da Coleção Ciclo. Feita pela VOX${plana?'':', para graus até 3,00'}. Não é feita em multifocal (progressiva).`}},
     XX:Xde(c),preco,custo:0,graus:g,degraus:deg,nota:''};
 }
 function cicloNota(P){
   const R=leRx(),a=[];
   a.push(P.degraus?`Valor da lente: R$ ${CICLO_BASE} + ${P.degraus} × R$ ${CICLO_PASSO} (maior grau esférico ${grauTxt(P.graus)}; cada 0,50 de grau acrescenta R$ ${CICLO_PASSO}).`:`Valor da lente sem grau: R$ ${CICLO_BASE}.`);
-  if(OC.modo==='grau'&&((R.od.add||0)>0||(R.oe.add||0)>0))a.push('A lente Ciclo é de visão simples: a adição da receita (perto) não entra nesta lente. Se precisar enxergar de perto com o mesmo óculos, fale com a VOX.');
+  if(OC.modo==='grau'&&((R.od.add||0)>0||(R.oe.add||0)>0))a.push('Atenção: a lente Ciclo é só de visão simples. A adição da receita (perto) não entra nesta lente. Se precisar enxergar de perto com o mesmo óculos, fale com a VOX.');
   return a.join(' ');
 }
 function cicloAlerta(){
-  return`A linha Ciclo só é feita até 3,00 de grau (esférico, para mais ou para menos). Esta receita tem ${grauTxt(cicloGrau())}.<br>
+  return`A linha Ciclo é só de visão simples e é feita até 3,00 de grau (esférico, para mais ou para menos). Esta receita tem ${grauTxt(cicloGrau())}.<br>
     <button class="btn sec" type="button" data-tipo="trans">Trocar para lente transparente</button> ou fale com a VOX pelo WhatsApp.`;
 }
 function cicloTipoChips(){
@@ -3080,7 +3080,8 @@ function cicloAvisoRx(){
   const el=$('#cicloAviso');if(!el)return;
   if(!(OC.ciclo&&OC.modo==='grau')){el.hidden=true;return}
   const P=cicloPreco(OC);el.hidden=false;el.classList.toggle('erro',!P);
-  el.innerHTML=P?`Lente Ciclo ${OC.ciclo}: ${brl(P.preco)} o par, para esta receita. A linha Ciclo vai até 3,00 de grau.`
+  const R=leRx(),ad=(R.od.add||0)>0||(R.oe.add||0)>0;if(P&&ad)el.classList.add('erro');
+  el.innerHTML=P?`Lente Ciclo ${OC.ciclo}: ${brl(P.preco)} o par, para esta receita. A linha Ciclo é só de visão simples e vai até 3,00 de grau.${ad?' Esta receita tem adição (perto): a lente Ciclo não é multifocal, então vai corrigir só a visão de longe.':''}`
     :`Atenção: a linha Ciclo só é feita até 3,00 de grau. Esta receita tem ${grauTxt(cicloGrau())}. Você pode seguir com lente transparente ou falar com a VOX. <button class="btn sec" type="button" data-tipo="trans">Usar lente transparente</button>`;
 }
 $('#v-receita').addEventListener('input',()=>cicloAvisoRx());
@@ -3098,7 +3099,7 @@ function renderIni(){
   let h;
   if(!INI.grau)h='<p class="ini-q">01 · Você precisa de grau?</p>'+op('g:sim','Com grau','Lentes feitas para a sua receita')+op('g:nao','Sem grau','Para proteger os olhos e compor o visual');
   else if(!INI.tipo)h='<p class="ini-q">02 · Que lente você quer?</p>'
-    +op('t:cor','Colorida','Coleção Ciclo: azul, amarela, laranja ou vermelha · '+(INI.grau==='sim'?`grau até 3,00 · a partir de ${brl(CICLO_BASE+CICLO_PASSO)}`:brl(CICLO_BASE)))
+    +op('t:cor','Colorida','Coleção Ciclo: azul, amarela, laranja ou vermelha · '+(INI.grau==='sim'?`só visão simples, grau até 3,00 · a partir de ${brl(CICLO_BASE+CICLO_PASSO)}`:brl(CICLO_BASE)))
     +op('t:trans','Transparente','Com filtro de luz azul, para telas')+volta;
   else h='<p class="ini-q">03 · A cor da sua lente</p>'+Object.keys(CICLO_CORES).map(k=>op('c:'+k,k[0].toUpperCase()+k.slice(1),CICLO_CORES[k].split(' · ')[1]||'',CICLO_HEX[k])).join('')+volta;
   el.innerHTML=h;
