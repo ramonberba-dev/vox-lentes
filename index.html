@@ -655,6 +655,25 @@ input[type=checkbox],input[type=radio]{accent-color:var(--tinta)}
 #vitrine .prod .ph{position:relative}
 .esg-nota{color:var(--erro);font-size:14px;margin:6px 0 0}
 /* /ESTOQUE APP */
+/* DNP FOTO */
+.dnp-esc{display:grid;gap:0}
+#dnpRes{border-left:2px solid var(--tinta);padding:8px 12px;font-size:15px}
+#dnpRes.erro{border-color:var(--erro);color:var(--erro)}
+#dnpCam{position:fixed;inset:0;z-index:9999;background:#0E0D0B;color:#F3F0EA;display:flex;flex-direction:column}
+#dnpCam[hidden]{display:none}
+#dnpCam .vw{position:relative;flex:1;overflow:hidden}
+#dnpCam video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+#dnpCam svg{position:absolute;inset:0;width:100%;height:100%}
+#dnpCam .ov{fill:none;stroke:#F3F0EA;stroke-width:3;stroke-dasharray:10 8;transition:stroke .2s}
+#dnpCam .ov.ok{stroke:#7BC67B;stroke-dasharray:none;stroke-width:4}
+#dnpCam .topo{padding:calc(14px + env(safe-area-inset-top,0px)) 18px 10px;text-align:center}
+#dnpCam .topo b{display:block;font-family:var(--disp);font-weight:400;font-size:26px}
+#dnpCam .topo small{display:block;font-size:14px;opacity:.85;margin-top:4px}
+#dnpCam .msg{position:absolute;left:0;right:0;bottom:18px;text-align:center;font-size:16px;padding:0 18px;text-shadow:0 1px 3px #000}
+#dnpCam .barra{height:4px;background:rgba(255,255,255,.18)}#dnpCam .barra i{display:block;height:100%;width:0;background:#7BC67B;transition:width .2s}
+#dnpCam .pe{display:flex;gap:10px;justify-content:center;padding:12px 18px calc(16px + env(safe-area-inset-bottom,0px))}
+#dnpCam .pe button,#dnpCam .pe label{background:transparent;color:#F3F0EA;border:1px solid rgba(243,240,234,.6);border-radius:999px;padding:12px 20px;font:500 14px var(--corpo);letter-spacing:.04em;text-transform:uppercase;cursor:pointer}
+/* /DNP FOTO */
 </style>
 
 <header class="bar">
@@ -879,9 +898,15 @@ input[type=checkbox],input[type=radio]{accent-color:var(--tinta)}
       <div class="soCliente dnpbox" hidden>
         <p class="eyebrow">Próximo passo</p>
         <h3>Falta só uma medida: a DNP</h3>
-        <p>A <b>DNP</b> é a distância do meio do seu nariz até o centro de cada pupila, em milímetros. Com ela o laboratório sabe onde fica o centro de cada olho, e a lente fica alinhada: você enxerga bem e não cansa a vista. Nas lentes multifocais também medimos a <b>altura</b>, que é a posição do olho dentro da armação.</p>
-        <p>É rápido e sem sair de casa: você manda uma foto de frente pelo WhatsApp e a equipe VOX faz a medida para você.</p>
-        <a class="btn btn-grande" id="pedeDNP" href="https://wa.me/552126041377" target="_blank" rel="noopener">Solicitar medidas DNP pelo WhatsApp</a>
+        <p>A <b>DNP</b> é a distância do meio do seu nariz até o centro de cada olho. É ela que coloca o centro da lente bem na frente da sua pupila.</p>
+        <p>Com a medida certa você enxerga nítido e não cansa a vista. Com a medida errada, a lente pode dar dor de cabeça, vista cansada e sensação de tontura, principalmente em graus mais altos.</p>
+        <div id="dnpEscolha" class="dnp-esc">
+          <p class="ini-q">Como você prefere?</p>
+          <button class="ini-op" type="button" id="dnpFoto"><i aria-hidden="true"></i><span><b>Tirar uma foto agora</b><small>Leva 1 minuto. O app mede pela câmera do celular, com você de frente.</small></span><span class="micro" aria-hidden="true">→</span></button>
+          <button class="ini-op" type="button" id="dnpPadrao"><i aria-hidden="true"></i><span><b>Usar a medida padrão</b><small>Média para esta armação. Serve só para visão simples, com grau até 3,00.</small></span><span class="micro" aria-hidden="true">→</span></button>
+        </div>
+        <p class="nota" id="dnpRes" hidden></p>
+        <a class="btn sec" id="pedeDNP" href="https://wa.me/552126041377" target="_blank" rel="noopener">Prefiro medir com a equipe pelo WhatsApp</a>
       </div>
       <div class="mais20" id="mais20" hidden>
         <b class="big">Leve mais um óculos e ganhe 20% no total da compra</b>
@@ -1732,7 +1757,7 @@ function telCliente(){let d=$('#pTel').value.replace(/\D/g,'');if(d.length===10|
 function montaRegistro(P,temLente,R,txt,HAY){
   const agora=new Date();const pronta=temLente&&P&&P.o.kind==='stk';const prazo=!temLente?0:pronta?7:14;
   const rx=e=>`${sg(e.s)} ${e.c?sg(e.c)+' x '+(e.ax??'—')+'°':''}${e.add?' ad '+sg(e.add):''}`;
-  const med=!LOJA?'a medir pela VOX':[R.od.dnp!=null?`DNP ${f1(R.od.dnp)}/${f1(R.oe.dnp)}`:'',R.od.alt!=null?`alt ${R.od.alt}/${R.oe.alt}`:'',['pmA','pmB','pmDBL','pmED'].map(id=>$('#'+id).value).some(Boolean)?`armação ${['pmA','pmB','pmDBL','pmED'].map(id=>$('#'+id).value||'—').join(' / ')}`:''].filter(Boolean).join(' · ');
+  const med=!LOJA?(R.od.dnp!=null&&R.oe.dnp!=null?`DNP ${f1(R.od.dnp)}/${f1(R.oe.dnp)} (${DNP_ORIG==='foto'?'foto no app':'padrão'}) · conferir`:'a medir pela VOX'):[R.od.dnp!=null?`DNP ${f1(R.od.dnp)}/${f1(R.oe.dnp)}`:'',R.od.alt!=null?`alt ${R.od.alt}/${R.oe.alt}`:'',['pmA','pmB','pmDBL','pmED'].map(id=>$('#'+id).value).some(Boolean)?`armação ${['pmA','pmB','pmDBL','pmED'].map(id=>$('#'+id).value||'—').join(' / ')}`:''].filter(Boolean).join(' · ');
   const tot=(FR?FR.p:0)+(temLente&&P?venda(P.o,P.XX,OC.cor).preco:0);
   PED_ATUAL={id:PID(),criado:agora.toISOString(),origem:LOJA?'loja':'cliente',status:HAY?'Enviado ao laboratório':'Novo pedido',
     cliente:R.cli,telefone:telCliente(),armacao:FR?'VOX '+FR.n:'',aro:FR?ARO[aroDe(FR)]:'',
@@ -1816,6 +1841,7 @@ function renderPedido(P,temLente,det){
     L.push(`OE: esf ${sg(R.oe.s)} | cil ${R.oe.c?sg(R.oe.c):'0,00'} | eixo ${R.oe.c?(R.oe.ax??'—')+'°':'—'} | ad ${add(R.oe)}`);
     if(LOJA){L.push(`DNP: OD ${f1(R.od.dnp)} / OE ${f1(R.oe.dnp)} mm${R.od.dnp!=null&&R.oe.dnp!=null?` (DP ${f1(R.od.dnp+R.oe.dnp)})`:''}`);
     if(R.od.alt!=null||R.oe.alt!=null)L.push(`Altura: OD ${v(R.od.alt)} / OE ${v(R.oe.alt)} mm`);}
+    else if(R.od.dnp!=null&&R.oe.dnp!=null)L.push(`DNP (${DNP_ORIG==='foto'?'medida pela foto no app, aproximada':'padrão da armação'}): OD ${f1(R.od.dnp)} / OE ${f1(R.oe.dnp)} mm`,'A equipe VOX confere a DNP antes de fazer a lente.'+(X&&X.modo!=='vs'?' Altura (multifocal): a combinar pelo WhatsApp.':''));
     else L.push('DNP e altura: a combinar com a equipe VOX pelo WhatsApp.');
     if(R.para==='perto')L.push('Uso: *para perto* (óculos de leitura)');
     else if(X&&X.modo==='vs'&&X.add>0)L.push(`Uso: ${X.visao==='perto'?'visão simples de perto (esf + adição)':'visão simples de longe'}`);
@@ -3165,6 +3191,90 @@ fetch('estoque.json?'+Date.now()).then(r=>{if(!r.ok)throw 0;return r.json()}).th
   $$('#modal [data-esc],#modal [data-fila]').forEach(b=>{b.disabled=true;b.style.opacity=.45});
   const m=$('#modal .mact');if(m)m.insertAdjacentHTML('afterbegin','<p class="esg-nota">Esta armação está esgotada no momento. Fale com a VOX pelo WhatsApp para saber quando chega.</p>')}}
 /* /ESTOQUE APP */
+
+/* DNP FOTO */
+var DNP_ORIG='';
+(()=>{
+const IRIS_MM=11.7;   // diâmetro médio da íris humana (adulto): é a régua da foto
+let fl=null,stream=null,raf=0,amostras=[],ativo=false;
+const cam=document.createElement('div');cam.id='dnpCam';cam.hidden=true;
+cam.innerHTML=`<div class="topo"><b>Foto para a DNP</b><small>Tire os óculos, fique num lugar claro e encaixe o rosto no oval, olhando para a câmera.</small></div>
+ <div class="vw"><video playsinline muted autoplay></video>
+  <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><defs><mask id="mk"><rect width="100" height="100" fill="#fff"/><ellipse cx="50" cy="46" rx="28" ry="30" fill="#000"/></mask></defs>
+   <rect width="100" height="100" fill="rgba(14,13,11,.62)" mask="url(#mk)"/><ellipse class="ov" cx="50" cy="46" rx="28" ry="30" vector-effect="non-scaling-stroke"/></svg>
+  <div class="msg" id="dnpMsg">Abrindo a câmera…</div></div>
+ <div class="barra"><i id="dnpBar"></i></div>
+ <div class="pe"><button type="button" id="dnpSair">Cancelar</button></div>`;
+document.body.appendChild(cam);
+const vid=cam.querySelector('video'),ov=cam.querySelector('.ov'),msg=t=>{$('#dnpMsg').textContent=t};
+async function modelo(){
+  if(fl)return fl;
+  const base=new URL('mp/',document.baseURI).href;
+  const v=await import(base+'vision_bundle.mjs');
+  const fs=await v.FilesetResolver.forVisionTasks(base+'wasm');
+  fl=await v.FaceLandmarker.createFromOptions(fs,{baseOptions:{modelAssetPath:base+'face_landmarker.task',delegate:'GPU'},runningMode:'VIDEO',numFaces:1});
+  return fl;
+}
+function fecha(){ativo=false;cancelAnimationFrame(raf);if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;cam.hidden=true;document.body.style.overflow=''}
+$('#dnpSair').addEventListener('click',fecha);
+function res(txt,erro){const r=$('#dnpRes');r.hidden=false;r.classList.toggle('erro',!!erro);r.innerHTML=txt}
+function aplica(od,oe,orig){
+  for(const[id,v]of[['oddnp',od],['oednp',oe]]){const i=$('#'+id);i.value=v.toFixed(1).replace('.',',');i.dispatchEvent(new Event('input',{bubbles:true}))}
+  DNP_ORIG=orig;if(typeof DNP_EST!=='undefined')DNP_EST=orig==='padrao';renderOC();
+}
+// mede um quadro: devolve {od,oe,ok,dica}
+function mede(lm,W,H){
+  const P=i=>({x:lm[i].x*W,y:lm[i].y*H});
+  const a=P(468),b=P(473);const[d,e]=a.x<b.x?[a,b]:[b,a];       // d = olho à esquerda da imagem = olho direito da pessoa (OD)
+  const span=ids=>{const xs=ids.map(i=>lm[i].x*W);return Math.max(...xs)-Math.min(...xs)};
+  const iris=(span([469,470,471,472])+span([474,475,476,477]))/2;
+  const mm=IRIS_MM/iris,nariz=P(168),topo=P(10),queixo=P(152),pn=P(1);
+  const rot=Math.abs(Math.atan2(e.y-d.y,e.x-d.x))*180/Math.PI;
+  const lado=Math.abs((pn.x-(d.x+e.x)/2)/(e.x-d.x));                  // nariz fora do meio = rosto virado
+  const cx=(topo.x+queixo.x)/2/W,cy=(topo.y+queixo.y)/2/H,alt=(queixo.y-topo.y)/H;
+  let dica='';
+  if(cx<.36||cx>.64||cy<.30||cy>.62)dica='Centralize o rosto no oval';
+  else if(alt<.34)dica='Chegue um pouco mais perto';
+  else if(alt>.62)dica='Afaste um pouco o celular';
+  else if(rot>4)dica='Deixe a cabeça reta, sem inclinar';
+  else if(lado>.08)dica='Olhe reto para a câmera, sem virar o rosto';
+  return{od:Math.abs(nariz.x-d.x)*mm,oe:Math.abs(e.x-nariz.x)*mm,ok:!dica,dica};
+}
+async function loop(){
+  if(!ativo)return;
+  if(vid.readyState>=2){
+    const r=fl.detectForVideo(vid,performance.now());const lm=r&&r.faceLandmarks&&r.faceLandmarks[0];
+    if(!lm||lm.length<478){ov.classList.remove('ok');msg('Não encontrei o rosto. Encaixe o rosto no oval.');amostras=[]}
+    else{const m=mede(lm,vid.videoWidth,vid.videoHeight);ov.classList.toggle('ok',m.ok);
+      if(!m.ok){msg(m.dica);amostras=[]}
+      else{amostras.push(m);msg('Isso! Fique paradinho…');}
+      $('#dnpBar').style.width=Math.min(100,amostras.length/25*100)+'%';
+      if(amostras.length>=25){termina();return}}
+  }
+  raf=requestAnimationFrame(loop);
+}
+function termina(){
+  const med=k=>{const v=amostras.map(a=>a[k]).sort((x,y)=>x-y);return v[Math.floor(v.length/2)]};
+  const od=Math.round(med('od')*2)/2,oe=Math.round(med('oe')*2)/2;fecha();
+  if(od<24||od>38||oe<24||oe>38||od+oe<50||od+oe>74){res('Não consegui medir com segurança. Tente de novo num lugar com mais luz, sem óculos e de frente, ou meça com a equipe pelo WhatsApp.',true);return}
+  aplica(od,oe,'foto');
+  res(`Sua DNP pela foto: <b>OD ${f1(od)} mm · OE ${f1(oe)} mm</b> (distância entre as pupilas ${f1(od+oe)} mm). É uma medida aproximada: a equipe VOX confere antes de fazer a lente.`+(X&&X.modo!=='vs'?' Na lente multifocal, a altura a gente mede com você pelo WhatsApp.':''));
+}
+$('#dnpFoto').addEventListener('click',async()=>{
+  cam.hidden=false;document.body.style.overflow='hidden';amostras=[];$('#dnpBar').style.width='0';msg('Abrindo a câmera…');
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280},height:{ideal:960}},audio:false});
+    vid.srcObject=stream;await vid.play();msg('Carregando o medidor…');await modelo();ativo=true;loop();
+  }catch(e){fecha();res('Não consegui abrir a câmera. Libere a câmera para este site e tente de novo, ou meça com a equipe pelo WhatsApp.',true)}
+});
+$('#dnpPadrao').addEventListener('click',()=>{
+  const er=dnpPadraoPode();if(er){res(er.replace('Progressiva precisa de medida.','Para lente multifocal a DNP precisa ser medida: tire a foto ou fale com a equipe.').replace('Grau acima de 3,00: meça a DNP, porque o erro de centro pesa mais.','Com grau acima de 3,00 a DNP precisa ser medida: tire a foto ou fale com a equipe.'),true);return}
+  const rr=leRx(),perto=rr.para==='perto'||(X&&X.modo==='vs'&&X.add>0&&X.visao==='perto');
+  const v=(DNP_PADRAO[FR.id]??31.5)-(perto?1.5:0);aplica(v,v,'padrao');
+  res(`Medida padrão desta armação: <b>${f1(v)} mm em cada olho</b>. Se depois quiser mais precisão, é só tirar a foto.`);
+});
+})();
+/* /DNP FOTO */
 </script>
 
 <script>
