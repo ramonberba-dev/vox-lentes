@@ -673,6 +673,12 @@ input[type=checkbox],input[type=radio]{accent-color:var(--tinta)}
 #dnpRes.ok img{width:72px;height:96px;object-fit:cover;border-radius:8px;flex:none}
 #dnpRes .lk{background:none;border:0;padding:0;color:var(--tinta);text-decoration:underline;font:inherit;cursor:pointer}
 #dnpCam #dnpBater[hidden]{display:none}
+.dnp-item{border-top:1px solid var(--linha2);padding:14px 0 4px}
+.dnp-item[hidden]{display:none}
+.dnp-item .ini-q{margin:0 0 6px}
+#dnpEscolha .ini-op[aria-pressed="true"]{box-shadow:inset 3px 0 0 var(--tinta)}
+.lk-anexo{display:inline-block;margin:8px 0 4px;font-size:14px;text-decoration:underline;cursor:pointer;color:var(--tinta-2)}
+.erro-t{color:var(--erro)}
 #dnpCam{position:fixed;inset:0;z-index:9999;background:#0E0D0B;color:#F3F0EA;display:flex;flex-direction:column}
 #dnpCam[hidden]{display:none}
 #dnpCam .vw{position:relative;flex:1;overflow:hidden}
@@ -687,6 +693,20 @@ input[type=checkbox],input[type=radio]{accent-color:var(--tinta)}
 #dnpCam .barra{height:4px;background:rgba(255,255,255,.18)}#dnpCam .barra i{display:block;height:100%;width:0;background:#7BC67B;transition:width .2s}
 #dnpCam .pe{display:flex;gap:10px;justify-content:center;padding:12px 18px calc(16px + env(safe-area-inset-bottom,0px))}
 #dnpCam .pe button,#dnpCam .pe label{background:transparent;color:#F3F0EA;border:1px solid rgba(243,240,234,.6);border-radius:999px;padding:12px 20px;font:500 14px var(--corpo);letter-spacing:.04em;text-transform:uppercase;cursor:pointer}
+/* fotos para anexar no WhatsApp (23/11) */
+.anexos{display:grid;gap:10px;border:1px solid var(--linha2);border-radius:14px;padding:14px;background:var(--papel,#F3F0EA)}
+.anexos[hidden]{display:none}
+.anexos .eyebrow{margin:0}
+.anx{display:flex;gap:12px;align-items:center}
+.anx b{display:block;margin-bottom:6px}
+.anx-mini{width:64px;height:84px;flex:none;border-radius:8px;overflow:hidden;background:#E6E1D8;display:grid;place-items:center}
+.anx-mini img{width:100%;height:100%;object-fit:cover}
+.anx-pdf{font:600 15px var(--corpo);color:var(--tinta-2)}
+.anx.falta .anx-mini{border:1px dashed var(--erro)}
+.anx-bx{padding:10px 16px;font-size:13px}
+.anx-pisca{margin:0;font-weight:700;font-size:16px;color:#B3261E;animation:anxPisca 1s steps(2,start) infinite}
+@keyframes anxPisca{to{visibility:hidden}}
+@media (prefers-reduced-motion:reduce){.anx-pisca{animation:none;text-decoration:underline}}
 /* /DNP FOTO */
 </style>
 
@@ -792,7 +812,7 @@ input[type=checkbox],input[type=radio]{accent-color:var(--tinta)}
       <div class="rx" id="rx">
         <div></div><div class="ch">Esférico</div><div class="ch">Cilíndrico</div><div class="ch">Eixo</div><div class="ch">Adição</div><div class="ch ch-med">DNP mm</div><div class="ch ch-med">Altura mm</div>
       </div>
-      <p class="dica soCliente" hidden>As medidas do rosto você não precisa saber: no fim do pedido você tira uma foto de frente e a equipe VOX faz a medida.</p>
+      <p class="dica soCliente" hidden>As medidas do rosto você não precisa saber: no fim do pedido você escolhe a medida padrão ou tira uma foto de frente, e a equipe VOX faz a medida.</p>
       <p class="dica soLoja" hidden>DNP e altura podem vir do <b>Medir DNP</b>: meça pela foto e toque em "Usar na receita".</p>
       <div class="campos">
         <label class="campo"><span>Cliente</span><input id="cli" type="text" autocomplete="off" placeholder="Nome do cliente"></label>
@@ -911,12 +931,24 @@ input[type=checkbox],input[type=radio]{accent-color:var(--tinta)}
       </div>
       <div class="soCliente dnpbox" hidden>
         <p class="eyebrow">Próximo passo</p>
-        <h3>Falta só uma foto sua, de frente</h3>
-        <p>Com ela a equipe VOX mede a sua <b>DNP</b>: a distância do meio do nariz até o centro de cada olho. É essa medida que coloca o centro da lente bem na frente da pupila, para você enxergar nítido e não cansar a vista.</p>
-        <p>Você não precisa medir nada nem ter a armação em mãos. Tire a foto agora: ela vai junto com o seu pedido para a VOX.</p>
-        <button class="btn btn-grande" type="button" id="dnpFoto">Tirar a foto de frente</button>
-        <div id="dnpRes" hidden></div>
-        <a class="btn sec" id="pedeDNP" href="https://wa.me/552126041377" target="_blank" rel="noopener">Prefiro mandar a foto pelo WhatsApp</a>
+        <h3>Para fechar o pedido</h3>
+        <div class="dnp-item" id="rxItem">
+          <p class="ini-q">1. Foto da receita</p>
+          <p id="rxSt">A VOX confere os graus pela foto da sua receita antes de fazer a lente. No fim, você baixa a foto e anexa no WhatsApp.</p>
+          <label class="btn btn-anexo" id="rxAnexaBtn">Anexar foto ou PDF da receita<input type="file" id="rxAnexa" accept="image/*,application/pdf" hidden></label>
+        </div>
+        <div class="dnp-item">
+          <p class="ini-q">2. Você quer usar a medida DNP padrão?</p>
+          <p>A <b>DNP</b> é a distância do meio do seu nariz até o centro de cada olho. É ela que coloca o centro da lente bem na frente da pupila, para você enxergar nítido e não cansar a vista.</p>
+          <p>A <b>medida padrão</b> é a média para esta armação: serve bem para visão simples com grau até 3,00. Se preferir a medida exata do seu rosto, tire uma foto de frente e a equipe VOX faz a medida para você. Você não precisa ter a armação em mãos.</p>
+          <div id="dnpEscolha" class="dnp-esc">
+            <button class="ini-op" type="button" id="dnpPadrao"><i aria-hidden="true"></i><span><b>Sim, usar a medida padrão</b><small>Mais rápido. Só para visão simples com grau até 3,00.</small></span><span class="micro" aria-hidden="true">→</span></button>
+            <button class="ini-op" type="button" id="dnpFoto"><i aria-hidden="true"></i><span><b>Não, vou tirar uma foto de frente</b><small>Leva 1 minuto. A foto sai sozinha quando o rosto estiver reto no oval.</small></span><span class="micro" aria-hidden="true">→</span></button>
+          </div>
+          <label class="lk-anexo">ou anexar uma foto de frente que você já tem<input type="file" id="dnpAnexa" accept="image/*" hidden></label>
+          <div id="dnpRes" hidden></div>
+        </div>
+        <a class="btn sec" id="pedeDNP" href="https://wa.me/552126041377" target="_blank" rel="noopener">Prefiro falar com a equipe pelo WhatsApp</a>
       </div>
       <div class="mais20" id="mais20" hidden>
         <b class="big">Leve mais um óculos e ganhe 20% no total da compra</b>
@@ -951,6 +983,7 @@ input[type=checkbox],input[type=radio]{accent-color:var(--tinta)}
         <p class="nota soLoja" id="pDnpNota" hidden></p>
         <ul class="avisos" id="pFalta"></ul>
         <pre class="txt soLoja" id="pTxt" hidden></pre>
+        <div class="anexos" id="anexosBox" hidden></div>
         <div class="acoes" style="margin-top:0">
           <a class="btn ouro" id="pEnviar" href="#" target="_blank" rel="noopener">Fazer pedido pelo WhatsApp</a>
           <button type="button" class="btn" id="pSite" hidden>Pedir no site da Haytek</button>
@@ -1767,7 +1800,7 @@ function telCliente(){let d=$('#pTel').value.replace(/\D/g,'');if(d.length===10|
 function montaRegistro(P,temLente,R,txt,HAY){
   const agora=new Date();const pronta=temLente&&P&&P.o.kind==='stk';const prazo=!temLente?0:pronta?7:14;
   const rx=e=>`${sg(e.s)} ${e.c?sg(e.c)+' x '+(e.ax??'—')+'°':''}${e.add?' ad '+sg(e.add):''}`;
-  const med=!LOJA?(FOTO_DNP?'foto DNP enviada pelo app · a VOX mede':'a medir pela VOX'):[R.od.dnp!=null?`DNP ${f1(R.od.dnp)}/${f1(R.oe.dnp)}`:'',R.od.alt!=null?`alt ${R.od.alt}/${R.oe.alt}`:'',['pmA','pmB','pmDBL','pmED'].map(id=>$('#'+id).value).some(Boolean)?`armação ${['pmA','pmB','pmDBL','pmED'].map(id=>$('#'+id).value||'—').join(' / ')}`:''].filter(Boolean).join(' · ');
+  const med=!LOJA?(DNP_ESC==='padrao'&&R.od.dnp!=null?`DNP padrão ${f1(R.od.dnp)}/${f1(R.oe.dnp)}`:FOTO_DNP?'foto DNP anexada pelo cliente · a VOX mede':'a medir pela VOX')+(FOTO_RX?' · foto da receita anexada':''):[R.od.dnp!=null?`DNP ${f1(R.od.dnp)}/${f1(R.oe.dnp)}`:'',R.od.alt!=null?`alt ${R.od.alt}/${R.oe.alt}`:'',['pmA','pmB','pmDBL','pmED'].map(id=>$('#'+id).value).some(Boolean)?`armação ${['pmA','pmB','pmDBL','pmED'].map(id=>$('#'+id).value||'—').join(' / ')}`:''].filter(Boolean).join(' · ');
   const tot=(FR?FR.p:0)+(temLente&&P?venda(P.o,P.XX,OC.cor).preco:0);
   PED_ATUAL={id:PID(),criado:agora.toISOString(),origem:LOJA?'loja':'cliente',status:HAY?'Enviado ao laboratório':'Novo pedido',
     cliente:R.cli,telefone:telCliente(),armacao:FR?'VOX '+FR.n:'',aro:FR?ARO[aroDe(FR)]:'',
@@ -1851,8 +1884,10 @@ function renderPedido(P,temLente,det){
     L.push(`OE: esf ${sg(R.oe.s)} | cil ${R.oe.c?sg(R.oe.c):'0,00'} | eixo ${R.oe.c?(R.oe.ax??'—')+'°':'—'} | ad ${add(R.oe)}`);
     if(LOJA){L.push(`DNP: OD ${f1(R.od.dnp)} / OE ${f1(R.oe.dnp)} mm${R.od.dnp!=null&&R.oe.dnp!=null?` (DP ${f1(R.od.dnp+R.oe.dnp)})`:''}`);
     if(R.od.alt!=null||R.oe.alt!=null)L.push(`Altura: OD ${v(R.od.alt)} / OE ${v(R.oe.alt)} mm`);}
-    else if(FOTO_DNP)L.push('DNP: foto de frente tirada no app. Ela chega ao WhatsApp da VOX junto com este pedido e a equipe faz a medida.'+(X&&X.modo!=='vs'?' Altura (multifocal): a combinar pelo WhatsApp.':''));
+    else if(DNP_ESC==='padrao'&&R.od.dnp!=null)L.push(`DNP padrão da armação (escolhida pelo cliente): OD ${f1(R.od.dnp)} / OE ${f1(R.oe.dnp)} mm`);
+    else if(FOTO_DNP)L.push('DNP: foto de frente tirada no app (anexada pelo cliente nesta conversa). A equipe faz a medida.'+(X&&X.modo!=='vs'?' Altura (multifocal): a combinar pelo WhatsApp.':''));
     else L.push('DNP e altura: a combinar com a equipe VOX pelo WhatsApp.');
+    if(!LOJA)L.push(FOTO_RX?'Receita: foto anexada pelo cliente nesta conversa.':'Receita: o cliente ainda vai anexar a foto.');
     if(R.para==='perto')L.push('Uso: *para perto* (óculos de leitura)');
     else if(X&&X.modo==='vs'&&X.add>0)L.push(`Uso: ${X.visao==='perto'?'visão simples de perto (esf + adição)':'visão simples de longe'}`);
     L.push('');
@@ -3247,7 +3282,7 @@ fetch('estoque.json?'+Date.now()).then(r=>{if(!r.ok)throw 0;return r.json()}).th
 /* /ESTOQUE APP */
 
 /* DNP FOTO */
-var FOTO_DNP='';
+var FOTO_DNP='',FOTO_RX=null,DNP_ESC=''; // FOTO_RX = {data: base64 sem cabeçalho, mime}
 (()=>{
 let fl=null,stream=null,raf=0,boas=0,ativo=false,tManual=0,ultBox=null;
 const cam=document.createElement('div');cam.id='dnpCam';cam.hidden=true;
@@ -3296,12 +3331,48 @@ function bate(box){
   const esc=Math.min(1,960/h),c=document.createElement('canvas');c.width=Math.round(w*esc);c.height=Math.round(h*esc);
   c.getContext('2d').drawImage(vid,x0,y0,w,h,0,0,c.width,c.height);
   let q=.88,u=c.toDataURL('image/jpeg',q);while(u.length>260000&&q>.5){q-=.1;u=c.toDataURL('image/jpeg',q)}
-  FOTO_DNP=u;fecha();mostra();renderOC();
+  FOTO_DNP=u;fecha();usaFoto();
 }
+function usaFoto(){DNP_ESC='foto';limpaPadrao();marca('dnpFoto');mostra();renderOC()}
+function marca(id){$$('#dnpEscolha .ini-op').forEach(b=>b.setAttribute('aria-pressed',b.id===id?'true':'false'))}
 function mostra(){
-  res(`<img src="${FOTO_DNP}" alt="Sua foto de frente"><div><b>Foto pronta ✓</b><br>Ela vai para a VOX junto com o seu pedido. <button type="button" class="lk" id="dnpRefaz">Tirar de novo</button></div>`,'ok');
+  res(`<img src="${FOTO_DNP}" alt="Sua foto de frente"><div><b>Foto pronta ✓</b><br>No fim, é só baixar e anexar no WhatsApp. <button type="button" class="lk" id="dnpRefaz">Tirar de novo</button></div>`,'ok');
   $('#dnpRefaz').addEventListener('click',abre);
 }
+// medida padrão da armação (só visão simples até 3,00; nos outros casos pede a foto)
+function poeDnp(od,oe){for(const[id,v]of[['oddnp',od],['oednp',oe]]){const i=$('#'+id);i.value=v==null?'':v.toFixed(1).replace('.',',');i.dispatchEvent(new Event('input',{bubbles:true}))}}
+function limpaPadrao(){if(DNP_ESC!=='padrao'&&typeof DNP_EST!=='undefined'&&DNP_EST){poeDnp(null,null);DNP_EST=false}}
+$('#dnpPadrao').addEventListener('click',()=>{
+  const er=typeof dnpPadraoPode==='function'?dnpPadraoPode():'';
+  if(er){marca('');res('A medida padrão não serve para esta receita: '+er.replace('Progressiva precisa de medida.','na lente multifocal a DNP precisa ser medida.').replace('Grau acima de 3,00: meça a DNP, porque o erro de centro pesa mais.','com grau acima de 3,00 a DNP precisa ser medida.')+' Tire a foto de frente: a equipe VOX faz a medida.','erro');return}
+  const rr=leRx(),perto=rr.para==='perto'||(X&&X.modo==='vs'&&X.add>0&&X.visao==='perto');
+  const v=((typeof DNP_PADRAO!=='undefined'&&FR&&DNP_PADRAO[FR.id])??31.5)-(perto?1.5:0);
+  DNP_ESC='padrao';poeDnp(v,v);if(typeof DNP_EST!=='undefined')DNP_EST=true;marca('dnpPadrao');
+  res(`Medida padrão desta armação: <b>${f1(v)} mm em cada olho</b>. Se mudar de ideia, é só tirar a foto de frente.`,'ok sem-foto');renderOC();
+});
+// anexar uma foto de frente que o cliente já tem
+$('#dnpAnexa').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
+  try{let q=.85,r=await iaImagem(URL.createObjectURL(f),960,q);while(r.url.length>260000&&q>.5){q-=.1;r=await iaImagem(URL.createObjectURL(f),960,q)}FOTO_DNP=r.url;usaFoto()}
+  catch(er){res('Não consegui abrir essa foto. Tente outra ou tire uma agora.','erro')}});
+// foto da receita: guarda o arquivo que o cliente usou na leitura automática (ou anexou aqui) para ir junto com o pedido
+async function guardaRx(f){
+  if(!f)return;
+  try{
+    if(f.type==='application/pdf'){const u=await iaArquivo(f);const d=u.split(',')[1];FOTO_RX={data:d,mime:'application/pdf'}}
+    else{let q=.8,r=await iaImagem(URL.createObjectURL(f),1600,q);while(r.data.length>265000&&q>.4){q-=.1;r=await iaImagem(URL.createObjectURL(f),1400,q)}FOTO_RX={data:r.data,mime:'image/jpeg',url:r.url}}
+  }catch(er){FOTO_RX=null}
+  rxStatus();renderOC();
+}
+function rxStatus(){
+  const st=$('#rxSt'),bt=$('#rxAnexaBtn');if(!st)return;
+  if(FOTO_RX&&FOTO_RX.grande){FOTO_RX=null;st.innerHTML='<span class="erro-t">O PDF da receita é grande demais para enviar pelo app. Mande uma foto da receita, ou envie o PDF pelo WhatsApp.</span>';return}
+  if(FOTO_RX){st.innerHTML=`<b>Receita guardada ✓</b> No fim, é só baixar e anexar no WhatsApp.`;bt.firstChild.textContent='Trocar a foto da receita'}
+  else{st.textContent='A VOX confere os graus pela foto da sua receita antes de fazer a lente. No fim, você baixa a foto e anexa no WhatsApp.';bt.firstChild.textContent='Anexar foto ou PDF da receita'}
+}
+$('#rxAnexa').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';guardaRx(f)});
+{const l0=leReceitaArquivo;leReceitaArquivo=function(f){guardaRx(f);return l0(f)}}
+// a parte da receita só aparece quando o óculos tem grau
+{const r0=renderOC;renderOC=function(){r0();const it=$('#rxItem');if(it)it.hidden=OC.modo!=='grau';rxStatus()}}
 function loop(){
   if(!ativo)return;
   if(vid.readyState>=2){
@@ -3326,15 +3397,43 @@ async function abre(){
 }
 $('#dnpBater').addEventListener('click',()=>bate(ultBox));
 $('#dnpFoto').addEventListener('click',abre);
-// a foto vai junto com o pedido do cliente (a planilha guarda e o Jack manda para o WhatsApp da VOX)
-async function enviaFoto(p,tent){
-  if(!SCRIPT_URL.startsWith('https'))return;
-  try{const r=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body:JSON.stringify({acao:'foto_dnp',id:p.id,cliente:p.cliente||'',armacao:p.armacao||'',telefone:p.telefone||'',foto:FOTO_DNP})});
-    const j=await r.json();if(j.ok)return}catch(e){}
-  if(tent<3)setTimeout(()=>enviaFoto(p,tent+1),4000*(tent+1));
+// 23/11 (Ramon): as fotos NÃO vão mais para o Apps Script. Na última tela aparecem a receita e a foto de frente que o
+// cliente usou, cada uma com "Baixar", e um lembrete piscante para ele anexar as duas na conversa do WhatsApp.
+function nomeArq(s){return (s||'cliente').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^A-Za-z0-9]+/g,'-').replace(/^-|-$/g,'').toLowerCase()||'cliente'}
+function baixa(dataUrlOuB64,mime,nome){
+  try{const b64=dataUrlOuB64.includes(',')?dataUrlOuB64.split(',')[1]:dataUrlOuB64;
+    const bin=atob(b64),u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
+    const url=URL.createObjectURL(new Blob([u8],{type:mime}));const a=document.createElement('a');a.href=url;a.download=nome;
+    document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000)}
+  catch(e){toast('Não consegui baixar. Toque e segure a foto para salvar.')}
 }
-{const r0=registraPedido;registraPedido=function(){const p=PED_ATUAL;r0();if(!LOJA&&FOTO_DNP&&p)enviaFoto(p,0)}}
+function renderAnexos(){
+  const bx=$('#anexosBox');if(!bx)return;
+  const grau=OC.modo==='grau';
+  if(LOJA||!FR||!grau){bx.hidden=true;return}
+  bx.hidden=false;
+  const cli=nomeArq(($('#ocCli')&&$('#ocCli').value)||($('#pNome')&&$('#pNome').value)||'');
+  const precisaFrente=DNP_ESC!=='padrao';
+  let h='';
+  if(FOTO_RX&&FOTO_RX.data){
+    const pdf=FOTO_RX.mime==='application/pdf';
+    h+=`<div class="anx"><div class="anx-mini">${pdf?'<span class="anx-pdf">PDF</span>':`<img src="${FOTO_RX.url||'data:image/jpeg;base64,'+FOTO_RX.data}" alt="Foto da receita">`}</div><div><b>Receita</b><button type="button" class="btn sec anx-bx" id="bxRx">Baixar a receita</button></div></div>`;
+  }else{
+    h+=`<div class="anx falta"><div class="anx-mini"><span class="anx-pdf">?</span></div><div><b>Receita</b><label class="btn sec anx-bx" for="rxAnexa">Adicionar a foto da receita</label></div></div>`;
+  }
+  if(precisaFrente){
+    if(FOTO_DNP)h+=`<div class="anx"><div class="anx-mini"><img src="${FOTO_DNP}" alt="Sua foto de frente"></div><div><b>Foto de frente</b><button type="button" class="btn sec anx-bx" id="bxFr">Baixar a foto</button></div></div>`;
+    else h+=`<div class="anx falta"><div class="anx-mini"><span class="anx-pdf">?</span></div><div><b>Foto de frente</b><button type="button" class="btn sec anx-bx" id="bxTirar">Tirar a foto de frente</button></div></div>`;
+  }
+  const aviso=precisaFrente?'Atenção: anexe a receita e a foto':'Atenção: anexe a receita';
+  bx.innerHTML=`<p class="eyebrow">Antes de enviar</p><p class="anx-pisca" role="alert">⚠️ ${aviso}</p>
+   <p class="nota" style="margin:0">Baixe ${precisaFrente?'as duas fotos':'a foto da receita'} e, na conversa do WhatsApp que vai abrir, toque no clipe 📎 e anexe ${precisaFrente?'as duas':'a receita'} junto com o pedido.</p>${h}`;
+  const ext=FOTO_RX&&FOTO_RX.mime==='application/pdf'?'pdf':'jpg';
+  const b1=$('#bxRx');if(b1)b1.addEventListener('click',()=>baixa(FOTO_RX.data,FOTO_RX.mime,`receita-${cli}.${ext}`));
+  const b2=$('#bxFr');if(b2)b2.addEventListener('click',()=>baixa(FOTO_DNP,'image/jpeg',`foto-de-frente-${cli}.jpg`));
+  const b3=$('#bxTirar');if(b3)b3.addEventListener('click',abre);
+}
+{const r0=renderOC;renderOC=function(){r0();renderAnexos()}}
 })();
 /* /DNP FOTO */
 </script>
