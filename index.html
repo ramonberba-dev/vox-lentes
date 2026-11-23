@@ -632,6 +632,14 @@ input.busca,.busca{width:100%;border:0;border-bottom:1px solid var(--tinta);bord
 input[type=checkbox],input[type=radio]{accent-color:var(--tinta)}
 /* /JORNADA CICLO */
 
+/* JORNADA V2 */
+.ini-op>i.cor{width:22px;height:22px;border-radius:50%;background:var(--c);box-shadow:0 0 0 1px var(--linha2)}
+.ini-op>i.cor::before,.ini-op>i.cor::after{display:none}
+.ini-volta{margin-top:14px}
+#cicloAviso{border-left:2px solid var(--tinta);padding:8px 12px;margin:0 0 12px}
+#cicloAviso.erro{border-color:var(--erro);color:var(--erro)}
+#ocLenteDesc .btn{margin-top:10px}
+/* /JORNADA V2 */
 </style>
 
 <header class="bar">
@@ -662,11 +670,9 @@ input[type=checkbox],input[type=radio]{accent-color:var(--tinta)}
   <div class="ini">
     <p class="eyebrow" style="margin:0">Coleção VOX</p>
     <h1 class="ini-tit">Busque<br><em>o alto.</em></h1>
-    <p class="ini-sub">Escolha a armação, conte um pouco da sua rotina e a gente indica a lente certa. Leva uns 2 minutos.</p>
+    <p class="ini-sub">Diga se precisa de grau e o tipo de lente. Depois é só escolher a armação. Leva uns 2 minutos.</p>
     <div class="ini-foto" id="iniFoto"></div>
-    <p class="ini-q">Por onde começamos?</p>
-    <button class="ini-op" type="button" data-ini="g"><i aria-hidden="true"></i><span><b>Óculos de grau</b><small>Armação + lentes para a sua receita</small></span><span class="micro" aria-hidden="true">→</span></button>
-    <button class="ini-op sol" type="button" data-ini="s"><i aria-hidden="true"></i><span><b>Óculos de sol</b><small>Como vem, ou com lente de grau</small></span><span class="micro" aria-hidden="true">→</span></button>
+    <div id="iniPassos"></div>
   </div>
 </section>
 
@@ -778,7 +784,7 @@ input[type=checkbox],input[type=radio]{accent-color:var(--tinta)}
           <button class="chip" type="button" data-val="Trans Cinza" aria-pressed="false">Transitions Gen S cinza</button>
           <button class="chip" type="button" data-val="Trans Marrom" aria-pressed="false">Transitions Gen S marrom</button>
         </div></div>
-      <div class="acoes"><button class="btn btn-grande" type="button" id="verLentes">Ver lentes indicadas <span aria-hidden="true">→</span></button></div>
+      <p class="nota" id="cicloAviso" hidden></p><div class="acoes"><button class="btn btn-grande" type="button" id="verLentes">Ver lentes indicadas <span aria-hidden="true">→</span></button></div>
     </div>
     <aside class="folha leitura soLoja" aria-live="polite" hidden>
       <div><p class="eyebrow">Leitura técnica</p><h2>O que a receita pede</h2></div>
@@ -830,7 +836,7 @@ input[type=checkbox],input[type=radio]{accent-color:var(--tinta)}
       <div class="folha oc-arm" id="ocArm"></div>
       <div class="folha" style="display:grid;gap:14px">
         <div><p class="eyebrow">Lente</p>
-          <div class="chips" id="ocModo"></div></div>
+          <div class="chips" id="ocModo"></div><div class="chips" id="ocTipo" style="margin-top:10px"></div></div>
         <div id="ocLenteBox" style="display:grid;gap:14px">
           <div><div class="lente-nome" id="ocLenteNome"></div><p class="nota" id="ocLenteDesc"></p></div>
           <div class="campos" style="margin-top:0">
@@ -1095,7 +1101,7 @@ function abreProduto(p){
         <small>Define a montagem e quais lentes podem ir nesta armação.</small></label>
       ${p.esp?'<p class="nota" style="color:var(--erro)">Óculos esportivo curvo: não aceita lente de grau.</p>':''}
       </div><div class="mact">
-        ${p.t==='g'?`<button class="btn ouro" type="button" data-esc="grau">Escolher e colocar grau</button><button class="btn sec" type="button" data-esc="arm">Só a armação</button>`
+        ${p.t==='g'?`<button class="btn ouro" type="button" data-esc="grau">${(window.INI||{}).grau==='nao'?'Escolher esta armação':'Escolher e colocar grau'}</button><button class="btn sec" type="button" data-esc="arm">Só a armação</button>`
           :`${p.esp?'':'<button class="btn ouro" type="button" data-esc="grau">Trocar por lente de grau</button>'}<button class="btn sec" type="button" data-esc="plana">Trocar por lente plana</button><button class="btn sec" type="button" data-esc="arm">Como está</button>`}
         <button class="btn sec" type="button" data-fila>${FILA.some(f=>f.id===p.id)?'✓ Escolhida · tirar da seleção':'+ Escolher mais de uma'}</button>
         <button class="btn sec" type="button" data-provar>Provar no rosto</button>
@@ -1115,10 +1121,11 @@ function fechaModal(){$('#veu').hidden=true}
 $('#veu').addEventListener('click',e=>{if(e.target.id==='veu')fechaModal()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#veu').hidden)fechaModal()});
 function escolheArmacao(p,modo,quieto){
+  if(p.t==='g'&&modo==='grau'&&(window.INI||{}).grau==='nao')modo='plana';
   FR=p;$('#armacao').value=aroDe(p);
   OC.modo=modo;
   if(p.t==='s'&&modo!=='arm'&&!OC.cor&&!OC.foto){OC.cor=modo==='plana'?'T|Cinza|80':'T|Cinza|80'}
-  if(p.t==='g'&&modo==='plana')OC.cor='';
+  if(p.t==='g'&&modo==='plana'){OC.cor='';if(!OC.ciclo)OC.fa=true}
   atualiza();renderVitrine();renderArmRx();
   if(quieto)return;
   if(modo==='grau'){ir('receita');toast(`VOX ${p.n} escolhida. Agora a receita.`)}
@@ -1335,7 +1342,7 @@ function atualiza(){
   if(typeof LOJA!=='undefined'&&!LOJA)renderGrupos('#rxLentes');
   if(!$('#v-oculos').hidden){ajustaOC();renderOC()}
 }
-const nomeOpt=o=>o.kind==='stk'?(o.solar?'Haytek Visão Simples Acabada Solar':o.tipo==='prog'?'Haytek Progressiva Acabada':'Haytek Visão Simples Acabada'):'Haytek '+o.line.nome;
+const nomeOpt=o=>o.kind==='ciclo'?'Ciclo '+o.cor:o.kind==='stk'?(o.solar?'Haytek Visão Simples Acabada Solar':o.tipo==='prog'?'Haytek Progressiva Acabada':'Haytek Visão Simples Acabada'):'Haytek '+o.line.nome;
 const arOpt=o=>o.kind==='stk'?o.arTxt:ARN[o.col];
 const prodOpt=o=>o.kind==='stk'?'Pronta · estoque':'Surfaçada · sob medida';
 
@@ -1518,9 +1525,10 @@ $('#todas').addEventListener('keydown',e=>{if(e.key==='Enter'){const tr=e.target
 
 /* ================= TELA: SEU ÓCULOS ================= */
 // OC = a configuração do óculos: modo (arm | grau | plana), linha Haytek, índice e tratamentos marcados
-let OC={modo:'grau',line:null,idx:null,ar:2,fa:false,foto:'',cor:''};
+let OC={modo:'grau',line:null,idx:null,ar:2,fa:false,foto:'',cor:'',ciclo:''};
 function arDeTxt(t){const h=/hidrof|Premium/i.test(t);if(/Azul/.test(t))return h?5:3;if(/Verde/.test(t))return h?4:2;return 0}
 function usaOpcao(o){
+  if(OC.ciclo&&typeof cicloSet==='function')cicloSet('');
   if(OC.modo!=='grau')OC.modo='grau';
   OC.line=o.kind==='stk'?'stk':o.line.id;OC.idx=o.idx;OC.ar=o.kind==='stk'?arDeTxt(o.arTxt):o.col;
   OC.fa=o.v.includes('FA');OC.foto=o.v.startsWith('Trans')?o.v:o.v.includes('Foto')?'Foto':'';
@@ -1547,7 +1555,7 @@ function resolve(c){
   const o=surfAt(LINE[c.line],c.idx||XX.rec,v,col,XX);
   return o?{o,XX,nota:o.idx!==c.idx?`Neste grau a ${LINE[c.line].nome} começa no índice ${o.idx}.`:''}:null;
 }
-function precoDe(c){const r=resolve(c);if(!r)return null;const p=venda(r.o,r.XX,c.cor);return{...r,...p}}
+function precoDe(c){if(c.ciclo&&c.modo!=='arm')return cicloPreco(c);const r=resolve(c);if(!r)return null;const p=venda(r.o,r.XX,c.cor);return{...r,...p}}
 function linhasPossiveis(c){
   const XX=Xde(c);const out=[];
   if(stkOpts(XX).length||(XX.plana&&c.cor))out.push(['stk','Pronta de estoque (mais rápida)']);
@@ -1578,7 +1586,7 @@ const TRATS=[
 ];
 // Coleção Ciclo: a landing do Ciclo abre o app com ?ciclo=<cor>. A cor vai para o pedido; preço da lente Ciclo é confirmado pela VOX.
 const CICLO_CORES={azul:'Azul · filtro de luz azul (telas)',amarela:'Amarela · conforto ao volante (dia)',laranja:'Laranja · noite',vermelha:'Vermelha · antes do sono'};
-const CICLO=(()=>{try{const c=(new URLSearchParams(location.search).get('ciclo')||'').toLowerCase();return CICLO_CORES[c]?{cor:c,txt:CICLO_CORES[c]}:null}catch(e){return null}})();
+let CICLO=(()=>{try{const c=(new URLSearchParams(location.search).get('ciclo')||'').toLowerCase();return CICLO_CORES[c]?{cor:c,txt:CICLO_CORES[c]}:null}catch(e){return null}})();
 const CORES=[['T|Cinza|80','Total cinza 80%'],['T|Cinza|50','Total cinza 50%'],['T|Cinza|25','Total cinza 25%'],['T|Marrom|80','Total marrom 80%'],['T|Marrom|50','Total marrom 50%'],['T|Verde|80','Total verde 80%'],['D|Cinza|80','Degradê cinza 80%'],['D|Cinza|50','Degradê cinza 50%'],['D|Marrom|80','Degradê marrom 80%'],['D|Marrom|50','Degradê marrom 50%'],['D|Verde|50','Degradê verde 50%']];
 const corTxt=c=>(CORES.find(x=>x[0]===c)||[0,''])[1].toLowerCase();
 function renderOC(){
@@ -1589,7 +1597,7 @@ function renderOC(){
   const modos=FR&&FR.t==='s'?[['arm','Lente original do óculos'],...(FR.esp?[]:[['grau','Trocar por lente de grau']]),['plana','Trocar por lente plana']]:[['grau','Com lente de grau'],['plana','Lente sem grau (plana)'],['arm','Só a armação']];
   if(!modos.some(m=>m[0]===OC.modo))OC.modo=modos[0][0];
   $('#ocModo').innerHTML=modos.map(([k,n])=>`<button class="chip" type="button" data-modo="${k}" aria-pressed="${OC.modo===k}">${n}</button>`).join('');
-  const temLente=OC.modo!=='arm';$('#ocLenteBox').hidden=!temLente;
+  const temLente=OC.modo!=='arm';$('#ocLenteBox').hidden=!temLente;cicloTipoChips();
   let P=null;
   if(temLente){
     ajustaOC();
@@ -1597,13 +1605,13 @@ function renderOC(){
     const ls=linhasPossiveis(OC);
     $('#oLine').innerHTML=ls.map(([k,n])=>`<option value="${k}" ${k===OC.line?'selected':''}>${n}</option>`).join('');
     const XX=Xde(OC);
-    const idxs=IDX.filter(i=>precoDe({...OC,idx:i})&&resolve({...OC,idx:i}).o.idx===i);
+    const idxs=OC.ciclo?['1.50']:IDX.filter(i=>precoDe({...OC,idx:i})&&resolve({...OC,idx:i}).o.idx===i);
     $('#oIdx').innerHTML=(idxs.length?idxs:[OC.idx]).map(i=>`<option value="${i}" ${P&&P.o.idx===i?'selected':''}>${IDXN[i]}${i===XX.rec?' · indicado':''}</option>`).join('');
     $('#oIdx').disabled=!!(P&&P.o.solar);
     if(P){
       $('#ocLenteNome').textContent=`${nomeOpt(P.o)} ${P.o.solar?'':IDXN[P.o.idx]}`;
       $('#ocLenteDesc').textContent=(P.o.kind==='stk'?(P.o.solar?'Lente solar pronta, sem grau, com proteção UV.':'Lente pronta do estoque Haytek, tratamento de fábrica: '+P.o.arTxt+'.'):P.o.line.desc)+(XX.plana?' Sem grau.':'');
-    }else{$('#ocLenteNome').textContent='Combinação fora da faixa do laboratório';$('#ocLenteDesc').textContent='Desmarque algum tratamento ou troque a linha. Se a receita for muito alta, consulte a Haytek.'}
+    }else if(OC.ciclo){$('#ocLenteNome').textContent='Linha Ciclo: só até 3,00 de grau';$('#ocLenteDesc').innerHTML=cicloAlerta()}else{$('#ocLenteNome').textContent='Combinação fora da faixa do laboratório';$('#ocLenteDesc').textContent='Desmarque algum tratamento ou troque a linha. Se a receita for muito alta, consulte a Haytek.'}
     const base=P?P.preco:null;
     $('#trats').innerHTML=TRATS.map(t=>{
       const on=t.on(OC);const c2={...OC};t.set(c2,!on);const p2=precoDe(c2);
@@ -1623,6 +1631,7 @@ function renderOC(){
     if(FR&&FR.t==='s'&&OC.modo==='grau')nt.push('Óculos de sol curvo: confirme a curvatura com a Haytek.');
     if(OC.fa)nt.push('Filtro azul é conforto para telas, sem prova de proteção à saúde dos olhos.');
     $('#oNota').textContent=nt.join(' ');
+    if(OC.ciclo)$('#oNota').textContent=P?cicloNota(P):'';
   }
   // resumo
   const L=[];
@@ -1631,7 +1640,7 @@ function renderOC(){
     L.push([`Lentes ${nomeOpt(P.o)}${P.o.solar?'':' '+P.o.idx}`,P.preco]);
   }
   const tot=L.reduce((s,l)=>s+l[1],0);
-  const det=temLente&&P?[OC.modo==='plana'?'Sem grau':null,P.o.solar?corTxt(OC.cor):VARN[P.o.v],P.o.solar?null:(OC.cor?'coloração '+corTxt(OC.cor):P.o.kind==='stk'?P.o.arTxt:ARN[P.o.col])].filter(Boolean).join(' · '):'';
+  const det=temLente&&P&&P.o.kind==='ciclo'?[OC.modo==='plana'?'Sem grau':'Com grau','cor '+P.o.cor,'resina 1.50'].join(' · '):temLente&&P?[OC.modo==='plana'?'Sem grau':null,P.o.solar?corTxt(OC.cor):VARN[P.o.v],P.o.solar?null:(OC.cor?'coloração '+corTxt(OC.cor):P.o.kind==='stk'?P.o.arTxt:ARN[P.o.col])].filter(Boolean).join(' · '):'';
   $('#ocLinhas').innerHTML=(L.map(([n,v])=>`<div class="lin"><span>${esc(n)}</span><span>${brl(v)}</span></div>`).join('')||'<div class="lin det"><span>Escolha uma armação na vitrine.</span><span></span></div>')+(det?`<div class="lin det"><span>${det}</span><span></span></div>`:'')+(OC.modo==='arm'&&FR?`<div class="lin det"><span>${FR.t==='s'?'Com a lente original':'Sem lentes'}</span><span></span></div>`:'');
   $('#ocTotal').textContent=brl(tot);
   const R=leRx();
@@ -1683,7 +1692,7 @@ function addUteis(d,n){d=new Date(d);while(n>0){d.setDate(d.getDate()+1);const w
 function uteisEntre(a,b){a=new Date(a);a.setHours(0,0,0,0);b=new Date(b);b.setHours(0,0,0,0);let n=0;while(a<b){a.setDate(a.getDate()+1);const w=a.getDay();if(w!==0&&w!==6)n++}return n}
 let PED_ATUAL=null; // dados do pedido montado na tela, para registrar
 // O app público não tem custos: manda só qual lente foi escolhida e o servidor calcula o custo.
-function refLente(P,temLente){if(!temLente||!P)return null;const o=P.o;return{kind:o.kind,tipo:o.tipo||'',line:o.line?o.line.id:'',idx:o.idx,v:o.v,col:o.col,tier:o.tier||0,solar:o.solar?1:0,ar:o.arTxt||'',arm:(P.XX&&P.XX.arm)||'fechado',cor:OC.cor||''}}
+function refLente(P,temLente){if(!temLente||!P)return null;const o=P.o;return{kind:o.kind,tipo:o.tipo||'',line:o.line?o.line.id:'',idx:o.idx,v:o.v,col:o.col,tier:o.tier||0,solar:o.solar?1:0,ar:o.arTxt||'',arm:(P.XX&&P.XX.arm)||'fechado',cor:OC.cor||'',ciclo:o.kind==='ciclo'?o.cor:''}}
 // Orçamento do cliente: guardado ao ver o preço em "Seu óculos"; vira "realizado" quando o pedido é enviado.
 const ORC={sig:'',t:0};
 const servidorReal=()=>SCRIPT_URL.startsWith('https')&&!/^(localhost|127\.)/.test(location.hostname);
@@ -1696,7 +1705,7 @@ function agendaOrc(R,P,temLente,tot){
   const dados={cliente:R.cli,armacao:[...SAC.map(s=>s.nome),'VOX '+FR.n].join(' + '),
     lente:[...SAC.map(s=>s.lente),temLente&&P?`${nomeOpt(P.o)}${P.o.solar?'':' '+P.o.idx}`:'Sem troca de lente'].join(' + '),
     valor:Math.round((n>=2?soma*.8:soma)*100)/100,lente_ref:JSON.stringify([...SAC.map(s=>s.ref),refLente(P,temLente)].filter(Boolean))};
-  if(CICLO)dados.lente+=` · Coleção Ciclo: ${CICLO.txt}`;
+  if(OC.ciclo&&temLente)dados.lente+=` · Coleção Ciclo: ${CICLO_CORES[OC.ciclo]}`;
   const sig=JSON.stringify(dados);if(sig===ORC.sig)return;
   ORC.sig=sig;clearTimeout(ORC.t);
   ORC.t=setTimeout(()=>{
@@ -1712,8 +1721,8 @@ function montaRegistro(P,temLente,R,txt,HAY){
   const tot=(FR?FR.p:0)+(temLente&&P?venda(P.o,P.XX,OC.cor).preco:0);
   PED_ATUAL={id:PID(),criado:agora.toISOString(),origem:LOJA?'loja':'cliente',status:HAY?'Enviado ao laboratório':'Novo pedido',
     cliente:R.cli,telefone:telCliente(),armacao:FR?'VOX '+FR.n:'',aro:FR?ARO[aroDe(FR)]:'',
-    lente:temLente&&P?`${nomeOpt(P.o)}${P.o.solar?'':' '+P.o.idx}`:'Sem troca de lente',producao:!temLente?'sem lente':pronta?'pronta':'surfaçada',
-    tratamento:temLente&&P?[P.o.solar?'':VARN[P.o.v],P.o.solar?P.o.arTxt:OC.cor?'coloração '+corTxt(OC.cor):P.o.kind==='stk'?P.o.arTxt:ARN[P.o.col]].filter(Boolean).join(' · '):'',
+    lente:temLente&&P?`${nomeOpt(P.o)}${P.o.solar?'':' '+P.o.idx}`:'Sem troca de lente',producao:!temLente?'sem lente':P&&P.o.kind==='ciclo'?'Ciclo · VOX (padrão)':pronta?'pronta':'surfaçada',
+    tratamento:temLente&&P&&P.o.kind==='ciclo'?'cor '+P.o.cor+' · resina 1.50':temLente&&P?[P.o.solar?'':VARN[P.o.v],P.o.solar?P.o.arTxt:OC.cor?'coloração '+corTxt(OC.cor):P.o.kind==='stk'?P.o.arTxt:ARN[P.o.col]].filter(Boolean).join(' · '):'',
     receita:OC.modo==='grau'?`${R.para==='perto'?'PERTO · ':''}OD ${rx(R.od)} | OE ${rx(R.oe)}`:OC.modo==='plana'?'plana':'',medidas:med,destino:numDestino(),valor:tot,
     prazo_dias:prazo,previsao:addUteis(agora,prazo).toISOString().slice(0,10),enviado_lab:HAY?agora.toISOString():'',obs:$('#pObs').value.trim(),texto:txt};
   if(SAC.length&&!HAY){const n=SAC.length+(FR?1:0),soma=sacSoma()+(FR?tot:0);
@@ -1723,7 +1732,8 @@ function montaRegistro(P,temLente,R,txt,HAY){
     PED_ATUAL.obs=[`${n} óculos${n>=2?' · 20% de desconto':''}`,PED_ATUAL.obs].filter(Boolean).join(' · ')}
   PED_ATUAL.lente_ref=JSON.stringify([...(HAY?[]:SAC.map(s=>s.ref)),refLente(P,temLente)].filter(Boolean));
   PED_ATUAL.orc_id=LOJA?'':LS.get('voxlentes.orcid','');
-  if(CICLO){PED_ATUAL.origem_campanha='ciclo';PED_ATUAL.obs=[`Coleção Ciclo · lente ${CICLO.txt}`,PED_ATUAL.obs].filter(Boolean).join(' · ')}
+  if(CICLO_URL)PED_ATUAL.origem_campanha='ciclo';
+  if(OC.ciclo&&temLente)PED_ATUAL.obs=[`Coleção Ciclo · lente ${CICLO_CORES[OC.ciclo]}`,PED_ATUAL.obs].filter(Boolean).join(' · ');
 }
 function filaPedidos(){return LS.get('voxlentes.fila',[])}
 async function enviaFila(){
@@ -1751,7 +1761,7 @@ function renderPedido(P,temLente,det){
   const R=leRx();const falta=[];
   if(!FR)falta.push('Escolha a armação na vitrine.');
   if(!temLente)falta.push('Este óculos está sem troca de lente: não há pedido de lente para o laboratório.');
-  else if(!P)falta.push('A lente escolhida está fora da faixa do laboratório.');
+  else if(!P)falta.push(OC.ciclo?'A linha Ciclo só é feita até 3,00 de grau (esférico). Troque para lente transparente ou fale com a VOX.':'A lente escolhida está fora da faixa do laboratório.');
   const grau=temLente&&OC.modo==='grau';
   if(grau){
     for(const[k,e]of[['OD',R.od],['OE',R.oe]]){
@@ -1771,9 +1781,9 @@ function renderPedido(P,temLente,det){
   if(HAY){ITEM_ATUAL=FR?{nome:'VOX '+FR.n,img:FR.img[0],tot:(FR?FR.p:0)+(temLente&&P?venda(P.o,P.XX,OC.cor).preco:0),txt:'',lente:temLente&&P?`${nomeOpt(P.o)}${P.o.solar?'':' '+P.o.idx}`:'Sem troca de lente',ok:!temLente||!!P,ref:refLente(P,temLente)}:null;renderPedidoHaytek(P,temLente,R,med);return}
   const L=[];
   L.push(`*PEDIDO VOX* · nº ${PID()}`,`Data: ${new Date().toLocaleDateString('pt-BR')}`,`Cliente: ${R.cli||'—'}`,'');
-  if(CICLO)L.push('*COLEÇÃO CICLO*',`Lente: ${CICLO.txt}`,'Valor da lente Ciclo: a VOX confirma por aqui.','');
+  if(temLente&&P&&P.o.kind==='ciclo')L.push('*COLEÇÃO CICLO*',`Lente: ${CICLO_CORES[P.o.cor]}`,`Resina 1.50 · ${OC.modo==='plana'?'sem grau':'com grau (até 3,00)'} · feita pela VOX`,`Valor da lente: ${brl(P.preco)}`,'');
   const H0=L.length;
-  if(temLente&&P){
+  if(temLente&&P&&P.o.kind!=='ciclo'){
     const o=P.o;
     L.push('*LENTE*',`${nomeOpt(o)}${o.solar?'':' '+IDXN[o.idx]}`);
     L.push(`Produção: ${o.kind==='stk'?'pronta (estoque)':'surfaçada'}`);
@@ -1880,6 +1890,7 @@ function hayMontaJob(){
   if(!temLente||!P)erros.push('Escolha uma lente.');
   else if(P.o.solar)erros.push('Lente solar ainda não sai pelo site: use o WhatsApp.');
   if(OC.cor)erros.push('Coloração ainda não sai pelo site: use o WhatsApp.');
+  if(OC.ciclo)erros.push('Lente Ciclo é feita pela VOX, não pela Haytek.');
   if(OC.modo!=='grau')erros.push('Só lente com grau sai pelo site, por enquanto.');
   if(erros.length)return{erros};
   if(pronta){
@@ -2499,7 +2510,7 @@ function renderLenteTopo(){
 $('#lenteTopo').addEventListener('click',e=>{if(e.target.closest('[data-refaz]')){QZ.q=0;ir('rotina')}});
 $('#v-inicio').addEventListener('click',e=>{const b=e.target.closest('[data-ini]');if(!b)return;
   fCat=b.dataset.ini;$$('#fCat .chip').forEach(c=>c.setAttribute('aria-pressed',c.dataset.c===fCat));renderVitrine();ir('vitrine')});
-const PASSOS_CLI=[['vitrine','Armação'],['receita','Receita'],['rotina','Rotina'],['lente','Lente'],['oculos','Resumo']];
+const PASSOS_CLI=[['vitrine','Armação'],['receita','Receita'],['lente','Lente'],['oculos','Resumo']];
 function passos(v){
   $('#ocEyebrow').textContent='05 / Revisão';
   const box=$('#passosCli'),on=v!=='inicio';box.hidden=!on;if(!on)return;
@@ -2523,7 +2534,7 @@ function ir(v){if(!VIEWS.includes(v))v='inicio';if(precisaRx(v)&&!rxPreenchida()
 }
 $$('nav button').forEach(b=>{if(b.dataset.v)b.addEventListener('click',()=>ir(b.dataset.v))});
 document.addEventListener('click',e=>{const b=e.target.closest('[data-ir]');if(b)ir(b.dataset.ir)});
-$('#verLentes').addEventListener('click',()=>{QZ.q=0;ir('rotina')});
+$('#verLentes').addEventListener('click',()=>verLentesV2());
 $('#rxLentes').addEventListener('click',e=>{const b=e.target.closest('[data-pick]');if(b&&CARDS[b.dataset.pick])usaOpcao(CARDS[b.dataset.pick].o)});
 let dnpOk=false;
 function carregaDNP(){if(dnpOk)return;dnpOk=true;const fr=$('#dnpFrame');
@@ -2657,6 +2668,18 @@ function receitaParaForm(rx){
       const pe=iaNum((P[e]||{}).esferico),le=v[e+'esf'];
       if(pe!=null&&le!=null&&iaTemSinal(P[e].esferico)){const ad=Math.round((pe-le)*4)/4;if(ad>0&&ad<=4){v[e+'add']=ad;avisos.push(`${E}: a receita tem "perto" sem adição escrita. A adição +${ad.toFixed(2).replace('.',',')} foi calculada (perto − longe). Confira.`)}}
     }
+  }
+  if(para==='longe'){ // adição: procurar em todo lugar antes de desistir
+    const fmtA=a=>'+'+a.toFixed(2).replace('.',',');
+    for(const e of ['od','oe'])if(v[e+'add']==null){const n=iaNum(((P||{})[e]||{}).adicao);
+      if(n!=null&&n>0&&n<=4){v[e+'add']=n;avisos.push(`${e.toUpperCase()}: a adição ${fmtA(n)} estava no quadro de perto. Confira.`)}}
+    if(v.odadd==null&&v.oeadd!=null){v.odadd=v.oeadd;avisos.push('OD: a receita traz uma adição só; ela foi repetida no OD. Confira.')}
+    if(v.oeadd==null&&v.odadd!=null){v.oeadd=v.odadd;avisos.push('OE: a receita traz uma adição só; ela foi repetida no OE. Confira.')}
+    if(v.odadd==null&&v.oeadd==null){
+      const m=String([rx.adicao_geral,rx.transcricao].filter(Boolean).join(' ')).match(/(?:\bA\.?D\.?\b|\bADD\b|adi[çc][ãa]o)[^0-9]{0,14}\+?\s*([0-4])[.,]([0257][05])/i);
+      if(m){const a=+(m[1]+'.'+m[2]);if(a>0&&a<=4){v.odadd=v.oeadd=a;avisos.push(`A adição ${fmtA(a)} foi achada no texto da receita e posta nos dois olhos. Confira.`)}}
+    }
+    if(v.odadd==null&&v.oeadd==null)avisos.push('Não achei adição (AD) na receita. Se ela tiver "AD", "Add" ou "Adição" em qualquer lugar, digite no campo Adição: sem ela a lente sai errada para quem precisa ver de perto.');
   }
   return{v,para,avisos};
 }
@@ -2950,7 +2973,8 @@ const COR={azul:{n:'azul',c:'#7FA6CF',img:'capa-azul.jpg',pos:'50% 30%',uso:'Uso
   amarela:{n:'amarela',c:'#E3C24E',img:'amarela.jpg',pos:'50% 25%',uso:'Uso — ao longo do dia'},
   laranja:{n:'laranja',c:'#E0832F',img:'laranja-sol.jpg',pos:'60% 40%',uso:'Uso — à noite, com tudo aceso'},
   vermelha:{n:'vermelha',c:'#B8332A',img:'vermelha.jpg',pos:'50% 25%',uso:'Uso — antes de dormir'}};
-const cc=(typeof CICLO!=='undefined'&&CICLO)?COR[CICLO.cor]:null;
+let cc=(typeof CICLO!=='undefined'&&CICLO)?COR[CICLO.cor]:null;
+window.__cicloRefaz=()=>{cc=CICLO?COR[CICLO.cor]:null;atual='';if(document.body.classList.contains('jor')){ficha();foto(VIEW_ATUAL)}};
 const CLI=['inicio','vitrine','receita','rotina','lente','oculos'];
 const NOME={inicio:'Coleção VOX',vitrine:'A armação',receita:'O grau',rotina:'A rotina',lente:'A lente',oculos:'Revisão'};
 const FOTO={inicio:['quatro.jpg','50% 50%'],vitrine:['quatro.jpg','50% 50%'],receita:['retrato.jpg','50% 30%'],rotina:['azul-tela.jpg','50% 30%'],lente:['capa-laranja.jpg','50% 50%'],oculos:['quatro.jpg','50% 50%']};
@@ -2978,10 +3002,10 @@ function foto(v){
   ims.forEach(i=>{i.onload=()=>{if(++n===ims.length)requestAnimationFrame(()=>requestAnimationFrame(()=>pl.classList.remove('fecha')))};i.src=src});
 }
 function ficha(){
-  if(!cc||$('#fichaCiclo'))return;
+  const ant=$('#fichaCiclo');if(ant)ant.remove();if(!cc||!['lente','oculos'].includes(VIEW_ATUAL))return;
   const f=document.createElement('div');f.id='fichaCiclo';f.className='ficha-c';f.style.setProperty('--cor',cc.c);
   f.innerHTML=`<span class="micro suave">Coleção Ciclo · a sua cor</span><h3>${cc.n}</h3><p>${CICLO.txt}</p><span class="micro uso">${cc.uso}</span>`;
-  $('#v-lente').prepend(f);
+  $('#v-'+VIEW_ATUAL).prepend(f);
 }
 function entra(v){const s=$('#v-'+v);if(!s)return;[...s.children].forEach((c,i)=>{c.classList.remove('in');c.classList.add('rv');c.style.transitionDelay=Math.min(i*60,300)+'ms'});
   requestAnimationFrame(()=>requestAnimationFrame(()=>s.querySelectorAll(':scope>.rv').forEach(c=>c.classList.add('in'))))}
@@ -2992,13 +3016,103 @@ function aplica(){
   if(!on)return;
   const i=PASSOS_CLI.findIndex(e=>e[0]===v);
   pt.textContent=i>=0?`Etapa ${i+1} de ${PASSOS_CLI.length}`:'';
-  if(v==='lente')ficha();
+  ficha();
   foto(v);entra(v);
 }
 const ir0=ir;ir=function(v){ir0(v);aplica()};
 aplica();
 })();
 /* /JORNADA CICLO */
+
+/* JORNADA V2 */
+const CICLO_URL=CICLO;
+if(CICLO_URL)OC.ciclo=CICLO_URL.cor;
+{const v0=venda;venda=function(o,X,cor){return o&&o.kind==='ciclo'?{preco:o.preco,custo:0}:v0(o,X,cor)}} // o app público troca a venda()
+const CICLO_HEX={azul:'#7FA6CF',amarela:'#E3C24E',laranja:'#E0832F',vermelha:'#B8332A'};
+const CICLO_MAX=3,CICLO_BASE=179,CICLO_PASSO=35;
+function cicloSet(cor){OC.ciclo=cor||'';CICLO=cor?{cor,txt:CICLO_CORES[cor]}:null;if(cor){OC.fa=false;OC.cor='';OC.foto=''}if(window.__cicloRefaz)window.__cicloRefaz()}
+function cicloGrau(){const R=leRx();return Math.max(Math.abs(R.od.s||0),Math.abs(R.oe.s||0))}
+const grauTxt=g=>g.toFixed(2).replace('.',',');
+function cicloPreco(c){
+  const plana=c.modo==='plana',g=plana?0:cicloGrau();
+  if(g>CICLO_MAX+1e-9)return null;
+  const deg=Math.ceil(g/.5-1e-9),preco=CICLO_BASE+CICLO_PASSO*deg;
+  return{o:{kind:'ciclo',cor:c.ciclo,preco,idx:'1.50',v:'',col:1,tipo:'vs',line:{id:'ciclo',nome:'Ciclo',alt:0,
+    desc:`Lente de resina 1.50 na cor ${c.ciclo}, da Coleção Ciclo. Feita pela VOX${plana?'':', para graus até 3,00'}.`}},
+    XX:Xde(c),preco,custo:0,graus:g,degraus:deg,nota:''};
+}
+function cicloNota(P){
+  const R=leRx(),a=[];
+  a.push(P.degraus?`Valor da lente: R$ ${CICLO_BASE} + ${P.degraus} × R$ ${CICLO_PASSO} (maior grau esférico ${grauTxt(P.graus)}; cada 0,50 de grau acrescenta R$ ${CICLO_PASSO}).`:`Valor da lente sem grau: R$ ${CICLO_BASE}.`);
+  if(OC.modo==='grau'&&((R.od.add||0)>0||(R.oe.add||0)>0))a.push('A lente Ciclo é de visão simples: a adição da receita (perto) não entra nesta lente. Se precisar enxergar de perto com o mesmo óculos, fale com a VOX.');
+  return a.join(' ');
+}
+function cicloAlerta(){
+  return`A linha Ciclo só é feita até 3,00 de grau (esférico, para mais ou para menos). Esta receita tem ${grauTxt(cicloGrau())}.<br>
+    <button class="btn sec" type="button" data-tipo="trans">Trocar para lente transparente</button> ou fale com a VOX pelo WhatsApp.`;
+}
+function cicloTipoChips(){
+  const tp=$('#ocTipo');if(!tp)return;
+  const some=OC.modo==='arm'||!!(FR&&FR.t==='s');tp.hidden=some;if(some)return;
+  tp.innerHTML=[['trans','Transparente · filtro azul'],...Object.keys(CICLO_CORES).map(k=>[k,'Ciclo '+k])]
+    .map(([k,n])=>`<button class="chip" type="button" data-tipo="${k}" aria-pressed="${(OC.ciclo||'trans')===k}">${n}</button>`).join('');
+  const cx=$('#oLine')&&$('#oLine').closest('.campos');if(cx)cx.style.display=OC.ciclo?'none':'';
+  const tr=$('#trats')&&$('#trats').parentElement;if(tr)tr.style.display=OC.ciclo?'none':'';
+}
+function ligaFA(on){$$('.chips[data-g="fa"] .chip').forEach(c=>c.setAttribute('aria-pressed',c.dataset.val===(on?'1':'0')))}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-tipo]');if(!b)return;
+  const k=b.dataset.tipo;
+  if(k==='trans'){cicloSet('');OC.fa=true;OC.cor='';OC.foto='';ligaFA(true);atualiza();if(OC.modo==='grau'){ir('lente');return}}
+  else cicloSet(k);
+  renderOC();cicloAvisoRx();
+});
+function cicloAvisoRx(){
+  const el=$('#cicloAviso');if(!el)return;
+  if(!(OC.ciclo&&OC.modo==='grau')){el.hidden=true;return}
+  const P=cicloPreco(OC);el.hidden=false;el.classList.toggle('erro',!P);
+  el.innerHTML=P?`Lente Ciclo ${OC.ciclo}: ${brl(P.preco)} o par, para esta receita. A linha Ciclo vai até 3,00 de grau.`
+    :`Atenção: a linha Ciclo só é feita até 3,00 de grau. Esta receita tem ${grauTxt(cicloGrau())}. Você pode seguir com lente transparente ou falar com a VOX. <button class="btn sec" type="button" data-tipo="trans">Usar lente transparente</button>`;
+}
+$('#v-receita').addEventListener('input',()=>cicloAvisoRx());
+function verLentesV2(){
+  QZ.q=0;QZ.novo=0;
+  if(OC.ciclo){OC.modo='grau';ir('oculos');return}
+  ligaFA(true);atualiza();ir('lente');
+}
+// início em 2 ou 3 passos
+var INI={grau:'',tipo:'',cor:''};
+function renderIni(){
+  const el=$('#iniPassos');if(!el)return;
+  const op=(d,t,s,cor)=>`<button class="ini-op" type="button" data-i2="${d}"><i aria-hidden="true"${cor?` class="cor" style="--c:${cor}"`:''}></i><span><b>${t}</b><small>${s}</small></span><span class="micro" aria-hidden="true">→</span></button>`;
+  const volta='<button class="qz-pular ini-volta" type="button" data-i2="volta">← Voltar</button>';
+  let h;
+  if(!INI.grau)h='<p class="ini-q">01 · Você precisa de grau?</p>'+op('g:sim','Com grau','Lentes feitas para a sua receita')+op('g:nao','Sem grau','Para proteger os olhos e compor o visual');
+  else if(!INI.tipo)h='<p class="ini-q">02 · Que lente você quer?</p>'
+    +op('t:cor','Colorida','Coleção Ciclo: azul, amarela, laranja ou vermelha · '+(INI.grau==='sim'?`grau até 3,00 · a partir de ${brl(CICLO_BASE+CICLO_PASSO)}`:brl(CICLO_BASE)))
+    +op('t:trans','Transparente','Com filtro de luz azul, para telas')+volta;
+  else h='<p class="ini-q">03 · A cor da sua lente</p>'+Object.keys(CICLO_CORES).map(k=>op('c:'+k,k[0].toUpperCase()+k.slice(1),CICLO_CORES[k].split(' · ')[1]||'',CICLO_HEX[k])).join('')+volta;
+  el.innerHTML=h;
+}
+function fimIni(){
+  OC.modo=INI.grau==='sim'?'grau':'plana';
+  if(INI.tipo==='cor')cicloSet(INI.cor);else{cicloSet('');OC.fa=true}
+  ligaFA(INI.tipo!=='cor');atualiza();
+  fCat='g';$$('#fCat .chip').forEach(c=>c.setAttribute('aria-pressed',c.dataset.c===fCat));renderVitrine();ir('vitrine');
+}
+$('#v-inicio').addEventListener('click',e=>{
+  const b=e.target.closest('[data-i2]');if(!b)return;
+  const[k,val]=b.dataset.i2.split(':');
+  if(k==='volta'){if(INI.tipo)INI.tipo='';else INI.grau='';renderIni();return}
+  if(k==='g')INI.grau=val;
+  if(k==='t'){INI.tipo=val;if(val==='trans')return fimIni();if(CICLO_URL){INI.cor=CICLO_URL.cor;return fimIni()}}
+  if(k==='c'){INI.cor=val;return fimIni()}
+  renderIni();window.scrollTo({top:0});
+});
+renderIni();
+{const ir1=ir;ir=function(v){if(v==='inicio'){INI={grau:'',tipo:'',cor:''};renderIni()}if(v==='rotina')v='lente';ir1(v);
+  if(VIEW_ATUAL==='receita'){cicloAvisoRx();const b=$('#verLentes');if(b&&b.firstChild)b.firstChild.textContent=OC.ciclo?'Ver o meu óculos ':'Ver lentes indicadas '}}}
+/* /JORNADA V2 */
 </script>
 
 <script>
