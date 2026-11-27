@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Catálogo VOX</title>
+<meta property="og:title" content="Catálogo VOX"><meta property="og:description" content="T-shirts, óculos de grau, óculos de sol e Linha Ciclo. Estoque do site.">
+<meta property="og:image" content="../ciclo/quatro.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--creme:#F5F2EC;--azul:#1E2A44;--ouro:#7E5F26;--linha:rgba(30,42,68,.12)}
+*{box-sizing:border-box}body{margin:0;background:var(--creme);color:var(--azul);font-family:Jost,sans-serif}
+header{text-align:center;padding:28px 16px 8px}header img{height:34px}
+h1{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:30px;margin:10px 0 2px}
+.sub{font-size:14px;opacity:.7;margin:0}
+nav{position:sticky;top:0;z-index:5;background:var(--creme);display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:12px 12px;border-bottom:1px solid var(--linha)}
+nav button{font:500 13px Jost;border:1px solid var(--azul);background:none;color:var(--azul);border-radius:22px;padding:10px 4px;cursor:pointer}
+nav button.on{background:var(--azul);color:#fff}
+main{max-width:720px;margin:0 auto;padding:14px 12px 90px}
+.aviso{text-align:center;font-size:13px;color:var(--ouro);margin:4px 0 12px}
+.grade{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:#fff;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;text-decoration:none;color:inherit}
+.card img{width:100%;aspect-ratio:1;object-fit:cover;background:#eee}
+.card .t{padding:10px 10px 12px;display:flex;flex-direction:column;gap:4px;flex:1}
+.nome{font-size:14px;line-height:1.25}
+.preco{font-weight:500}.de{text-decoration:line-through;opacity:.5;font-size:12px;margin-right:6px}
+.est{font-size:12px;opacity:.75}.est.ult{color:#a33;opacity:1}
+.tam{font-size:11px;opacity:.7}
+.btn{margin-top:auto;display:block;text-align:center;background:var(--azul);color:#fff;border-radius:20px;padding:8px;font-size:13px}
+.esgot{opacity:.45}
+.kit{grid-column:1/-1}.kit img{aspect-ratio:16/9}
+.texto{text-align:center;font-family:'Cormorant Garamond',serif;font-size:21px;margin:0 0 6px}
+.zap{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#25D366;color:#fff;text-decoration:none;border-radius:28px;padding:13px 24px;font-weight:500;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+.atual{text-align:center;font-size:11px;opacity:.5;margin-top:20px}
+</style></head><body>
+<header><img src="../ciclo/logo-vox.png" alt="VOX"><h1>Catálogo VOX</h1><p class="sub">Escolha abaixo. O estoque é o do site.</p></header>
+<nav id="abas"></nav>
+<main><div id="lista"></div><p class="atual" id="atual"></p></main>
+<a class="zap" id="zap" target="_blank">Falar no WhatsApp</a>
+<script>
+const R=n=>'R$ '+Number(n).toFixed(2).replace('.',',');
+let CFG,DADOS,aba=new URLSearchParams(location.search).get('aba')||'tshirts';
+const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function zap(t){return 'https://wa.me/'+CFG.whatsapp+'?text='+encodeURIComponent(t)}
+function card(p,a){
+  const h=(p.url||'').split('/produtos/')[1]?.replace(/\/$/,'')||'';
+  const link=a.link_grau?a.link_grau.replace('{handle}',h):p.url;
+  const ult=p.estoque>0&&p.estoque<=2;
+  const est=p.estoque<=0?'Esgotado':p.estoque>=99?'Disponível':ult?(p.estoque==1?'Última unidade':'Últimas '+p.estoque+' unidades'):p.estoque+' em estoque';
+  return `<a class="card ${p.estoque<=0?'esgot':''}" href="${esc(link)}" target="_blank">
+   <img loading="lazy" src="${esc(p.img)}" alt="${esc(p.nome)}"><div class="t">
+   <div class="nome">${esc(p.nome)}</div>
+   <div>${p.de&&p.de>p.preco?`<span class="de">${R(p.de)}</span>`:''}<span class="preco">${R(p.preco)}</span></div>
+   <div class="est ${ult?'ult':''}">${est}</div>
+   ${p.tamanhos&&p.tamanhos.length>1?`<div class="tam">Tam.: ${p.tamanhos.map(esc).join(' · ')}</div>`:''}
+   <span class="btn">${a.link_grau?'Montar com grau':'Ver e comprar'}</span></div></a>`}
+function ciclo(a){
+  let h=`<p class="texto">${esc(a.texto)}</p>${a.aviso_preco?`<p class="aviso">${esc(a.aviso_preco)}</p>`:''}<div class="grade">`;
+  h+=a.cores.map(c=>`<a class="card" href="${esc(c.link)}" target="_blank"><img loading="lazy" src="${esc(c.img)}" alt="${esc(c.nome)}"><div class="t">
+   <div class="nome">Ciclo ${esc(c.nome)}</div><div><span class="de">${R(a.de)}</span><span class="preco">${R(a.preco)}</span></div>
+   <span class="btn">Montar o meu</span></div></a>`).join('');
+  h+=`<a class="card kit" href="${zap('Olá! Quero o kit '+a.kit.nome+' da Linha Ciclo por '+R(a.kit.preco)+'.')}" target="_blank"><img loading="lazy" src="${esc(a.kit.img)}" alt=""><div class="t">
+   <div class="nome">${esc(a.kit.nome)}</div><div><span class="preco">${R(a.kit.preco)}</span></div>
+   <div class="est">Chame no WhatsApp para definir as armações disponíveis.</div><span class="btn">Quero o kit</span></div></a></div>`;
+  return h}
+function mostra(){
+  history.replaceState(null,'','?aba='+aba);
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.id===aba));
+  const a=CFG.abas.find(x=>x.id===aba)||CFG.abas[0];
+  let html;
+  if(a.fixo==='ciclo')html=ciclo(a);
+  else{const d=(DADOS.abas.find(x=>x.id===a.id)||{itens:[]}).itens.slice().sort((x,y)=>(y.estoque>0)-(x.estoque>0));
+    html=d.length?`<div class="grade">${d.map(p=>card(p,a)).join('')}</div>`:'<p class="aviso">Nada por aqui agora.</p>'}
+  document.getElementById('lista').innerHTML=html;
+  document.getElementById('zap').href=zap('Olá! Vi o catálogo VOX ('+a.nome+') e quero saber mais.');
+  scrollTo(0,0)}
+Promise.all([fetch('abas.json?'+Date.now()).then(r=>r.json()),fetch('produtos.json?'+Date.now()).then(r=>r.json())]).then(([c,d])=>{
+  CFG=c;DADOS=d;
+  document.getElementById('abas').innerHTML=c.abas.map(a=>`<button data-id="${a.id}">${esc(a.nome)}</button>`).join('');
+  document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{aba=b.dataset.id;mostra()});
+  const t=new Date(d.atualizado);document.getElementById('atual').textContent='Estoque atualizado em '+t.toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'});
+  mostra()});
+</script></body></html>

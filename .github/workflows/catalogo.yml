@@ -1,0 +1,21 @@
+name: Catálogo VOX - estoque
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python catalogo/gerar.py
+      - run: |
+          git config user.name "catalogo-vox"
+          git config user.email "catalogo-vox@users.noreply.github.com"
+          git add catalogo/produtos.json
+          git diff --cached --quiet || (git commit -m "catálogo: estoque automático" && git pull --rebase && git push)

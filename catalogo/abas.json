@@ -1,0 +1,67 @@
+{
+ "abas": [
+  {
+   "id": "tshirts",
+   "nome": "T-shirts",
+   "categorias": [
+    "tshirts"
+   ]
+  },
+  {
+   "id": "grau",
+   "nome": "Óculos de grau",
+   "categorias": [
+    "oculos-de-grau"
+   ],
+   "link_grau": "https://ramonberba-dev.github.io/vox-lentes/?armacao={handle}"
+  },
+  {
+   "id": "sol",
+   "nome": "Óculos de sol",
+   "categorias": [
+    "oculos"
+   ],
+   "esconder_se_nome_tiver": [
+    "Grau"
+   ]
+  },
+  {
+   "id": "ciclo",
+   "nome": "Linha Ciclo",
+   "categorias": [],
+   "fixo": "ciclo",
+   "texto": "Uma lente para cada hora do dia. Escolha a cor e monte o seu.",
+   "preco": 169,
+   "de": 199,
+   "aviso_preco": "Preço da Black até segunda, 30/11",
+   "kit": {
+    "nome": "As 4 cores do ciclo",
+    "preco": 500,
+    "img": "../ciclo/quatro.jpg"
+   },
+   "cores": [
+    {
+     "nome": "Azul",
+     "img": "../ciclo/azul-tela.jpg",
+     "link": "https://ciclo.integros.org/jornada"
+    },
+    {
+     "nome": "Amarela",
+     "img": "../ciclo/amarela.jpg",
+     "link": "https://ciclo.integros.org/jornada"
+    },
+    {
+     "nome": "Laranja",
+     "img": "../ciclo/capa-laranja.jpg",
+     "link": "https://ciclo.integros.org/jornada"
+    },
+    {
+     "nome": "Vermelha",
+     "img": "../ciclo/vermelha.jpg",
+     "link": "https://ciclo.integros.org/jornada"
+    }
+   ]
+  }
+ ],
+ "whatsapp": "552126041377"
+}

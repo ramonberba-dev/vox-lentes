@@ -1,0 +1,1192 @@
+{
+"atualizado": "2026-11-27T05:32:01-03:00",
+"abas": [
+{
+"id": "tshirts",
+"nome": "T-shirts",
+"itens": [
+{
+"id": "352608038",
+"nome": "Tshirt VOX The Angel",
+"url": "https://usevox.com.br/produtos/tshirt-vox-davila-copia-1cmxa/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/01-principal-9ee7781f3a0dd35ff317956572371865-1024-1024.webp",
+"preco": 79,
+"de": 129,
+"estoque": 9,
+"tamanhos": [
+"G",
+"GG",
+"M",
+"P",
+"PP"
+]
+},
+{
+"id": "352603903",
+"nome": "Tshirt VOX D'ávila",
+"url": "https://usevox.com.br/produtos/tshirt-teresinha-copia-1qdif/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/01-principal-f09b78236838ac9b8c17956572331806-1024-1024.webp",
+"preco": 79,
+"de": 129,
+"estoque": 7,
+"tamanhos": [
+"G",
+"M",
+"P",
+"PP"
+]
+},
+{
+"id": "323289895",
+"nome": "Tshirt Teresinha",
+"url": "https://usevox.com.br/produtos/tshirt-teresinha-hogp6/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/01-principal-8a5eabfea16160163c17956571953438-1024-1024.webp",
+"preco": 79,
+"de": 129,
+"estoque": 20,
+"tamanhos": [
+"G",
+"GG",
+"M",
+"XGG"
+]
+},
+{
+"id": "314697458",
+"nome": "T-Shrirt Pater Noster Preta",
+"url": "https://usevox.com.br/produtos/t-shrirt-pater-noster-preta-d33y8/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/01-principal-f0e0cf230145c374fe17956571834130-1024-1024.webp",
+"preco": 79,
+"de": 159,
+"estoque": 15,
+"tamanhos": [
+"G",
+"M",
+"P"
+]
+},
+{
+"id": "314702984",
+"nome": "T-Shirt Pater Noster Azul",
+"url": "https://usevox.com.br/produtos/t-shirt-pater-noster-azul-j4p7t/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/01-principal-bdcedc7f2bfab0d6e617956571793297-1024-1024.webp",
+"preco": 79,
+"de": 159,
+"estoque": 20,
+"tamanhos": [
+"G",
+"GG",
+"M",
+"P",
+"XGG"
+]
+},
+{
+"id": "284808155",
+"nome": "Tshirt Omnia Preta",
+"url": "https://usevox.com.br/produtos/tshirt-omnia-preta/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/01-principal-08cf2d9b4bbdab854c17956572253163-1024-1024.webp",
+"preco": 79,
+"de": 109,
+"estoque": 8,
+"tamanhos": [
+"G",
+"GG",
+"M",
+"XGG"
+]
+},
+{
+"id": "314704197",
+"nome": "T-Shirt VOX Lines",
+"url": "https://usevox.com.br/produtos/t-shirt-vox-lines-amexn/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-7c73ddd94ff718bc2217905544713619-1024-1024.webp",
+"preco": 79,
+"de": 129,
+"estoque": 32,
+"tamanhos": [
+"G",
+"GG",
+"M",
+"P",
+"XGG"
+]
+},
+{
+"id": "307209100",
+"nome": "T-Shirt Sant Arnold",
+"url": "https://usevox.com.br/produtos/t-shirt-sant-arnold-99kco/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/01-principal-65c8c40adebfc99d6f17956571753334-1024-1024.webp",
+"preco": 79,
+"de": 129,
+"estoque": 24,
+"tamanhos": [
+"G",
+"GG",
+"M",
+"XGG"
+]
+},
+{
+"id": "314686276",
+"nome": "T-Shirt Acutis",
+"url": "https://usevox.com.br/produtos/t-shirt-acutis-o0s4h/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/01-principal-d114f45ec47ad5c52117956571675480-1024-1024.webp",
+"preco": 79,
+"de": 149,
+"estoque": 18,
+"tamanhos": [
+"G",
+"GG",
+"M",
+"P"
+]
+},
+{
+"id": "305146500",
+"nome": "T-Shirt Café ll",
+"url": "https://usevox.com.br/produtos/t-shirt-cafe-ll-wo1lu/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/01-principal-51f51fa13dab96ab8b17956571714543-1024-1024.webp",
+"preco": 79,
+"de": 129,
+"estoque": 25,
+"tamanhos": [
+"G",
+"GG",
+"M",
+"XGG"
+]
+},
+{
+"id": "284803062",
+"nome": "Tshirt Omnia Branca",
+"url": "https://usevox.com.br/produtos/tshirt-omnia-branca/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/01-principal-9784496fd6ce8e2c8c17956572212914-1024-1024.webp",
+"preco": 79,
+"de": 109,
+"estoque": 22,
+"tamanhos": [
+"G",
+"GG",
+"M",
+"XGG"
+]
+},
+{
+"id": "284809575",
+"nome": "Tshirt Café",
+"url": "https://usevox.com.br/produtos/tshirt-cafe/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/01-principal-0eac58285309a53a0517956571873148-1024-1024.webp",
+"preco": 79,
+"de": 119,
+"estoque": 15,
+"tamanhos": [
+"G",
+"GG",
+"M",
+"P"
+]
+},
+{
+"id": "286403653",
+"nome": "Tshirt Pai nosso PIMA (preta)",
+"url": "https://usevox.com.br/produtos/tshirt-pai-nosso-pima-preta/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/01-principal-2e51e2c8250699e54017956572442727-1024-1024.webp",
+"preco": 79,
+"de": 159.9,
+"estoque": 4,
+"tamanhos": [
+"M",
+"P"
+]
+},
+{
+"id": "286405861",
+"nome": "Tshirt Padroeiro da Nação Pima",
+"url": "https://usevox.com.br/produtos/tshirt-padroeiro-da-nacao-pima-gqik2/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/01-principal-c80698eb2359b4387017956572484108-1024-1024.webp",
+"preco": 79,
+"de": 129,
+"estoque": 13,
+"tamanhos": [
+"G",
+"GG",
+"M",
+"P"
+]
+},
+{
+"id": "288541887",
+"nome": "Tshirt Benedictus",
+"url": "https://usevox.com.br/produtos/tshirt-benedictus/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/01-principal-687d571710b9a3acd217956571912404-1024-1024.webp",
+"preco": 79,
+"de": 119,
+"estoque": 5,
+"tamanhos": [
+"M",
+"P"
+]
+},
+{
+"id": "288547342",
+"nome": "Tshirt Domina Nostra",
+"url": "https://usevox.com.br/produtos/tshirt-domina-nostra/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/01-principal-8ecdaf550ad86eef7b17956571367362-1024-1024.webp",
+"preco": 79,
+"de": 119,
+"estoque": 2,
+"tamanhos": [
+"M"
+]
+},
+{
+"id": "288563507",
+"nome": "Tshirt Cruz Sagrada",
+"url": "https://usevox.com.br/produtos/tshirt-cruz-sagrada-4wzc7/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/01-principal-0e2bfaf459c2b6ac8917956572291546-1024-1024.webp",
+"preco": 79,
+"de": 129,
+"estoque": 6,
+"tamanhos": [
+"M",
+"P"
+]
+}
+]
+},
+{
+"id": "grau",
+"nome": "Óculos de grau",
+"itens": [
+{
+"id": "376120026",
+"nome": "Vox Tessera",
+"url": "https://usevox.com.br/produtos/vox-tessera-k4f7l/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/tessera-01-e929ce448e6b68b23217927628610391-1024-1024.webp",
+"preco": 229,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "376119955",
+"nome": "Vox Columba",
+"url": "https://usevox.com.br/produtos/vox-columba-dk869/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/columba-01-553c8691629849102117927629527312-1024-1024.webp",
+"preco": 229,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "376119398",
+"nome": "Vox Laudes",
+"url": "https://usevox.com.br/produtos/vox-laudes-930s8/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/laudes-01-06e32f7a76bc26d5fb17927627059639-1024-1024.webp",
+"preco": 279,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "376119189",
+"nome": "Vox Hortus",
+"url": "https://usevox.com.br/produtos/vox-hortus-1nxr0/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/hortus-01-f002ce067ad5de6ee317927623781650-1024-1024.webp",
+"preco": 279,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "376116837",
+"nome": "Vox Ardens",
+"url": "https://usevox.com.br/produtos/vox-ardens-djt21/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/ardens-01-f5f7ddcf99829a2af817927621510133-1024-1024.webp",
+"preco": 279,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "372406649",
+"nome": "Vox Votum (Cristal)",
+"url": "https://usevox.com.br/produtos/vox-votum-cristal-dlt5o/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-fe92a5009df4f903d817913199985330-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "372406835",
+"nome": "Vox Votum (Marrom)",
+"url": "https://usevox.com.br/produtos/vox-votum-marrom-1090d/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-49145ca33ca5e1096b17913200282369-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "372406941",
+"nome": "Vox Gaudium",
+"url": "https://usevox.com.br/produtos/vox-gaudium-1etd0/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-7faba159ae7a28fa5217913200455188-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "372407247",
+"nome": "Vox Petra",
+"url": "https://usevox.com.br/produtos/vox-petra-13k3r/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-55c49addd11abde1cd17913200973527-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "369145545",
+"nome": "Vox Dualis",
+"url": "https://usevox.com.br/produtos/vox-dualis-16l83/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-566a8a43dab7b7eef917905551838135-1024-1024.webp",
+"preco": 230,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "329120721",
+"nome": "Sublimis",
+"url": "https://usevox.com.br/produtos/sublimis-jiiy5/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-5bcc72d401e077122e17905542089560-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "330716986",
+"nome": "Dominus",
+"url": "https://usevox.com.br/produtos/dominus-13ojs/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-2b6f88bd7e194a255217905490017700-1024-1024.webp",
+"preco": 249,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "330722073",
+"nome": "Favo",
+"url": "https://usevox.com.br/produtos/excelsus-preto-copia-1l4js/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-6279f655158caf3b8617905494098051-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "329110966",
+"nome": "Spectra",
+"url": "https://usevox.com.br/produtos/spectra-1s0yg/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-f560eb2d7c10ae413017905542042934-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "329125090",
+"nome": "Escrivá",
+"url": "https://usevox.com.br/produtos/escriva-5krgt/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-90dbcae13bd8fba9a117905490083210-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "329106455",
+"nome": "Visio III",
+"url": "https://usevox.com.br/produtos/visio-iii-1viyx/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-a41a11c31d2693668717905426447654-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "328657804",
+"nome": "Armação Visio I",
+"url": "https://usevox.com.br/produtos/armacao-visio-1-1v0en/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-2318ddec68d89fd10417905489728629-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "329102606",
+"nome": "Visio II",
+"url": "https://usevox.com.br/produtos/visio-ii-12m13/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-495c7526f434a4d16017905551771343-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "329107267",
+"nome": "Visio IV",
+"url": "https://usevox.com.br/produtos/visio-iv-uo08z/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-ecf7ed2fab56fdf35f17905426492939-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "329122559",
+"nome": "Selectus I",
+"url": "https://usevox.com.br/produtos/selectus-i-1s45k/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-fe68bb0b183957f25017905426540823-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "329123012",
+"nome": "Selectus II",
+"url": "https://usevox.com.br/produtos/selectus-ii-3zy50/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-738fb71ac0bdc787d417905426603035-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "329123677",
+"nome": "Prestige",
+"url": "https://usevox.com.br/produtos/prestige-1jwf9/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-1dd148cd17977af8ea17905426669517-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "329127099",
+"nome": "Gratia",
+"url": "https://usevox.com.br/produtos/gratia-py537/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-faa536a1e11848dd6417905494294213-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "329930795",
+"nome": "Excelsus Preto",
+"url": "https://usevox.com.br/produtos/excelsus-12tm3/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-e351fbb5cd3dcdd27717905490144581-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "329931366",
+"nome": "Excelsus Castanho",
+"url": "https://usevox.com.br/produtos/excelsus-castanho-9a8hp/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/whatsapp-image-2026-03-06-at-17-20-51-1-469b0126ad43ad96ac17728290586081-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "329939738",
+"nome": "Verum (Clipon Duplo)",
+"url": "https://usevox.com.br/produtos/verum-clipon-duplo-1ac3a/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-043315cb6ff9911ee717905551652366-1024-1024.webp",
+"preco": 230,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "329940278",
+"nome": "Fidelitas II",
+"url": "https://usevox.com.br/produtos/fidelitas-ii-1d98m/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-39b3b12ca66957adff17905494188555-1024-1024.webp",
+"preco": 249,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "330721399",
+"nome": "Luna tartaruga C2",
+"url": "https://usevox.com.br/produtos/luna-tartaruga-c1-j2y8b/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-ab80d80c5d604f7ff217905426737213-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "370137093",
+"nome": "Vox Veritas",
+"url": "https://usevox.com.br/produtos/vox-veritas-k55kd/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-e20c79cb8b4f2d129717905437995415-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "370137116",
+"nome": "Vox Regina",
+"url": "https://usevox.com.br/produtos/vox-regina-5u3vg/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-03a5ab4ff48704f58017905414509154-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "370137127",
+"nome": "Vox Candida",
+"url": "https://usevox.com.br/produtos/vox-candida-108l4/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-ec5a1000efe60c8fb717905400944004-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "370137136",
+"nome": "Vox Silentium",
+"url": "https://usevox.com.br/produtos/vox-silentium-9naa7/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-a1f21f5af9277a99e017905414696237-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "370137143",
+"nome": "Vox Sinapis",
+"url": "https://usevox.com.br/produtos/vox-sinapis-16cd3/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-782ef3231d66d2041d17905421098693-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "370137156",
+"nome": "Vox Matutina",
+"url": "https://usevox.com.br/produtos/vox-matutina-48hue/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-003076f9af6a53d4ba17905409847971-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "370137167",
+"nome": "Vox Magister",
+"url": "https://usevox.com.br/produtos/vox-magister-r4zz0/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-46e390eeb662bf7fbc17905409764989-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "370137182",
+"nome": "Vox Amethystus",
+"url": "https://usevox.com.br/produtos/vox-amethystus-15mwp/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-3b89df146eea14fe1a17905396284164-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "370137205",
+"nome": "Vox Visio (Mel)",
+"url": "https://usevox.com.br/produtos/vox-visio-mel-1njwo/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-a3856ca06bb3a2269417905438176962-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "370137238",
+"nome": "Vox Spes",
+"url": "https://usevox.com.br/produtos/vox-spes-zdamp/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-f0a7ac3073f95fc5e617905421168824-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "370137255",
+"nome": "Vox Pastor",
+"url": "https://usevox.com.br/produtos/vox-pastor-1p0qg/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-f2cf9889e32f8916d117905414440004-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "370137261",
+"nome": "Vox Hosanna",
+"url": "https://usevox.com.br/produtos/vox-hosanna-1nzv5/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-ee23705a8967e2b88a17905407271874-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "370137281",
+"nome": "Vox Terra",
+"url": "https://usevox.com.br/produtos/vox-terra-1a03j/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-b1948503e439701f3c17905421302416-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "370137286",
+"nome": "Vox Scriba",
+"url": "https://usevox.com.br/produtos/vox-scriba-1ywq2/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-9daaf765224f42b5a417905414657367-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "370137296",
+"nome": "Vox Doctor",
+"url": "https://usevox.com.br/produtos/vox-doctor-qv797/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-08a1e67ab3e8d562cf17905406992750-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "370137305",
+"nome": "Vox Oliva",
+"url": "https://usevox.com.br/produtos/vox-oliva-39cxu/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-2ac59e4e874cc6cb1e17905414359672-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "370137329",
+"nome": "Vox Duplex",
+"url": "https://usevox.com.br/produtos/vox-duplex-1nxcq/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-6dbec6b5670b62de7517905407026996-1024-1024.webp",
+"preco": 230,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "370137339",
+"nome": "Vox Vigilia",
+"url": "https://usevox.com.br/produtos/vox-vigilia-vwpzg/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-5ad569f7d13911ddd517905438126530-1024-1024.webp",
+"preco": 230,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "379671149",
+"nome": "Vox Sursum",
+"url": "https://usevox.com.br/produtos/vox-sursum/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/sursum-1-7a5cd37fa5e2865cae17940899946116-1024-1024.webp",
+"preco": 229,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "379671151",
+"nome": "Vox Libera Nos",
+"url": "https://usevox.com.br/produtos/vox-libera-nos/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/libera-1-09b254073d90562f2317940909492400-1024-1024.webp",
+"preco": 229,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "379676972",
+"nome": "Vox Libanus (Verde)",
+"url": "https://usevox.com.br/produtos/vox-libanus-verde/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/libanusv-1-1f2efcf30672c9f21117940900605346-1024-1024.webp",
+"preco": 229,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "379676980",
+"nome": "Vox Libanus (Cristal)",
+"url": "https://usevox.com.br/produtos/vox-libanus-cristal/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/libanusc-1-b918d0830df56f59b217940905182609-1024-1024.webp",
+"preco": 229,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "379679470",
+"nome": "Vox Claritas",
+"url": "https://usevox.com.br/produtos/vox-claritas/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/claritas-1-fbc14777ec9428c1ea17940905784793-1024-1024.webp",
+"preco": 229,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "379679473",
+"nome": "Vox Gloria",
+"url": "https://usevox.com.br/produtos/vox-gloria/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/gloria-1-318311f03f053986cc17940902259984-1024-1024.webp",
+"preco": 229,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "379679474",
+"nome": "Vox Pax",
+"url": "https://usevox.com.br/produtos/vox-pax/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/pax-1-a29f2e64401c84897017940902668799-1024-1024.webp",
+"preco": 279,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "379679477",
+"nome": "Vox Maris",
+"url": "https://usevox.com.br/produtos/vox-maris/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/maris-1-c42eab853425edb32317940903071153-1024-1024.webp",
+"preco": 279,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "379681311",
+"nome": "Vox Miles",
+"url": "https://usevox.com.br/produtos/vox-miles/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/miles-1-56bcfbf51d7038eeeb17940903535509-1024-1024.webp",
+"preco": 279,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "380835992",
+"nome": "Vox Totus",
+"url": "https://usevox.com.br/produtos/vox-totus/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/vox-totus-1-d883fdfa987377dbed17945223633016-1024-1024.webp",
+"preco": 229,
+"de": null,
+"estoque": 1,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+},
+{
+"id": "382851385",
+"nome": "Vox Nexus Grau (Tartaruga)",
+"url": "https://usevox.com.br/produtos/vox-nexus-grau-tartaruga-scz1y/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/nexus-tt-2-transparente-9d8438d2c51dcdf7ab17954037292620-1024-1024.webp",
+"preco": 199,
+"de": null,
+"estoque": 5,
+"tamanhos": [
+"Sem Grau (Somente a armação)"
+]
+}
+]
+},
+{
+"id": "sol",
+"nome": "Óculos de sol",
+"itens": [
+{
+"id": "352599699",
+"nome": "Óculos de Sol Vox Turtle Crystal – Lente Polarizada",
+"url": "https://usevox.com.br/produtos/oculos-de-sol-vox-invictus-polarizado-copia-1jirm/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-1012a58b84822c17bc17905426850719-1024-1024.webp",
+"preco": 89,
+"de": 179,
+"estoque": 3,
+"tamanhos": []
+},
+{
+"id": "344575864",
+"nome": "Óculos de Sol VOX GARDEM",
+"url": "https://usevox.com.br/produtos/oculos-de-sol-altus-copia-3z1vb/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-4f23676c54cb32d71e17905426803365-1024-1024.webp",
+"preco": 89,
+"de": 229,
+"estoque": 2,
+"tamanhos": []
+},
+{
+"id": "273375820",
+"nome": "Armação VOX Stella 2 Wood",
+"url": "https://usevox.com.br/produtos/oculos-de-sol-vox-stella/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-9a27e9ba820b4254ca17905537836682-1024-1024.webp",
+"preco": 89,
+"de": 229,
+"estoque": 2,
+"tamanhos": []
+},
+{
+"id": "369145945",
+"nome": "Vox Felis",
+"url": "https://usevox.com.br/produtos/vox-felis-1tr9y/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-14dbbdd816ffba2c8517905438492014-1024-1024.webp",
+"preco": 89,
+"de": 179,
+"estoque": 1,
+"tamanhos": []
+},
+{
+"id": "356340744",
+"nome": "Óculos de sol Vox Nexus (Tartaruga)",
+"url": "https://usevox.com.br/produtos/oculos-de-sol-vox-nexus-tartaruga-1wz92/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-e931b8c373bb1eb49217905438327424-1024-1024.webp",
+"preco": 89,
+"de": 149.9,
+"estoque": 5,
+"tamanhos": []
+},
+{
+"id": "355493409",
+"nome": "Óculos de Sol Vox Aurora",
+"url": "https://usevox.com.br/produtos/oculos-de-sol-aurora-wohrj/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-b15911666a85e8094f17905426935025-1024-1024.webp",
+"preco": 89,
+"de": 179,
+"estoque": 2,
+"tamanhos": []
+},
+{
+"id": "352602611",
+"nome": "Óculos de Sol Havana– Lente Polarizada",
+"url": "https://usevox.com.br/produtos/oculos-de-sol-havana-lente-polarizada-8dsvk/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-3110cf8a98e817be3717905438245757-1024-1024.webp",
+"preco": 89,
+"de": 179,
+"estoque": 4,
+"tamanhos": []
+},
+{
+"id": "345906250",
+"nome": "Óculos de Sol Lummi",
+"url": "https://usevox.com.br/produtos/oculos-de-sol-lummi-guhti/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-01dd0edb16de423f1717905518385142-1024-1024.webp",
+"preco": 89,
+"de": 199,
+"estoque": 3,
+"tamanhos": []
+},
+{
+"id": "344702044",
+"nome": "Óculos de Sol VOX Catherine POLARIZADO",
+"url": "https://usevox.com.br/produtos/oculos-de-sol-vox-invictus-polarizado-copia-giqvz/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-8da6c355f825acaafc17905533438242-1024-1024.webp",
+"preco": 89,
+"de": 199,
+"estoque": 2,
+"tamanhos": []
+},
+{
+"id": "344545086",
+"nome": "Óculos de Sol Altus",
+"url": "https://usevox.com.br/produtos/oculos-de-sol-lumin-copia-rzx6g/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-d709812ada59efc3f917905518297950-1024-1024.webp",
+"preco": 89,
+"de": 229,
+"estoque": 1,
+"tamanhos": []
+},
+{
+"id": "325298096",
+"nome": "Óculos esportivo Speed",
+"url": "https://usevox.com.br/produtos/oculos-esportivo-speed-9n941/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-51360c71ae163f55d617905539908722-1024-1024.webp",
+"preco": 89,
+"de": 149,
+"estoque": 8,
+"tamanhos": [
+"Azul",
+"Ocre Dourado",
+"Prata",
+"Roxo"
+]
+},
+{
+"id": "323349054",
+"nome": "Óculos de Sol Luxor",
+"url": "https://usevox.com.br/produtos/oculos-de-sol-luxor-1ltk8/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-69e4b4c6367be91d8817905518619870-1024-1024.webp",
+"preco": 89,
+"de": 179,
+"estoque": 1,
+"tamanhos": []
+},
+{
+"id": "323345430",
+"nome": "Óculos de sol Visio Blue Polarizado",
+"url": "https://usevox.com.br/produtos/oculos-de-sol-visio-blue-polarizado-vqkzq/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-1c6d2bdd5c7bbf1e4217905426376086-1024-1024.webp",
+"preco": 89,
+"de": 179,
+"estoque": 1,
+"tamanhos": []
+},
+{
+"id": "273373764",
+"nome": "Óculos de sol Vox Nexus (Castanho e Preto)",
+"url": "https://usevox.com.br/produtos/oculos-de-sol-vox-nexus-castanho-e-preto/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-a0642b605c636556ce17905535600381-1024-1024.webp",
+"preco": 89,
+"de": 149.9,
+"estoque": 4,
+"tamanhos": []
+},
+{
+"id": "283409783",
+"nome": "Óculos esportivos VOX St. JHON",
+"url": "https://usevox.com.br/produtos/oculos-esportivos-vox-st-jhon/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-e34aa80eb819cb765f17905541618186-1024-1024.webp",
+"preco": 89,
+"de": 179.9,
+"estoque": 30,
+"tamanhos": [
+"Branco Degradê Rosa/verde",
+"Branco com lente prata",
+"Preto",
+"Preto Degradê Azul/Verde/Roxo",
+"Preto degradê Vermelho/ Amarelo / verde",
+"Preto degradê roxo"
+]
+},
+{
+"id": "276213449",
+"nome": "Óculos de Sol Vox Core",
+"url": "https://usevox.com.br/produtos/oculos-de-sol-vox-core/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-41e2770e83a1d8dc7817905530379260-1024-1024.webp",
+"preco": 89,
+"de": 159.9,
+"estoque": 2,
+"tamanhos": []
+},
+{
+"id": "370136969",
+"nome": "Vox Canaã",
+"url": "https://usevox.com.br/produtos/vox-canaa-1v827/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-7502996d4eb7405bf217905399459467-1024-1024.webp",
+"preco": 89,
+"de": 179,
+"estoque": 1,
+"tamanhos": []
+},
+{
+"id": "370137062",
+"nome": "Vox Stella Maris",
+"url": "https://usevox.com.br/produtos/vox-stella-maris-1112f/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-286702e555bed3998717905421237666-1024-1024.webp",
+"preco": 89,
+"de": 179,
+"estoque": 1,
+"tamanhos": []
+},
+{
+"id": "370137065",
+"nome": "Vox Candor",
+"url": "https://usevox.com.br/produtos/vox-candor-typ92/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-f7fba0813fe3f1882117905401023151-1024-1024.webp",
+"preco": 89,
+"de": 179,
+"estoque": 1,
+"tamanhos": []
+},
+{
+"id": "370137072",
+"nome": "Vox Via",
+"url": "https://usevox.com.br/produtos/vox-via-50e72/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-71797e37c170bf8a8517905438059017-1024-1024.webp",
+"preco": 89,
+"de": 179,
+"estoque": 1,
+"tamanhos": []
+},
+{
+"id": "370137074",
+"nome": "Vox Cedrus",
+"url": "https://usevox.com.br/produtos/vox-cedrus-kpmis/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-1bcd6cb238d09c6dc217905401138527-1024-1024.webp",
+"preco": 89,
+"de": 179,
+"estoque": 1,
+"tamanhos": []
+},
+{
+"id": "370137080",
+"nome": "Vox Nexus (Preto)",
+"url": "https://usevox.com.br/produtos/vox-nexus-preto-14sai/",
+"img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/source-4ec0a72346ee66bb4c17905409928145-1024-1024.webp",
+"preco": 89,
+"de": 149.9,
+"estoque": 1,
+"tamanhos": []
+}
+]
+},
+{
+"id": "ciclo",
+"nome": "Linha Ciclo",
+"itens": []
+}
+]
+}
