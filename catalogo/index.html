@@ -1,37 +1,42 @@
 <!doctype html>
 <html lang="pt-BR"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Catálogo VOX</title>
+<title>Catálogo VOX · Black</title>
 <meta property="og:title" content="Catálogo VOX"><meta property="og:description" content="T-shirts, óculos de grau, óculos de sol e Linha Ciclo. Estoque do site.">
 <meta property="og:image" content="../ciclo/quatro.jpg">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--creme:#F5F2EC;--azul:#1E2A44;--ouro:#7E5F26;--linha:rgba(30,42,68,.12)}
-*{box-sizing:border-box}body{margin:0;background:var(--creme);color:var(--azul);font-family:Jost,sans-serif}
-header{text-align:center;padding:28px 16px 8px}header img{height:34px}
-h1{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:30px;margin:10px 0 2px}
-.sub{font-size:14px;opacity:.7;margin:0}
-nav{position:sticky;top:0;z-index:5;background:var(--creme);display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:12px 12px;border-bottom:1px solid var(--linha)}
-nav button{font:500 13px Jost;border:1px solid var(--azul);background:none;color:var(--azul);border-radius:22px;padding:10px 4px;cursor:pointer}
-nav button.on{background:var(--azul);color:#fff}
+:root{--fundo:#0E0D0B;--preto:#000;--claro:#F3F0EA;--ouro:#D4AF6A;--tinta2:#A8A296;--linha:rgba(243,240,234,.16);--serif:"Instrument Serif",Georgia,serif;--sans:"Inter Tight",Helvetica,Arial,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--fundo);color:var(--claro);font-family:var(--sans)}
+.faixa{background:var(--ouro);color:#0E0D0B;text-align:center;font:600 12px var(--sans);letter-spacing:.08em;text-transform:uppercase;padding:8px 12px}
+header{text-align:center;padding:26px 16px 14px;background:var(--preto);border-bottom:1px solid var(--linha)}
+.tit{display:flex;align-items:center;justify-content:center;gap:12px}
+.tit b{font-family:var(--serif);font-weight:400;font-size:52px;line-height:.9;letter-spacing:-.02em}
+.logo{height:40px;width:auto;aspect-ratio:510.66/149.18;color:#fff}
+.micro{font:500 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--ouro);margin:10px 0 0}
+.sub{font-size:13px;color:var(--tinta2);margin:6px 0 0}
+nav{position:sticky;top:0;z-index:5;background:var(--fundo);display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:12px;border-bottom:1px solid var(--linha)}
+nav button{font:500 12px var(--sans);letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--linha);background:none;color:var(--claro);border-radius:4px;padding:11px 4px;cursor:pointer}
+nav button.on{background:var(--claro);color:#0E0D0B;border-color:var(--claro)}
 main{max-width:720px;margin:0 auto;padding:14px 12px 90px}
-.aviso{text-align:center;font-size:13px;color:var(--ouro);margin:4px 0 12px}
+.aviso{text-align:center;font:500 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--ouro);margin:4px 0 14px}
 .grade{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.card{background:#fff;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;text-decoration:none;color:inherit}
-.card img{width:100%;aspect-ratio:1;object-fit:cover;background:#eee}
+.card{background:#1B1916;border:1px solid var(--linha);border-radius:6px;overflow:hidden;display:flex;flex-direction:column;text-decoration:none;color:inherit}
+.card img{width:100%;aspect-ratio:1;object-fit:cover;background:#171512}
 .card .t{padding:10px 10px 12px;display:flex;flex-direction:column;gap:4px;flex:1}
 .nome{font-size:14px;line-height:1.25}
-.preco{font-weight:500}.de{text-decoration:line-through;opacity:.5;font-size:12px;margin-right:6px}
-.est{font-size:12px;opacity:.75}.est.ult{color:#a33;opacity:1}
-.tam{font-size:11px;opacity:.7}
-.btn{margin-top:auto;display:block;text-align:center;background:var(--azul);color:#fff;border-radius:20px;padding:8px;font-size:13px}
+.preco{font-family:var(--serif);font-size:26px;line-height:1;color:var(--ouro)}.de{text-decoration:line-through;color:var(--tinta2);font-size:12px;margin-right:6px}
+.est{font-size:12px;color:var(--tinta2)}.est.ult{color:#dd7774}
+.tam{font-size:11px;color:var(--tinta2)}
+.btn{margin-top:auto;display:block;text-align:center;background:var(--claro);color:#0E0D0B;border-radius:4px;padding:9px;font:600 12px var(--sans);letter-spacing:.05em;text-transform:uppercase}
 .esgot{opacity:.45}
 .kit{grid-column:1/-1}.kit img{aspect-ratio:16/9}
-.texto{text-align:center;font-family:'Cormorant Garamond',serif;font-size:21px;margin:0 0 6px}
-.zap{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#25D366;color:#fff;text-decoration:none;border-radius:28px;padding:13px 24px;font-weight:500;box-shadow:0 4px 14px rgba(0,0,0,.2)}
-.atual{text-align:center;font-size:11px;opacity:.5;margin-top:20px}
+.texto{text-align:center;font-family:var(--serif);font-size:24px;margin:0 0 6px}
+.zap{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#25D366;color:#fff;text-decoration:none;border-radius:28px;padding:13px 24px;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.5)}
+.atual{text-align:center;font-size:11px;color:var(--tinta2);margin-top:20px}
 </style></head><body>
-<header><img src="../ciclo/logo-vox.png" alt="VOX"><h1>Catálogo VOX</h1><p class="sub">Escolha abaixo. O estoque é o do site.</p></header>
+<div class="faixa">Black VOX · até segunda, 30/11</div>
+<header><div class="tit"><b>Black</b><svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="284.67 465.41 510.66 149.18" role="img" aria-label="VOX"><path fill="currentColor" fill-rule="evenodd" d="M 352.31 509.94 C 352.31 497.64 362.28 487.67 374.57 487.67 C 362.28 487.67 352.31 477.71 352.31 465.41 C 352.31 477.71 342.34 487.67 330.05 487.67 C 342.34 487.67 352.31 497.64 352.31 509.94 Z M 715.79 496.31 L 746.56 545.65 L 715.93 594.84 L 733.94 594.84 L 754.78 559.11 L 777.04 594.84 L 795.18 594.84 L 764.56 545.65 L 795.33 496.31 L 777.32 496.31 L 756.34 532.32 L 733.94 496.31 Z M 519.33 594.84 L 556.33 496.31 L 539.32 496.31 L 509.97 578.25 L 480.77 496.31 L 463.47 496.31 L 500.62 594.84 Z M 583.93 545.5 C 583.93 574.23 605.52 595.98 634.26 595.98 C 663.18 595.98 684.59 574.39 684.59 545.5 C 684.59 516.66 663.09 495.18 634.26 495.18 C 605.79 495.18 583.93 516.61 583.93 545.5 Z M 600.52 545.5 C 600.52 524.75 613.19 509.35 634.26 509.35 C 655.54 509.35 668 524.99 668 545.5 C 668 565.96 655.57 581.94 634.26 581.94 C 612.95 581.94 600.52 565.96 600.52 545.5 Z M 342.27 614.59 L 342.27 564.41 L 318.53 588.14 L 307.5 577.12 L 331.24 553.38 L 284.67 553.38 L 284.67 537.78 L 331.25 537.78 L 292.16 498.69 L 303.18 487.66 L 350.07 534.55 L 396.96 487.66 L 407.99 498.69 L 368.9 537.78 L 415.47 537.78 L 415.47 553.38 L 368.9 553.38 L 392.64 577.12 L 381.61 588.14 L 357.88 564.41 L 357.88 614.59 Z"/></svg></div><p class="micro">Catálogo · óculos de sol R$ 89 · t-shirts R$ 79 · Ciclo R$ 169</p><p class="sub">Escolha abaixo. O estoque é o do site.</p></header>
 <nav id="abas"></nav>
 <main><div id="lista"></div><p class="atual" id="atual"></p></main>
 <a class="zap" id="zap" target="_blank">Falar no WhatsApp</a>
