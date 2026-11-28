@@ -1,5 +1,5 @@
 {
-"atualizado": "2026-11-28T07:42:03-03:00",
+"atualizado": "2026-11-28T15:36:23-03:00",
 "abas": [
 {
 "id": "tshirts",
@@ -28,9 +28,8 @@
 "img": "https://acdn-us.mitiendanube.com/stores/006/185/693/products/01-principal-f09b78236838ac9b8c17956572331806-1024-1024.webp",
 "preco": 79,
 "de": 129,
-"estoque": 7,
+"estoque": 6,
 "tamanhos": [
-"G",
 "M",
 "P",
 "PP"
